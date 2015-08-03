@@ -2,6 +2,17 @@
 
 Current version: **2.0.0-RC1**
 
+
+## Features
+
+* **Very easy to use.**
+* **Much faster** than the old validator.
+* Supports parsing documents for **presentation**.
+* Very **low footprint** in your code.
+* **Pooling** of resources.
+* Supports **different lifecycles** of validation artifacts.
+
+
 ## Getting started
 
 Include dependency in your pom.xml:
@@ -28,6 +39,7 @@ System.out.println(validation.getReport().getFlag());
 ```
 
 The validator is expensive to create, one instance should be enough.
+
 
 ## Validation artifacts
 
