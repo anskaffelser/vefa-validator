@@ -16,8 +16,8 @@ cd target/os-UBL-2.0/xsd
 
 echo "* Generate buildconfig.xml"
 
-echo '<?xml version="1.0" encoding="UTF-8"?>' >> config.xml
-echo '<buildConfigurations xmlns="http://difi.no/xsd/vefa/validator/1.0">' >> config.xml
+echo '<?xml version="1.0" encoding="UTF-8"?>' >> buildconfig.xml
+echo '<buildConfigurations xmlns="http://difi.no/xsd/vefa/validator/1.0">' >> buildconfig.xml
 
 for xsd in maindoc/*.xsd; do
 	filename=$(basename $xsd | sed "s:\.xsd::")
