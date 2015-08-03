@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://difi.no/xsd/vefa/validator/1.0" xmlns="http://difi.no/xsd/vefa/validator/1.0">
+
+    <xs:element name="artifacts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="artifact" type="artifactType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="artifactType">
+        <xs:attribute name="filename" type="xs:string" />
+        <xs:attribute name="timestamp" type="xs:long" />
+    </xs:complexType>
+
+    <xs:element name="buildConfigurations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="testfolder" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="include" type="fileType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="configurations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="timestamp" type="xs:long" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="configuration" type="configurationType" />
+
+    <xs:complexType name="configurationType">
+        <xs:sequence>
+            <xs:element name="identifier" type="xs:string" minOccurs="1" />
+            <xs:element name="title" type="xs:string" minOccurs="1" />
+            <xs:element name="profileId" type="xs:string" minOccurs="0" />
+            <xs:element name="customizationId" type="xs:string" minOccurs="0" />
+            <xs:element name="inherit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="stylesheet" type="stylesheetType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="file" type="fileType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="rule" type="ruleType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="message" type="messageType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="weight" type="xs:long" fixed="0" />
+        <xs:attribute name="build" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="fileType">
+        <xs:attribute name="path" type="xs:string" />
+        <xs:attribute name="source" type="xs:string" />
+        <xs:attribute name="configuration" type="xs:string" />
+        <xs:attribute name="build" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="ruleType">
+        <xs:attribute name="identifier" type="xs:string" />
+        <xs:attribute name="action" type="ruleActionType" />
+    </xs:complexType>
+
+    <xs:attribute name="flag" type="flagType" />
+
+    <xs:complexType name="messageType">
+        <xs:attribute name="identifier" type="xs:string" />
+        <xs:attribute name="flag" type="flagType" />
+    </xs:complexType>
+
+    <xs:complexType name="stylesheetType">
+        <xs:sequence>
+            <xs:element name="setting" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="path" type="xs:string" />
+        <xs:attribute name="source" type="xs:string" />
+    </xs:complexType>
+
+    <xs:element name="report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="filename" type="xs:string" minOccurs="0" />
+                <xs:element name="title" type="xs:string" minOccurs="0" />
+                <xs:element name="description" type="xs:string" />
+                <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="flag" type="flagType" />
+            <xs:attribute name="runtime" type="xs:string" />
+            <xs:attribute name="configuration" type="xs:string" />
+            <xs:attribute name="build" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="sectionType">
+        <xs:sequence>
+            <xs:element name="assertion" type="assertionType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="title" type="xs:string" />
+        <xs:attribute name="flag" type="flagType" />
+        <xs:attribute name="runtime" type="xs:string" />
+        <xs:attribute name="configuration" type="xs:string" />
+        <xs:attribute name="build" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="assertionType">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string" />
+            <xs:element name="location" type="xs:string" />
+            <xs:element name="test" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="identifier" type="xs:string" />
+        <xs:attribute name="flag" type="flagType" />
+    </xs:complexType>
+
+    <xs:simpleType name="flagType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="info" />
+            <xs:enumeration value="ok" />
+            <xs:enumeration value="expected" />
+            <xs:enumeration value="warning" />
+            <xs:enumeration value="error" />
+            <xs:enumeration value="fatal" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ruleActionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="suppress" />
+            <xs:enumeration value="setWarning" />
+            <xs:enumeration value="setError" />
+            <xs:enumeration value="setFatal" />
+            <xs:enumeration value="none" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

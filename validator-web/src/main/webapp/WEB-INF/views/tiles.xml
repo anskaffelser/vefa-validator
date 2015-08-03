@@ -1,0 +1,15 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="template" template="/WEB-INF/views/template.jsp" />
+
+    <definition name="home" extends="template">
+        <put-attribute name="main" value="/WEB-INF/views/home.jsp" />
+    </definition>
+
+    <definition name="validation" extends="template">
+        <put-attribute name="main" value="/WEB-INF/views/validation.jsp" />
+    </definition>
+
+</tiles-definitions>
