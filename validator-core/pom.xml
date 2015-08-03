@@ -12,7 +12,7 @@
     <artifactId>validator-core</artifactId>
 
     <name>VEFA Validator :: Core</name>
-    <description></description>
+    <description>Complete validator for embedding in projects.</description>
     <url>https://github.com/difi/vefa-validator</url>
 
     <dependencies>

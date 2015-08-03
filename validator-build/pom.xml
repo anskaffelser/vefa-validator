@@ -12,7 +12,7 @@
     <artifactId>validator-build</artifactId>
 
     <name>VEFA Validator :: Build</name>
-    <description></description>
+    <description>Package for generation of validation artifacts.</description>
     <url>https://github.com/difi/vefa-validator</url>
 
     <dependencies>

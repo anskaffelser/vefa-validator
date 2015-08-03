@@ -12,7 +12,7 @@
     <artifactId>validator-repo</artifactId>
 
     <name>VEFA Validator :: Repo</name>
-    <description></description>
+    <description>Package for generation of index for repository.</description>
     <url>https://github.com/difi/vefa-validator</url>
 
     <dependencies>

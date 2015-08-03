@@ -10,7 +10,7 @@
     <version>2.0.0-SNAPSHOT</version>
 
     <name>VEFA Validator</name>
-    <description></description>
+    <description>Parent project for VEFA Validator.</description>
     <url>https://github.com/difi/vefa-validator</url>
 
     <scm>
