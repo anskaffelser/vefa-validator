@@ -1,5 +1,7 @@
 # VEFA Validator 2.0
 
+Current version: **2.0.0-RC1**
+
 ## Getting started
 
 Include dependency in your pom.xml:
