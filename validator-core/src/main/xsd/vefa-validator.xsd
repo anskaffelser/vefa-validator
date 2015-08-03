@@ -6,13 +6,13 @@
             <xs:sequence>
                 <xs:element name="artifact" type="artifactType" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="timestamp" type="xs:long" />
+            <xs:attribute name="timestamp" type="xs:long" default="0" />
         </xs:complexType>
     </xs:element>
 
     <xs:complexType name="artifactType">
         <xs:attribute name="filename" type="xs:string" />
-        <xs:attribute name="timestamp" type="xs:long" />
+        <xs:attribute name="timestamp" type="xs:long" default="0" />
     </xs:complexType>
 
     <xs:element name="buildConfigurations">

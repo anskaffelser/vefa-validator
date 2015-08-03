@@ -187,6 +187,7 @@
                 </executions>
                 <configuration>
                     <excludePackageNames>org.oclc.*:no.difi.xsd.*</excludePackageNames>
+                    <encoding>${java.encoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
