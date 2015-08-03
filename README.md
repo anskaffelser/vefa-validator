@@ -31,5 +31,5 @@ The validator is expensive to create, one instance should be enough.
 
 Artifacts may be found here:
 
-* Production: (http://vefa.difi.no/validator/repo/)[http://vefa.difi.no/validator/repo/]
-* Test: (http://test-vefa.difi.no/validator/repo/)[http://test-vefa.difi.no/validator/repo/]
+* Production: [http://vefa.difi.no/validator/repo/](http://vefa.difi.no/validator/repo/)
+* Test: [http://test-vefa.difi.no/validator/repo/](http://test-vefa.difi.no/validator/repo/)
