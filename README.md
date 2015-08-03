@@ -26,3 +26,10 @@ System.out.println(validation.getReport().getFlag());
 ```
 
 The validator is expensive to create, one instance should be enough.
+
+## Validation artifacts
+
+Artifacts may be found here:
+
+* Production: (http://vefa.difi.no/validator/repo/)[http://vefa.difi.no/validator/repo/]
+* Test: (http://test-vefa.difi.no/validator/repo/)[http://test-vefa.difi.no/validator/repo/]
