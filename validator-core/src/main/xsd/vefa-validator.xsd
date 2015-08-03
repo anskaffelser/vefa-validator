@@ -6,6 +6,7 @@
             <xs:sequence>
                 <xs:element name="artifact" type="artifactType" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
+            <xs:attribute name="timestamp" type="xs:long" />
         </xs:complexType>
     </xs:element>
 

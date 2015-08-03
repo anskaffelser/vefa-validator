@@ -11,6 +11,10 @@
 
     <artifactId>validator-build</artifactId>
 
+    <name>VEFA Validator :: Build</name>
+    <description></description>
+    <url>https://github.com/difi/vefa-validator</url>
+
     <dependencies>
         <dependency>
             <groupId>no.difi.vefa</groupId>

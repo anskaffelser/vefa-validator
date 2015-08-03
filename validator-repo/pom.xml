@@ -11,6 +11,10 @@
 
     <artifactId>validator-repo</artifactId>
 
+    <name>VEFA Validator :: Repo</name>
+    <description></description>
+    <url>https://github.com/difi/vefa-validator</url>
+
     <dependencies>
         <dependency>
             <groupId>no.difi.vefa</groupId>

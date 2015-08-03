@@ -11,6 +11,10 @@
 
     <artifactId>validator-core</artifactId>
 
+    <name>VEFA Validator :: Core</name>
+    <description></description>
+    <url>https://github.com/difi/vefa-validator</url>
+
     <dependencies>
         <dependency>
             <groupId>net.sf.saxon</groupId>

@@ -12,6 +12,10 @@
     <artifactId>validator-web</artifactId>
     <packaging>war</packaging>
 
+    <name>VEFA Validator :: Web</name>
+    <description></description>
+    <url>https://github.com/difi/vefa-validator</url>
+
     <dependencies>
 
         <!-- Validator -->
