@@ -12,7 +12,7 @@
 * Size: 4,19 MB
 * Validation result: 1 error, 5820 warnings
 * Lines of XML: 118 602
-* Document type: EHF, profile 04, invoice (IT10)
+* Document type: EHF, profile 04, invoice (T10)
 
 ## Configuration
 
