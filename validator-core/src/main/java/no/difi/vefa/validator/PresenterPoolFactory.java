@@ -3,11 +3,10 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.PresenterInfo;
 import no.difi.vefa.validator.presenter.XsltPresenter;
+import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-
-import java.nio.file.Path;
 
 class PresenterPoolFactory extends BaseKeyedPooledObjectFactory<String, Presenter> {
 
@@ -25,11 +24,16 @@ class PresenterPoolFactory extends BaseKeyedPooledObjectFactory<String, Presente
     @Override
     public Presenter create(String key) throws Exception {
         try {
+            StylesheetType stylesheetType = validatorEngine.getStylesheet(key);
+
             for (Class cls : implementations) {
                 try {
                     for (String extension : ((PresenterInfo) cls.getAnnotation(PresenterInfo.class)).value())
-                        if (key.toLowerCase().endsWith(extension))
-                            return (Presenter) cls.getConstructor(Path.class).newInstance(validatorEngine.getResource(key));
+                        if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
+                            Presenter presenter = (Presenter) cls.getConstructor().newInstance();
+                            presenter.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
+                            return presenter;
+                        }
                 } catch (Exception e) {
                     throw new ValidatorException(String.format("Unable to use %s for presenter.", cls), e);
                 }

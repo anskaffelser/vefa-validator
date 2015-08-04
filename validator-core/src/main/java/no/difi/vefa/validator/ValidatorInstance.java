@@ -78,9 +78,9 @@ class ValidatorInstance {
      * @param outputStream Stream for dumping of result.
      */
     public void present(StylesheetType stylesheet, Document document, OutputStream outputStream) throws Exception {
-        Presenter presenter = presenterPool.borrowObject(stylesheet.getPath());
+        Presenter presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
         presenter.present(document, outputStream);
-        presenterPool.returnObject(stylesheet.getPath(), presenter);
+        presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
     }
 
     /**
