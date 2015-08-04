@@ -76,10 +76,16 @@
 
     <xs:complexType name="stylesheetType">
         <xs:sequence>
-            <xs:element name="setting" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="setting" type="settingType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="path" type="xs:string" />
+        <xs:attribute name="identifier" type="xs:string" />
         <xs:attribute name="source" type="xs:string" />
+        <xs:attribute name="path" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="settingType">
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="defaultValue" type="xs:string" default="" />
     </xs:complexType>
 
     <xs:element name="report">
