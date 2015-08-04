@@ -41,4 +41,4 @@ Validation artifacts as presented in [vefa-validator-conf](https://github.com/di
 
 ## Result
 
-**The new validator needs some less memory, but is ~38 times faster than the old validator.**
+**The new validator needs some less memory and is ~38 times faster than the old validator.**
