@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
  */
 class DocumentDeclaration {
 
-    private static final Pattern regexCustomizationId = Pattern.compile("<.+CustomizationID>(.*)<\\/.+CustomizationID>", Pattern.MULTILINE);
-    private static final Pattern regexProfileId = Pattern.compile("<.+ProfileID>(.*)<\\/.+ProfileID>", Pattern.MULTILINE);
+    private static final Pattern regexCustomizationId = Pattern.compile("<.+CustomizationID\\s*>(.*)<\\/.+CustomizationID\\s*>", Pattern.MULTILINE);
+    private static final Pattern regexProfileId = Pattern.compile("<.+ProfileID\\s*>(.*)<\\/.+ProfileID\\s*>", Pattern.MULTILINE);
 
     private String customizationId;
     private String profileId;
