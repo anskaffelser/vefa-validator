@@ -9,7 +9,7 @@
 
 ## File
 
-* Size: 4,19 MB
+* Size: 2,62 MB
 * Lines of XML: 62 254
 * Document type: EHF, profile 04, invoice (T10), 2.0
 
