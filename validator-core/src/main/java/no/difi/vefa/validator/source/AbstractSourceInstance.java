@@ -7,9 +7,11 @@ import no.difi.asic.AsicReaderFactory;
 import no.difi.asic.SignatureMethod;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.xsd.asic.model._1.Certificate;
+import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBContext;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -20,6 +22,16 @@ class AbstractSourceInstance implements SourceInstance {
     private static Logger logger = LoggerFactory.getLogger(AbstractSourceInstance.class);
 
     protected static AsicReaderFactory asicReaderFactory = AsicReaderFactory.newFactory(SignatureMethod.CAdES);
+
+    protected static JAXBContext jaxbContext;
+
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(Artifacts.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 
     protected FileSystem fileSystem;
 

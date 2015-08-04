@@ -6,21 +6,10 @@ import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.net.URI;
 
 class RepositorySourceInstance extends AbstractSourceInstance {
-
-    private static JAXBContext jaxbContext;
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Artifacts.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
 
     private static Logger logger = LoggerFactory.getLogger(RepositorySourceInstance.class);
 
@@ -45,20 +34,4 @@ class RepositorySourceInstance extends AbstractSourceInstance {
             throw new ValidatorException(e.getMessage(), e);
         }
     }
-
-    public enum Repository {
-        TEST("http://test-vefa.difi.no/validator/dist/"),
-        PRODUCTION("http://vefa.difi.no/validator/dist/");
-
-        private String url;
-
-        Repository(String url) {
-            this.url = url;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-    }
-
 }
