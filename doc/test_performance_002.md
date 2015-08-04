@@ -25,7 +25,7 @@ Validation artifacts as presented in [vefa-validator-conf](https://github.com/di
 * Validation: **1 validation**, 1 minutes 20 seconds
 * Max heap size: 1,872 GB
 
-![002_1](https://cloud.githubusercontent.com/assets/126939/9066327/3570abd8-3ad7-11e5-8875-65ceff1c2af6.png)
+![002_2](https://cloud.githubusercontent.com/assets/126939/9066338/4302c5d8-3ad7-11e5-8984-0662845968a7.png)
 
 
 ## Test case 2: [This validator](https://github.com/difi/vefa-validator)
@@ -36,7 +36,7 @@ Validation artifacts as presented in [vefa-validator-conf](https://github.com/di
 * Validation: **25 validations**, 52 seconds (average: 2,08 seconds)
 * Max heap size: 1,422 GB
 
-![002_2](https://cloud.githubusercontent.com/assets/126939/9066338/4302c5d8-3ad7-11e5-8984-0662845968a7.png)
+![002_1](https://cloud.githubusercontent.com/assets/126939/9066327/3570abd8-3ad7-11e5-8875-65ceff1c2af6.png)
 
 
 ## Result
