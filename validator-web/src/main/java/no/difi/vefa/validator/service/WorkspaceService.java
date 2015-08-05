@@ -27,7 +27,7 @@ public class WorkspaceService {
 
     private static Logger logger = LoggerFactory.getLogger(WorkspaceService.class);
 
-    @Value("${dir.workspace}")
+    @Value("${workspace}")
     private String dirWorkspace;
 
     private Marshaller reportMarshaller;

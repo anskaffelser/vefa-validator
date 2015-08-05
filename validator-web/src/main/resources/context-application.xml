@@ -7,8 +7,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    <bean id="myProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="ignoreResourceNotFound" value="true" />
         <property name="locations">
             <list>
@@ -17,6 +16,10 @@
                 <value>file:validator.properties</value>
             </list>
         </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" ref="myProperties" />
     </bean>
 
     <context:component-scan base-package="no.difi.vefa.validator">
