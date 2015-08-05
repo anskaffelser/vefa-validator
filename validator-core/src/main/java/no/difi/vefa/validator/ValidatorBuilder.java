@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.Config;
 import no.difi.vefa.validator.api.Source;
 
 /**
@@ -27,6 +28,11 @@ public class ValidatorBuilder {
      */
     private ValidatorBuilder() {
         // No action
+    }
+
+    public ValidatorBuilder setConfig(Config config) {
+        this.validator.setConfig(config);
+        return this;
     }
 
     /**

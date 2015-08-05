@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.Config;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.source.RepositorySource;
 import org.slf4j.Logger;
@@ -23,6 +24,11 @@ public class Validator {
      * Logger
      */
     private static Logger logger = LoggerFactory.getLogger(Validator.class);
+
+    /**
+     * Config
+     */
+    private Config config;
 
     /**
      * Source
@@ -80,6 +86,10 @@ public class Validator {
         return this.validatorInstance.getPackages();
     }
 
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
     /**
      * Set source for validator.
      * @param source Source
@@ -95,9 +105,9 @@ public class Validator {
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source.createInstance());
+            validatorInstance = new ValidatorInstance(source.createInstance(), config);
         } catch (Exception e) {
-            logger.warn(e.getMessage());
+            logger.warn(e.getMessage(), e);
 
             // Exceptions during running is not a problem, but excpetion before the first validator is created is a problem.
             if (validatorInstance == null)

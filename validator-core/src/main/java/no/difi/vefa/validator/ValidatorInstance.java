@@ -1,8 +1,10 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Config;
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.SourceInstance;
+import no.difi.vefa.validator.config.CombinedConfig;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
@@ -19,6 +21,7 @@ import java.util.Map;
 class ValidatorInstance {
 
     private ValidatorEngine validatorEngine;
+    private Config config;
 
     private Map<String, Configuration> configurationMap = new HashMap<>();
 
@@ -31,17 +34,20 @@ class ValidatorInstance {
      * @param sourceInstance Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(SourceInstance sourceInstance) throws ValidatorException {
+    ValidatorInstance(SourceInstance sourceInstance, Config config) throws ValidatorException {
+        // Keep reference
+        this.config = new CombinedConfig(config, ValidatorDefaults.config);
+
         // Create a new engine
         validatorEngine = new ValidatorEngine(sourceInstance);
 
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine));
-        checkerPool.setBlockWhenExhausted(false);
+        checkerPool.setBlockWhenExhausted(this.config.getBoolean("pools.checker.blockerWhenExhausted"));
 
         // New pool for presenters
         presenterPool = new GenericKeyedObjectPool<>(new PresenterPoolFactory(validatorEngine));
-        presenterPool.setBlockWhenExhausted(false);
+        presenterPool.setBlockWhenExhausted(this.config.getBoolean("pools.presenter.blockerWhenExhausted"));
     }
 
     /**
