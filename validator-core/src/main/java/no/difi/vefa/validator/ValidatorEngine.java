@@ -4,6 +4,7 @@ import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import no.difi.xsd.vefa.validator._1.FileType;
+import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,8 @@ class ValidatorEngine {
 
     private Map<String, ConfigurationType> identifierMap = new HashMap<>();
     private Map<DocumentDeclaration, ConfigurationType> declarationMap = new HashMap<>();
+
+    private Map<String, StylesheetType> stylesheetMap = new HashMap<>();
 
     private List<String> packages = new ArrayList<>();
 
@@ -92,8 +95,10 @@ class ValidatorEngine {
                 fileType.setBuild(configuration.getBuild());
             }
 
-            if (configuration.getStylesheet() != null)
+            if (configuration.getStylesheet() != null) {
                 configuration.getStylesheet().setPath(String.format("%s#%s", configurationSource, configuration.getStylesheet().getPath()));
+                stylesheetMap.put(configuration.getStylesheet().getIdentifier(), configuration.getStylesheet());
+            }
 
             // Add by identifier if not registered or weight is higher
             if (!identifierMap.containsKey(configuration.getIdentifier()) || identifierMap.get(configuration.getIdentifier()).getWeight() < configuration.getWeight())
@@ -125,6 +130,13 @@ class ValidatorEngine {
             throw new ValidatorException(String.format("Configuration for '%s' not found", declaration));
 
         return declarationMap.get(declaration);
+    }
+
+    public StylesheetType getStylesheet(String identifier) throws ValidatorException {
+        if (!stylesheetMap.containsKey(identifier))
+            throw new ValidatorException(String.format("Stylesheet for identifier '%s' not found.", identifier));
+
+        return stylesheetMap.get(identifier);
     }
 
     public List<String> getPackages() {

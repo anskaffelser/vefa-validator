@@ -12,7 +12,10 @@ Current version: **2.0.0-RC1**
 * **Pooling** of resources.
 * Supports **different lifecycles** of validation artifacts.
 
-Looking for a performance test? See [Performance test #001](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_001.md)
+Looking for a performance test?
+
+* [Performance test #001](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_001.md)
+* [Performance test #002](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_002.md)
 
 
 ## Getting started
