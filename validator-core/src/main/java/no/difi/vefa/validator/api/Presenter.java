@@ -27,9 +27,10 @@ public interface Presenter {
      * Writes presentation to a OutputStream given a business document.
      *
      * @param document Document to present.
+     * @param config Configuration for the presentation.
      * @param outputStream Stream to write presentation to.
      * @throws ValidatorException
      */
-    void present(Document document, OutputStream outputStream) throws ValidatorException;
+    void present(Document document, Config config, OutputStream outputStream) throws ValidatorException;
 
 }

@@ -35,7 +35,7 @@ class ValidatorInstance {
      * @throws ValidatorException
      */
     ValidatorInstance(SourceInstance sourceInstance, Config config) throws ValidatorException {
-        // Keep reference
+        // Create config combined with default values.
         this.config = new CombinedConfig(config, ValidatorDefaults.config);
 
         // Create a new engine
@@ -83,9 +83,9 @@ class ValidatorInstance {
      * @param document Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    public void present(StylesheetType stylesheet, Document document, OutputStream outputStream) throws Exception {
+    public void present(StylesheetType stylesheet, Document document, Config config, OutputStream outputStream) throws Exception {
         Presenter presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
-        presenter.present(document, outputStream);
+        presenter.present(document, new CombinedConfig(config, this.config), outputStream);
         presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
     }
 

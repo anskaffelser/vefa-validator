@@ -2,7 +2,6 @@ package no.difi.vefa.validator;
 
 
 import no.difi.vefa.validator.source.DirectorySource;
-import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -13,11 +12,11 @@ import org.testng.annotations.Test;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.nio.file.Paths;
 import java.util.zip.GZIPInputStream;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 public class Testing {
 
@@ -46,7 +45,7 @@ public class Testing {
                     logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
             }
 
-            OutputStream outputStream = new FileOutputStream("target/test-simple.html");
+            OutputStream outputStream = new FileOutputStream("target/test-simple-feilkoder.html");
             validation.present(outputStream);
             outputStream.close();
 
@@ -71,7 +70,7 @@ public class Testing {
                     logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
             }
 
-            OutputStream outputStream = new FileOutputStream("target/test-simple.html");
+            OutputStream outputStream = new FileOutputStream("target/test-simple-invoice.html");
             validation.present(outputStream);
             outputStream.close();
 

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.Config;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -130,12 +131,16 @@ public class Validation {
     }
 
     public void present(OutputStream outputStream) throws Exception {
+        present(outputStream, null);
+    }
+
+    public void present(OutputStream outputStream, Config config) throws Exception {
         if (configuration.getStylesheet() == null)
             throw new ValidatorException("No stylesheet is defined for document type.");
         if (getReport().getFlag().equals(FlagType.FATAL))
             throw new ValidatorException(String.format("Status '%s' is not supported for presentation.", getReport().getFlag()));
 
-        validatorInstance.present(configuration.getStylesheet(), document, outputStream);
+        validatorInstance.present(configuration.getStylesheet(), document, config, outputStream);
     }
 
     public Document getDocument() {
