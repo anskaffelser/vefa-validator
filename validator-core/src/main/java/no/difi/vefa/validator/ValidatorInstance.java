@@ -44,10 +44,16 @@ class ValidatorInstance {
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine));
         checkerPool.setBlockWhenExhausted(this.config.getBoolean("pools.checker.blockerWhenExhausted"));
+        checkerPool.setLifo(this.config.getBoolean("pools.checker.lifo"));
+        checkerPool.setMaxTotal(this.config.getInteger("pools.checker.maxTotal"));
+        checkerPool.setMaxTotalPerKey(this.config.getInteger("pools.checker.maxTotalPerKey"));
 
         // New pool for presenters
         presenterPool = new GenericKeyedObjectPool<>(new PresenterPoolFactory(validatorEngine));
         presenterPool.setBlockWhenExhausted(this.config.getBoolean("pools.presenter.blockerWhenExhausted"));
+        presenterPool.setLifo(this.config.getBoolean("pools.presenter.lifo"));
+        presenterPool.setMaxTotal(this.config.getInteger("pools.presenter.maxTotal"));
+        presenterPool.setMaxTotalPerKey(this.config.getInteger("pools.presenter.maxTotalPerKey"));
     }
 
     /**
