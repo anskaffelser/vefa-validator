@@ -21,8 +21,8 @@
     <div class="row">
         <c:forEach items="${packages}" var="p">
             <div class="col-lg-3 col-md-4" style="padding-top: 5pt;">
-                <c:if test="${p.url}"><a href="<c:out value="${p.url}" />"><c:out value="${p.value}" /></a></c:if>
-                <c:if test="${!p.url}"><c:out value="${p.value}" /></c:if>
+                <c:if test="${p.url != null}"><a href="<c:out value="${p.url}" />"><c:out value="${p.value}" /></a></c:if>
+                <c:if test="${!p.url == null}"><c:out value="${p.value}" /></c:if>
             </div>
         </c:forEach>
     </div>

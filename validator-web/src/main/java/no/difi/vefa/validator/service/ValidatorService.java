@@ -3,7 +3,9 @@ package no.difi.vefa.validator.service;
 import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
+import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.source.DirectorySource;
+import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,10 @@ public class ValidatorService {
     @Autowired
     private WorkspaceService workspaceService;
 
+    @Value("${source}")
+    private String propSource;
+    @Value("${repository}")
+    private String propRepository;
     @Value("${dir.rules}")
     private String dirRules;
 
@@ -32,7 +38,20 @@ public class ValidatorService {
     @PostConstruct
     public void postConstruct() {
         try {
-            validator = ValidatorBuilder.newValidator().setSource(new DirectorySource(Paths.get(dirRules))).build();
+            Source source;
+
+            switch (propSource) {
+                case "directory":
+                    source = new DirectorySource(Paths.get(dirRules));
+                    break;
+                case "repository":
+                    source = new RepositorySource(propRepository);
+                    break;
+                default:
+                    throw new Exception("Type of source not recognized.");
+            }
+
+            validator = ValidatorBuilder.newValidator().setSource(source).build();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
