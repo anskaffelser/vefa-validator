@@ -29,9 +29,13 @@ class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
         try {
             for (Class cls : implementations) {
                 try {
-                    for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value())
-                        if (key.toLowerCase().endsWith(extension))
-                            return (Checker) cls.getConstructor(Path.class).newInstance(validatorEngine.getResource(key));
+                    for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value()) {
+                        if (key.toLowerCase().endsWith(extension)) {
+                            Checker checker = (Checker) cls.getConstructor().newInstance();
+                            checker.prepare(validatorEngine.getResource(key));
+                            return checker;
+                        }
+                    }
                 } catch (Exception e) {
                     throw new ValidatorException(String.format("Unable to use %s for checker.", cls), e);
                 }

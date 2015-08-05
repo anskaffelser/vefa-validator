@@ -28,12 +28,13 @@ class PresenterPoolFactory extends BaseKeyedPooledObjectFactory<String, Presente
 
             for (Class cls : implementations) {
                 try {
-                    for (String extension : ((PresenterInfo) cls.getAnnotation(PresenterInfo.class)).value())
+                    for (String extension : ((PresenterInfo) cls.getAnnotation(PresenterInfo.class)).value()) {
                         if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
                             Presenter presenter = (Presenter) cls.getConstructor().newInstance();
                             presenter.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
                             return presenter;
                         }
+                    }
                 } catch (Exception e) {
                     throw new ValidatorException(String.format("Unable to use %s for presenter.", cls), e);
                 }

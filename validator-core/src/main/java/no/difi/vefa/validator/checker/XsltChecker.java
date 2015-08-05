@@ -26,7 +26,7 @@ public class XsltChecker implements Checker {
     private Transformer transformer;
     private JAXBResult jaxbResult;
 
-    public XsltChecker(Path path) throws ValidatorException {
+    public void prepare(Path path) throws ValidatorException {
         try {
             transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
             jaxbResult = new JAXBResult(JAXBContext.newInstance(SchematronOutput.class));

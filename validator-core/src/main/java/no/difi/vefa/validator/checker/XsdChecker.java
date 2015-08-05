@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.checker;
 
+import no.difi.vefa.validator.ValidatorException;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.Document;
@@ -23,14 +24,14 @@ public class XsdChecker implements Checker {
 
     private Validator validator;
 
-    public XsdChecker(Path path) {
+    public void prepare(Path path) throws ValidatorException{
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new PathLSResolveResource(path.getParent()));
             Schema schema = schemaFactory.newSchema(new StreamSource(Files.newInputStream(path)));
             validator = schema.newValidator();
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new ValidatorException(e.getMessage(), e);
         }
     }
 

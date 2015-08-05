@@ -87,19 +87,30 @@ public class Validator {
         return this.validatorInstance.getPackages();
     }
 
+    /**
+     * Set configuration for validator.
+     *
+     * @param config Configuration
+     */
     public void setConfig(Config config) {
         this.config = config;
     }
 
     /**
      * Set source for validator.
+     *
      * @param source Source
      */
     void setSource(Source source) {
         this.source = source;
     }
 
-    void load() throws ValidatorException{
+    /**
+     * Creates a new instance of ValidatorInstance for use.
+     *
+     * @throws ValidatorException
+     */
+    void load() throws ValidatorException {
         try {
             // Make sure to default to repository source if no source is set.
             if (source == null)
@@ -107,7 +118,7 @@ public class Validator {
 
             // Create a new instance based on source.
             validatorInstance = new ValidatorInstance(source.createInstance(), config);
-        } catch (Exception e) {
+        } catch (ValidatorException e) {
             logger.warn(e.getMessage(), e);
 
             // Exceptions during running is not a problem, but excpetion before the first validator is created is a problem.
