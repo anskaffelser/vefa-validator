@@ -134,7 +134,7 @@ public class Builder {
                     asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("something"));
                 }
 
-                for (String pkg : config.getPackage())
+                for (PackageType pkg : config.getPackage())
                     configurations.getPackage().add(pkg);
 
                 for (String testfolder : config.getTestfolder())

@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.Config;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.source.RepositorySource;
+import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ public class Validator {
      *
      * @return List of packages.
      */
-    public List<String> getPackages() {
+    public List<PackageType> getPackages() {
         return this.validatorInstance.getPackages();
     }
 

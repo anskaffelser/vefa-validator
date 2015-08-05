@@ -6,6 +6,7 @@ import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.config.CombinedConfig;
 import no.difi.xsd.vefa.validator._1.FileType;
+import no.difi.xsd.vefa.validator._1.PackageType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
@@ -61,7 +62,7 @@ class ValidatorInstance {
      *
      * @return List of packages.
      */
-    public List<String> getPackages() {
+    public List<PackageType> getPackages() {
         return validatorEngine.getPackages();
     }
 

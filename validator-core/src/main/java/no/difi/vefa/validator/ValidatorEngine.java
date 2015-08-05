@@ -1,10 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.xsd.vefa.validator._1.ConfigurationType;
-import no.difi.xsd.vefa.validator._1.Configurations;
-import no.difi.xsd.vefa.validator._1.FileType;
-import no.difi.xsd.vefa.validator._1.StylesheetType;
+import no.difi.xsd.vefa.validator._1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +39,7 @@ class ValidatorEngine {
 
     private Map<String, StylesheetType> stylesheetMap = new HashMap<>();
 
-    private List<String> packages = new ArrayList<>();
+    private List<PackageType> packages = new ArrayList<>();
 
     /**
      * Loading a new validator engine loading configurations from current source.
@@ -84,9 +81,14 @@ class ValidatorEngine {
 
     void loadConfigurations(String configurationSource, Configurations configurations) {
         packages.addAll(configurations.getPackage());
-        Collections.sort(packages);
-        for (String pkg : configurations.getPackage())
-            logger.info(String.format("Loaded: %s", pkg));
+        Collections.sort(packages, new Comparator<PackageType>() {
+            @Override
+            public int compare(PackageType o1, PackageType o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        for (PackageType pkg : configurations.getPackage())
+            logger.info(String.format("Loaded: %s", pkg.getValue()));
 
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {
@@ -139,7 +141,7 @@ class ValidatorEngine {
         return stylesheetMap.get(identifier);
     }
 
-    public List<String> getPackages() {
+    public List<PackageType> getPackages() {
         return packages;
     }
 

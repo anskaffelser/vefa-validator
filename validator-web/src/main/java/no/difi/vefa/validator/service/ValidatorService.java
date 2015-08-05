@@ -4,6 +4,7 @@ import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.source.DirectorySource;
+import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class ValidatorService {
         return workspaceService.saveValidation(validation);
     }
 
-    public List<String> getPackages() {
+    public List<PackageType> getPackages() {
         return validator.getPackages();
     }
 }

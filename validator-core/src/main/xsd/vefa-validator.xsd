@@ -18,7 +18,7 @@
     <xs:element name="buildConfigurations">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="package" type="packageType" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="testfolder" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="include" type="fileType" minOccurs="0" maxOccurs="unbounded" />
@@ -29,7 +29,7 @@
     <xs:element name="configurations">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="package" type="packageType" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" />
@@ -53,6 +53,14 @@
         </xs:sequence>
         <xs:attribute name="weight" type="xs:long" fixed="0" />
         <xs:attribute name="build" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="packageType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="url" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="fileType">
