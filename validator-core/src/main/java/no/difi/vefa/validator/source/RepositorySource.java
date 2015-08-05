@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 public class RepositorySource extends AbstractSource {
 
     public static RepositorySource forTest() {
-        return create("http://test.vefa.difi.no/validator/repo/");
+        return create("https://test-vefa.difi.no/validator/repo/");
     }
 
     public static RepositorySource forProduction() {
