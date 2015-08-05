@@ -14,6 +14,42 @@
     <description>Sample web application making validator available for use.</description>
     <url>https://github.com/difi/vefa-validator</url>
 
+    <scm>
+        <tag>HEAD</tag>
+        <url>https://github.com/difi/vefa-validator</url>
+        <connection>scm:git:https://github.com/difi/vefa-validator.git</connection>
+        <developerConnection>scm:git:git@github.com:difi/vefa-validator.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/difi/vefa-validator/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <organization>
+        <name>Norwegian Agency for Public Management and eGovernment (Difi)</name>
+        <url>http://www.difi.no/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Erlend Klakegg Bergheim</name>
+            <email>erlend.klakegg.bergheim@difi.no</email>
+            <organization>Difi</organization>
+            <roles>
+                <role>Author</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <dependencies>
 
         <!-- Validator -->
