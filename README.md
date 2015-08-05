@@ -53,4 +53,4 @@ Artifacts may be found here:
 * Production (current): [http://vefa.difi.no/validator/repo/](http://vefa.difi.no/validator/repo/)
 * Test (upcoming): [https://test-vefa.difi.no/validator/repo/](https://test-vefa.difi.no/validator/repo/)
 
-Difi does not guarantee the availability of repositoriene. Local copy is always recommended for production environments.
+Difi does not guarantee the availability of the repositories. Local copy is always recommended for production environments.
