@@ -6,7 +6,7 @@
 * Testing and fixing of detection of CustomizationID and ProfileID.
 * Functionality for configuring validator.
 * Supporting parameters for stylesheets.
-* Better default is the sample application (validator-web).
+* Better defaults in the sample application (validator-web).
 
 ## 2.0.0-RC1
 
