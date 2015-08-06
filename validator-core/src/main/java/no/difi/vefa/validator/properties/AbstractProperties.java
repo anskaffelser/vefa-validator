@@ -1,8 +1,8 @@
-package no.difi.vefa.validator.config;
+package no.difi.vefa.validator.properties;
 
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 
-abstract class AbstractConfig implements Config {
+abstract class AbstractProperties implements Properties {
 
     @Override
     public Object get(String key) {

@@ -1,21 +1,21 @@
-package no.difi.vefa.validator.config;
+package no.difi.vefa.validator.properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class SimpleConfig extends AbstractConfig {
+public class SimpleProperties extends AbstractProperties {
 
-    private static Logger logger = LoggerFactory.getLogger(SimpleConfig.class);
+    private static Logger logger = LoggerFactory.getLogger(SimpleProperties.class);
 
     private HashMap<String, Object> values;
 
-    public SimpleConfig() {
+    public SimpleProperties() {
         values = new HashMap<>();
     }
 
-    public SimpleConfig set(String key, Object value) {
+    public SimpleProperties set(String key, Object value) {
         values.put(key, value);
         return this;
     }

@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -148,16 +148,16 @@ public class Validation {
      * Render document to a stream, allows for extra configuration.
      *
      * @param outputStream Stream to use.
-     * @param config Extra configuration to use for this rendering.
+     * @param properties Extra configuration to use for this rendering.
      * @throws Exception
      */
-    public void present(OutputStream outputStream, Config config) throws Exception {
+    public void present(OutputStream outputStream, Properties properties) throws Exception {
         if (configuration.getStylesheet() == null)
             throw new ValidatorException("No stylesheet is defined for document type.");
         if (getReport().getFlag().equals(FlagType.FATAL))
             throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
 
-        validatorInstance.present(configuration.getStylesheet(), document, config, outputStream);
+        validatorInstance.present(configuration.getStylesheet(), document, properties, outputStream);
     }
 
     /**

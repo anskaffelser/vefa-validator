@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
 
 /**
@@ -33,10 +33,10 @@ public class ValidatorBuilder {
     /**
      * Defines configuration to use for validator.
      *
-     * @param config Configuration
+     * @param properties Configuration
      */
-    public ValidatorBuilder setConfig(Config config) {
-        this.validator.setConfig(config);
+    public ValidatorBuilder setProperties(Properties properties) {
+        this.validator.setProperties(properties);
         return this;
     }
 

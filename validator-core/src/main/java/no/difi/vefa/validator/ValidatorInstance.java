@@ -1,14 +1,16 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.config.CombinedConfig;
+import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -17,12 +19,20 @@ import java.util.Map;
 
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
- * One validator is loaded when initiating ValidatorInstance.
  */
 class ValidatorInstance {
 
+    private static Logger logger = LoggerFactory.getLogger(ValidatorInstance.class);
+
+    /**
+     * Instance of ValidatorEngine containing all raw content needed for validation.
+     */
     private ValidatorEngine validatorEngine;
-    private Config config;
+
+    /**
+     * Current validator configuration.
+     */
+    private Properties properties;
 
     /**
      * Normalized configurations indexed by document declarations.
@@ -45,26 +55,26 @@ class ValidatorInstance {
      * @param sourceInstance Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(SourceInstance sourceInstance, Config config) throws ValidatorException {
+    ValidatorInstance(SourceInstance sourceInstance, Properties properties) throws ValidatorException {
         // Create config combined with default values.
-        this.config = new CombinedConfig(config, ValidatorDefaults.config);
+        this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
         validatorEngine = new ValidatorEngine(sourceInstance);
 
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine));
-        checkerPool.setBlockWhenExhausted(this.config.getBoolean("pools.checker.blockerWhenExhausted"));
-        checkerPool.setLifo(this.config.getBoolean("pools.checker.lifo"));
-        checkerPool.setMaxTotal(this.config.getInteger("pools.checker.maxTotal"));
-        checkerPool.setMaxTotalPerKey(this.config.getInteger("pools.checker.maxTotalPerKey"));
+        checkerPool.setBlockWhenExhausted(this.properties.getBoolean("pools.checker.blockerWhenExhausted"));
+        checkerPool.setLifo(this.properties.getBoolean("pools.checker.lifo"));
+        checkerPool.setMaxTotal(this.properties.getInteger("pools.checker.maxTotal"));
+        checkerPool.setMaxTotalPerKey(this.properties.getInteger("pools.checker.maxTotalPerKey"));
 
         // New pool for presenters
         presenterPool = new GenericKeyedObjectPool<>(new PresenterPoolFactory(validatorEngine));
-        presenterPool.setBlockWhenExhausted(this.config.getBoolean("pools.presenter.blockerWhenExhausted"));
-        presenterPool.setLifo(this.config.getBoolean("pools.presenter.lifo"));
-        presenterPool.setMaxTotal(this.config.getInteger("pools.presenter.maxTotal"));
-        presenterPool.setMaxTotalPerKey(this.config.getInteger("pools.presenter.maxTotalPerKey"));
+        presenterPool.setBlockWhenExhausted(this.properties.getBoolean("pools.presenter.blockerWhenExhausted"));
+        presenterPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
+        presenterPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
+        presenterPool.setMaxTotalPerKey(this.properties.getInteger("pools.presenter.maxTotalPerKey"));
     }
 
     /**
@@ -72,7 +82,7 @@ class ValidatorInstance {
      *
      * @return List of packages.
      */
-    public List<PackageType> getPackages() {
+    List<PackageType> getPackages() {
         return validatorEngine.getPackages();
     }
 
@@ -81,7 +91,7 @@ class ValidatorInstance {
      *
      * @param documentDeclaration Fetch configuration using declaration.
      */
-    public Configuration getConfiguration(DocumentDeclaration documentDeclaration) throws ValidatorException {
+    Configuration getConfiguration(DocumentDeclaration documentDeclaration) throws ValidatorException {
         // Check cache of configurations is ready to use.
         if (configurationMap.containsKey(documentDeclaration))
             return configurationMap.get(documentDeclaration);
@@ -104,17 +114,18 @@ class ValidatorInstance {
      * @param document Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    public void present(StylesheetType stylesheet, Document document, Config config, OutputStream outputStream) throws ValidatorException {
+    void present(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         Presenter presenter;
-
         try {
             presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
         } catch (Exception e) {
-            throw new ValidatorException("Unable to borrow presenter object from pool.", e);
+            logger.warn(e.getMessage(), e);
+            throw new ValidatorException(
+                    String.format("Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
         }
 
         try {
-            presenter.present(document, new CombinedConfig(config, this.config), outputStream);
+            presenter.present(document, new CombinedProperties(properties, this.properties), outputStream);
         } finally {
             presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
         }
@@ -128,13 +139,14 @@ class ValidatorInstance {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    public Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
+    Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
         Checker checker;
-
         try {
             checker = checkerPool.borrowObject(fileType.getPath());
         } catch (Exception e) {
-            throw new ValidatorException("Unable to borrow checker object from pool.", e);
+            logger.warn(e.getMessage(), e);
+            throw new ValidatorException(
+                    String.format("Unable to borrow checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
         Section section;

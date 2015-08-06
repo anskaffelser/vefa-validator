@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.api;
 
-public interface Config {
+public interface Properties {
     boolean contains(String key);
 
     Object get(String key);

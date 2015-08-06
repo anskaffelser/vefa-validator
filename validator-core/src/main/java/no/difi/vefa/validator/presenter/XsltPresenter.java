@@ -3,7 +3,7 @@ package no.difi.vefa.validator.presenter;
 import net.sf.saxon.TransformerFactoryImpl;
 import no.difi.vefa.validator.Document;
 import no.difi.vefa.validator.ValidatorException;
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.PresenterInfo;
 import no.difi.vefa.validator.util.PathURIResolver;
@@ -59,11 +59,11 @@ public class XsltPresenter implements Presenter {
      * @inheritDoc
      */
     @Override
-    public void present(Document document, Config config, OutputStream outputStream) throws ValidatorException {
+    public void present(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         try {
             // Look through default values for stylesheet.
             for (SettingType setting : stylesheetType.getSetting())
-                transformer.setParameter(setting.getName(), config.get(String.format("stylesheet.%s.%s", stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()));
+                transformer.setParameter(setting.getName(), properties.get(String.format("stylesheet.%s.%s", stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()));
 
             // Use transformer to write the result to stream.
             transformer.transform(new StreamSource(document.getInputStream()), new StreamResult(outputStream));

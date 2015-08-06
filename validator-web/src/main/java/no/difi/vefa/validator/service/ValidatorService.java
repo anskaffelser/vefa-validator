@@ -4,7 +4,7 @@ import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Source;
-import no.difi.vefa.validator.config.SimpleConfig;
+import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
@@ -57,7 +57,7 @@ public class ValidatorService {
                     throw new Exception("Type of source not recognized.");
             }
 
-            SimpleConfig config = new SimpleConfig();
+            SimpleProperties config = new SimpleProperties();
             List<Map.Entry<Object,Object>> entries = new ArrayList<>(propertiesFactoryBean.getObject().entrySet());
             for (Map.Entry<Object, Object> entry : entries)
                 if (String.valueOf(entry.getKey()).startsWith("validator."))
@@ -65,7 +65,7 @@ public class ValidatorService {
 
             validator = ValidatorBuilder
                     .newValidator()
-                    .setConfig(config)
+                    .setProperties(config)
                     .setSource(source)
                     .build();
         } catch (Exception e) {

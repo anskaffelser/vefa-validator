@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Config;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
@@ -28,7 +28,7 @@ public class Validator {
     /**
      * Config
      */
-    private Config config;
+    private Properties properties;
 
     /**
      * Source
@@ -91,10 +91,10 @@ public class Validator {
     /**
      * Set configuration for validator.
      *
-     * @param config Configuration
+     * @param properties Configuration
      */
-    public void setConfig(Config config) {
-        this.config = config;
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     /**
@@ -118,7 +118,7 @@ public class Validator {
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source.createInstance(), config);
+            validatorInstance = new ValidatorInstance(source.createInstance(), properties);
         } catch (ValidatorException e) {
             logger.warn(e.getMessage(), e);
 

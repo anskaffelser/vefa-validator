@@ -1,7 +1,7 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Config;
-import no.difi.vefa.validator.config.SimpleConfig;
+import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.properties.SimpleProperties;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 
 /**
@@ -12,7 +12,7 @@ class ValidatorDefaults {
     /**
      * Default configuration.
      */
-    final static Config config = new SimpleConfig()
+    final static Properties PROPERTIES = new SimpleProperties()
             // pools.checker
             .set("pools.checker.blockerWhenExhausted", GenericKeyedObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED)
             .set("pools.checker.lifo", GenericKeyedObjectPoolConfig.DEFAULT_LIFO)
