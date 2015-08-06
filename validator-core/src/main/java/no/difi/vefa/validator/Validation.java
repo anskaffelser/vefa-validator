@@ -120,14 +120,14 @@ public class Validation {
                 section.setConfiguration(fileType.getConfiguration());
                 section.setBuild(fileType.getBuild());
                 report.getSection().add(section);
+
+                if (section.getFlag().compareTo(getReport().getFlag()) > 0)
+                    getReport().setFlag(section.getFlag());
             } catch (ValidatorException e) {
                 this.section.add("SYSTEM-008", e.getMessage(), FlagType.ERROR);
             }
 
-            if (section.getFlag().compareTo(getReport().getFlag()) > 0)
-                getReport().setFlag(section.getFlag());
-
-            if (getReport().getFlag().equals(FlagType.FATAL))
+            if (getReport().getFlag().equals(FlagType.FATAL) || this.section.getFlag().equals(FlagType.FATAL))
                 break;
         }
 
