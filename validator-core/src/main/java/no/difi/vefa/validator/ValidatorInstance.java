@@ -22,6 +22,9 @@ import java.util.Map;
  */
 class ValidatorInstance {
 
+    /**
+     * Logger
+     */
     private static Logger logger = LoggerFactory.getLogger(ValidatorInstance.class);
 
     /**

@@ -9,11 +9,27 @@ import org.slf4j.LoggerFactory;
 
 public class Section extends SectionType {
 
+    /**
+     * Logger
+     */
     private static Logger logger = LoggerFactory.getLogger(Section.class);
 
+    /**
+     * Document subject to section. May be null.
+     */
     private Document document;
+
+    /**
+     * Configuration subject to section. May be null.
+     */
     private Configuration configuration;
 
+    /**
+     * Initiate section.
+     *
+     * @param document Document subject to section.
+     * @param configuration Configuration subject to section.
+     */
     public Section(Document document, Configuration configuration) {
         this.document = document;
         this.configuration = configuration;
@@ -21,14 +37,20 @@ public class Section extends SectionType {
         this.setFlag(FlagType.OK);
     }
 
-    public AssertionType add(String identifier, String text, FlagType flagType) {
-        AssertionType AssertionType = new AssertionType();
-        AssertionType.setIdentifier(identifier);
-        AssertionType.setText(text);
-        AssertionType.setFlag(flagType);
+    /**
+     * Add assertion to section using identifier, description and flag.
+     *
+     * @param identifier Identifier used for matching.
+     * @param text Description of identifier.
+     * @param flagType Flag associated with identifier.
+     */
+    public void add(String identifier, String text, FlagType flagType) {
+        AssertionType assertionType = new AssertionType();
+        assertionType.setIdentifier(identifier);
+        assertionType.setText(text);
+        assertionType.setFlag(flagType);
 
-        getAssertion().add(AssertionType);
-        return AssertionType;
+        add(assertionType);
     }
 
     public void add(FailedAssert failedAssert) {
@@ -61,6 +83,10 @@ public class Section extends SectionType {
         configuration.filterFlag(assertionType);
         document.getExpectation().filterFlag(assertionType);
 
+        add(assertionType);
+    }
+
+    private void add(AssertionType assertionType) {
         if (assertionType.getFlag() != null) {
             if (assertionType.getFlag().compareTo(getFlag()) > 0)
                 setFlag(assertionType.getFlag());
