@@ -22,8 +22,14 @@ class ValidatorEngine {
      */
     private static Logger logger = LoggerFactory.getLogger(ValidatorEngine.class);
 
+    /**
+     * JAXBContext
+     */
     private static JAXBContext jaxbContext;
 
+    /**
+     * Loads the JAXBContext to be used.
+     */
     static {
         try {
             jaxbContext = JAXBContext.newInstance(Configurations.class);
@@ -37,6 +43,9 @@ class ValidatorEngine {
     private Map<String, ConfigurationType> identifierMap = new HashMap<>();
     private Map<DocumentDeclaration, ConfigurationType> declarationMap = new HashMap<>();
 
+    /**
+     * Stylesheet declarations found in configurations indexed by identifier of stylesheet declaration.
+     */
     private Map<String, StylesheetType> stylesheetMap = new HashMap<>();
 
     private List<PackageType> packages = new ArrayList<>();
@@ -80,13 +89,17 @@ class ValidatorEngine {
     }
 
     void loadConfigurations(String configurationSource, Configurations configurations) {
+        // Add all declared packages to list of detected packages.
         packages.addAll(configurations.getPackage());
+        // Simply sort packages by value.
         Collections.sort(packages, new Comparator<PackageType>() {
             @Override
             public int compare(PackageType o1, PackageType o2) {
                 return o1.getValue().compareTo(o2.getValue());
             }
         });
+
+        // Write to log when loading new packages.
         for (PackageType pkg : configurations.getPackage())
             logger.info(String.format("Loaded: %s", pkg.getValue()));
 
@@ -120,13 +133,23 @@ class ValidatorEngine {
         }
     }
 
-    public ConfigurationType getConfiguration(String identifier) throws ValidatorException {
-        // if (!identifierMap.containsKey(identifier))
-        //    throw new ValidatorException(String.format("Configuration '%s' not found", identifier));
-
+    /**
+     * Fetch raw configuration by using identifier.
+     *
+     * @param identifier Configuration identifier
+     * @return Configuration
+     */
+    public ConfigurationType getConfiguration(String identifier) {
         return identifierMap.get(identifier);
     }
 
+    /**
+     * Fetch raw configuration by using document declaration.
+     *
+     * @param declaration Document declaration.
+     * @return Configuration
+     * @throws ValidatorException Thrown if no configuration is found for the document declaration.
+     */
     public ConfigurationType getConfiguration(DocumentDeclaration declaration) throws ValidatorException {
         if (!declarationMap.containsKey(declaration))
             throw new ValidatorException(String.format("Configuration for '%s' not found", declaration));
@@ -134,6 +157,14 @@ class ValidatorEngine {
         return declarationMap.get(declaration);
     }
 
+    /**
+     * Fetch stylesheet declaration using stylesheet identifier (not necessarily the same as configuration
+     * identifier containing stylesheet declaration).
+     *
+     * @param identifier Stylesheet identifier.
+     * @return Stylesheet declaration.
+     * @throws ValidatorException Thrown if no stylesheet declaration is found for the identifier.
+     */
     public StylesheetType getStylesheet(String identifier) throws ValidatorException {
         if (!stylesheetMap.containsKey(identifier))
             throw new ValidatorException(String.format("Stylesheet for identifier '%s' not found.", identifier));
@@ -141,10 +172,20 @@ class ValidatorEngine {
         return stylesheetMap.get(identifier);
     }
 
+    /**
+     * Fetch list of packages found in current configurations.
+     *
+     * @return List of packages.
+     */
     public List<PackageType> getPackages() {
         return packages;
     }
 
+    /**
+     * Fetch a list of all declarations supported by the validator.
+     *
+     * @return List of declarations.
+     */
     public List<DocumentDeclaration> getDeclarations() {
         return new ArrayList<>(declarationMap.keySet());
     }

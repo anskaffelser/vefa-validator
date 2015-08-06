@@ -24,7 +24,10 @@ class ValidatorInstance {
     private ValidatorEngine validatorEngine;
     private Config config;
 
-    private Map<String, Configuration> configurationMap = new HashMap<>();
+    /**
+     * Normalized configurations indexed by document declarations.
+     */
+    private Map<DocumentDeclaration, Configuration> configurationMap = new HashMap<>();
 
     private GenericKeyedObjectPool<String, Checker> checkerPool;
     private GenericKeyedObjectPool<String, Presenter> presenterPool;
@@ -72,14 +75,18 @@ class ValidatorInstance {
      * @param documentDeclaration Fetch configuration using declaration.
      */
     public Configuration getConfiguration(DocumentDeclaration documentDeclaration) throws ValidatorException {
-        // Check cache of configurations ready to use.
-        if (configurationMap.containsKey(documentDeclaration.toString()))
-            return configurationMap.get(documentDeclaration.toString());
+        // Check cache of configurations is ready to use.
+        if (configurationMap.containsKey(documentDeclaration))
+            return configurationMap.get(documentDeclaration);
 
+        // Create a new instance of configuration using the raw configuration.
         Configuration configuration = new Configuration(validatorEngine.getConfiguration(documentDeclaration));
+        // Normalize configuration using inheritance declarations.
         configuration.normalize(validatorEngine);
-        configurationMap.put(documentDeclaration.toString(), configuration);
+        // Add configuration to map containing configurations ready to use.
+        configurationMap.put(documentDeclaration, configuration);
 
+        // Return confiuration.
         return configuration;
     }
 

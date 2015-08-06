@@ -37,8 +37,6 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="configuration" type="configurationType" />
-
     <xs:complexType name="configurationType">
         <xs:sequence>
             <xs:element name="identifier" type="xs:string" minOccurs="1" />

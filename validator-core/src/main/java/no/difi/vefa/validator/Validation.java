@@ -98,17 +98,6 @@ public class Validation {
         report.setConfiguration(configuration.getIdentifier());
         report.setBuild(configuration.getBuild());
         report.setFlag(FlagType.OK);
-
-        /*
-        try {
-            Marshaller marshaller = JAXBContext.newInstance(ConfigurationType.class).createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(new ObjectFactory().createConfiguration(configuration), System.out);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.info(e.getMessage(), e);
-        }
-        */
     }
 
     void validate() throws Exception {
@@ -130,19 +119,37 @@ public class Validation {
         document.getExpectation().verify(section);
     }
 
+    /**
+     * Render document to a stream.
+     *
+     * @param outputStream Stream to use.
+     * @throws Exception
+     */
     public void present(OutputStream outputStream) throws Exception {
         present(outputStream, null);
     }
 
+    /**
+     * Render document to a stream, allows for extra configuration.
+     *
+     * @param outputStream Stream to use.
+     * @param config Extra configuration to use for this rendering.
+     * @throws Exception
+     */
     public void present(OutputStream outputStream, Config config) throws Exception {
         if (configuration.getStylesheet() == null)
             throw new ValidatorException("No stylesheet is defined for document type.");
         if (getReport().getFlag().equals(FlagType.FATAL))
-            throw new ValidatorException(String.format("Status '%s' is not supported for presentation.", getReport().getFlag()));
+            throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
 
         validatorInstance.present(configuration.getStylesheet(), document, config, outputStream);
     }
 
+    /**
+     * Document used for validation as represented in the validator.
+     *
+     * @return Document object.
+     */
     public Document getDocument() {
         return document;
     }

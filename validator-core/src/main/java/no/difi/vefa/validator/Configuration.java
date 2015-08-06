@@ -7,10 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Configurations found in validation artifacts are updated to this kind of object.
+ */
 public class Configuration extends ConfigurationType {
 
     private Map<String, RuleActionType> ruleActions = new HashMap<>();
 
+    /**
+     * List of resources not found during normalization of object.
+     */
     private List<String> notLoaded = new ArrayList<>();
 
     /**
@@ -31,7 +37,13 @@ public class Configuration extends ConfigurationType {
         this.file = configurationType.getFile();
     }
 
-    void normalize(ValidatorEngine config) throws ValidatorException {
+    /**
+     * Validation artifacts supports inheritance. This methods uses inheritance references to generate
+     * a complete object containing all resources for a given document type.
+     *
+     * @param engine ValidatiorEngine for fetching of other configurations.
+     */
+    void normalize(ValidatorEngine engine) {
         while (getInherit().size() > 0) {
             List<RuleType> rules = new ArrayList<>();
             List<FileType> files = new ArrayList<>();
@@ -39,7 +51,7 @@ public class Configuration extends ConfigurationType {
             StylesheetType stylesheet = null;
 
             for (String inherit : getInherit()) {
-                ConfigurationType inherited = config.getConfiguration(inherit);
+                ConfigurationType inherited = engine.getConfiguration(inherit);
                 if (inherited != null) {
                     rules.addAll(inherited.getRule());
                     files.addAll(inherited.getFile());
@@ -66,6 +78,11 @@ public class Configuration extends ConfigurationType {
             ruleActions.put(ruleType.getIdentifier(), ruleType.getAction());
     }
 
+    /**
+     * Get list of resources not found when normalizing object.
+     *
+     * @return List of identifiers.
+     */
     List<String> getNotLoaded() {
         return notLoaded;
     }

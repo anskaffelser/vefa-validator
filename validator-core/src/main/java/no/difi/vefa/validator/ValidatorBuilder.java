@@ -30,6 +30,11 @@ public class ValidatorBuilder {
         // No action
     }
 
+    /**
+     * Defines configuration to use for validator.
+     *
+     * @param config Configuration
+     */
     public ValidatorBuilder setConfig(Config config) {
         this.validator.setConfig(config);
         return this;
@@ -57,5 +62,4 @@ public class ValidatorBuilder {
 
         return validator;
     }
-
 }

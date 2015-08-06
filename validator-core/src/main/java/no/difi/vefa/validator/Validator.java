@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -41,7 +40,9 @@ public class Validator {
      */
     private ValidatorInstance validatorInstance;
 
-    // Constructor for package.
+    /**
+     * Constructor
+     */
     Validator() {
         // No action
     }
