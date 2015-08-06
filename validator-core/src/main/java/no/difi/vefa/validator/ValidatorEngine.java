@@ -8,13 +8,16 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+/**
+ * This class handles all raw configurations detected in source of validation artifacts and preserves links
+ * between source and configurations.
+ */
 class ValidatorEngine {
 
     /**
@@ -40,7 +43,14 @@ class ValidatorEngine {
 
     private Map<String, Path> configurationSourceMap = new HashMap<>();
 
+    /**
+     * Map containing raw configurations indexed by both 'identifier' and 'identifier#build'.
+     */
     private Map<String, ConfigurationType> identifierMap = new HashMap<>();
+
+    /**
+     * Map containing raw configurations indexed by document declaration.
+     */
     private Map<DocumentDeclaration, ConfigurationType> declarationMap = new HashMap<>();
 
     /**
@@ -48,6 +58,9 @@ class ValidatorEngine {
      */
     private Map<String, StylesheetType> stylesheetMap = new HashMap<>();
 
+    /**
+     * List of package declarations detected.
+     */
     private List<PackageType> packages = new ArrayList<>();
 
     /**
@@ -65,8 +78,6 @@ class ValidatorEngine {
                         String configurationSource = addConfigurationSource(file.getParent());
                         try {
                             loadConfigurations(configurationSource, Files.newInputStream(file));
-                        } catch (FileNotFoundException e) {
-                            logger.warn(String.format("Unable to load configuration in file '%s'.", String.valueOf(file)));
                         } catch (ValidatorException e) {
                             throw new IOException(e.getMessage(), e);
                         }
@@ -76,10 +87,25 @@ class ValidatorEngine {
             });
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
+            throw new ValidatorException("Unable to read all configurations from virtual disk.", e);
         }
+
+        // Simply sort packages by value.
+        Collections.sort(packages, new Comparator<PackageType>() {
+            @Override
+            public int compare(PackageType o1, PackageType o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
     }
 
-    void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException{
+    /**
+     * Load configuration from stream of config.xml.
+     *
+     * @param configurationSource Identifier for resource.
+     * @param inputStream Stream of config.xml.
+     */
+    private void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException{
         try {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             loadConfigurations(configurationSource, (Configurations) unmarshaller.unmarshal(inputStream));
@@ -88,16 +114,15 @@ class ValidatorEngine {
         }
     }
 
-    void loadConfigurations(String configurationSource, Configurations configurations) {
+    /**
+     * Load configuration from content of config.xml.
+     *
+     * @param configurationSource Identifier for resource.
+     * @param configurations Configurations found in config.xml
+     */
+    private void loadConfigurations(String configurationSource, Configurations configurations) {
         // Add all declared packages to list of detected packages.
         packages.addAll(configurations.getPackage());
-        // Simply sort packages by value.
-        Collections.sort(packages, new Comparator<PackageType>() {
-            @Override
-            public int compare(PackageType o1, PackageType o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
 
         // Write to log when loading new packages.
         for (PackageType pkg : configurations.getPackage())
@@ -190,7 +215,7 @@ class ValidatorEngine {
         return new ArrayList<>(declarationMap.keySet());
     }
 
-    public String addConfigurationSource(Path source) {
+    private String addConfigurationSource(Path source) {
         String identifier = source.toString();
         configurationSourceMap.put(identifier, source);
         return identifier;

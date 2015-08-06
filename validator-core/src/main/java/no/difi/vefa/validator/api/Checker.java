@@ -10,5 +10,5 @@ import java.nio.file.Path;
 public interface Checker {
     void prepare(Path path) throws ValidatorException;
 
-    Section check(Document document, Configuration configuration) throws Exception;
+    Section check(Document document, Configuration configuration) throws ValidatorException;
 }

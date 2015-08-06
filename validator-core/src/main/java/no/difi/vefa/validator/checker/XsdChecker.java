@@ -1,14 +1,13 @@
 package no.difi.vefa.validator.checker;
 
+import no.difi.vefa.validator.Configuration;
+import no.difi.vefa.validator.Document;
+import no.difi.vefa.validator.Section;
 import no.difi.vefa.validator.ValidatorException;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.Document;
-import no.difi.vefa.validator.Configuration;
 import no.difi.vefa.validator.util.PathLSResolveResource;
-import no.difi.vefa.validator.Section;
 import no.difi.xsd.vefa.validator._1.FlagType;
-import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -24,7 +23,7 @@ public class XsdChecker implements Checker {
 
     private Validator validator;
 
-    public void prepare(Path path) throws ValidatorException{
+    public void prepare(Path path) throws ValidatorException {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new PathLSResolveResource(path.getParent()));
@@ -36,7 +35,7 @@ public class XsdChecker implements Checker {
     }
 
     @Override
-    public Section check(Document document, Configuration configuration) throws Exception {
+    public Section check(Document document, Configuration configuration) {
         Source xmlFile = new StreamSource(document.getInputStream());
         Section section = new Section(document, configuration);
         section.setTitle("XSD validation");
@@ -45,11 +44,11 @@ public class XsdChecker implements Checker {
         long tsStart = System.currentTimeMillis();
         try {
             validator.validate(xmlFile);
-            section.setRuntime((System.currentTimeMillis() - tsStart) + "ms");
-        } catch (SAXException e) {
-            section.setRuntime((System.currentTimeMillis() - tsStart) + "ms");
+        } catch (Exception e) {
             section.add("XSD", e.getLocalizedMessage(), FlagType.FATAL);
         }
+
+        section.setRuntime((System.currentTimeMillis() - tsStart) + "ms");
 
         return section;
     }

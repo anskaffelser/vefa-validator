@@ -23,9 +23,20 @@ public class Validation {
 
     private ValidatorInstance validatorInstance;
     private Configuration configuration;
+
+    /**
+     * Final report.
+     */
     private Report report;
+
+    /**
+     * Section used to gather problems during validation.
+     */
     private Section section = new Section(null, null);
 
+    /**
+     * Document subject to validation.
+     */
     private Document document;
 
     Validation(ValidatorInstance validatorInstance, InputStream inputStream) {
@@ -104,10 +115,14 @@ public class Validation {
         for (FileType fileType : configuration.getFile()) {
             logger.debug("Validate: " + fileType.getPath());
 
-            Section section = validatorInstance.check(fileType, document, configuration);
-            section.setConfiguration(fileType.getConfiguration());
-            section.setBuild(fileType.getBuild());
-            report.getSection().add(section);
+            try {
+                Section section = validatorInstance.check(fileType, document, configuration);
+                section.setConfiguration(fileType.getConfiguration());
+                section.setBuild(fileType.getBuild());
+                report.getSection().add(section);
+            } catch (ValidatorException e) {
+                this.section.add("SYSTEM-008", e.getMessage(), FlagType.ERROR);
+            }
 
             if (section.getFlag().compareTo(getReport().getFlag()) > 0)
                 getReport().setFlag(section.getFlag());

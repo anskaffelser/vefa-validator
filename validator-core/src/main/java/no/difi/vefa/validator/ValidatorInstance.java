@@ -29,7 +29,14 @@ class ValidatorInstance {
      */
     private Map<DocumentDeclaration, Configuration> configurationMap = new HashMap<>();
 
+    /**
+     * Pool of checkers.
+     */
     private GenericKeyedObjectPool<String, Checker> checkerPool;
+
+    /**
+     * Pool of presenters.
+     */
     private GenericKeyedObjectPool<String, Presenter> presenterPool;
 
     /**
@@ -97,10 +104,20 @@ class ValidatorInstance {
      * @param document Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    public void present(StylesheetType stylesheet, Document document, Config config, OutputStream outputStream) throws Exception {
-        Presenter presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
-        presenter.present(document, new CombinedConfig(config, this.config), outputStream);
-        presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
+    public void present(StylesheetType stylesheet, Document document, Config config, OutputStream outputStream) throws ValidatorException {
+        Presenter presenter;
+
+        try {
+            presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
+        } catch (Exception e) {
+            throw new ValidatorException("Unable to borrow presenter object from pool.", e);
+        }
+
+        try {
+            presenter.present(document, new CombinedConfig(config, this.config), outputStream);
+        } finally {
+            presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
+        }
     }
 
     /**
@@ -111,10 +128,22 @@ class ValidatorInstance {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    public Section check(FileType fileType, Document document, Configuration configuration) throws Exception {
-        Checker checker = checkerPool.borrowObject(fileType.getPath());
-        Section section = checker.check(document, configuration);
-        checkerPool.returnObject(fileType.getPath(), checker);
+    public Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
+        Checker checker;
+
+        try {
+            checker = checkerPool.borrowObject(fileType.getPath());
+        } catch (Exception e) {
+            throw new ValidatorException("Unable to borrow checker object from pool.", e);
+        }
+
+        Section section;
+        try {
+            section = checker.check(document, configuration);
+        } finally {
+            checkerPool.returnObject(fileType.getPath(), checker);
+        }
+
         return section;
     }
 }
