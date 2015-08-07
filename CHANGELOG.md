@@ -10,6 +10,7 @@
 * More Javadoc in code.
 * ValidatorException is moved from no.difi.vefa.validator to no.difi.vefa.validator.api.
 * Cleaner use of exceptions in exposed classes.
+* Renaming 'Presenter' and associated to 'Renderer' for better communication. 
 
 ## 2.0.0-RC1
 

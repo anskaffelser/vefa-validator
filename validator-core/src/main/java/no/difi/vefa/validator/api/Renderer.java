@@ -11,7 +11,7 @@ import java.nio.file.Path;
  *
  * The constructor must contain no parameters.
  */
-public interface Presenter {
+public interface Renderer {
 
     /**
      * Method for preparing for use, can be seen as a constructor.
@@ -25,11 +25,11 @@ public interface Presenter {
     /**
      * Writes presentation to a OutputStream given a business document.
      *
-     * @param document Document to present.
+     * @param document Document to render.
      * @param properties Configuration for the presentation.
      * @param outputStream Stream to write presentation to.
      * @throws ValidatorException
      */
-    void present(Document document, Properties properties, OutputStream outputStream) throws ValidatorException;
+    void render(Document document, Properties properties, OutputStream outputStream) throws ValidatorException;
 
 }

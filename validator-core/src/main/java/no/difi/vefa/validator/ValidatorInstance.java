@@ -48,7 +48,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Pool of presenters.
      */
-    private GenericKeyedObjectPool<String, Presenter> presenterPool;
+    private GenericKeyedObjectPool<String, Renderer> presenterPool;
 
     /**
      * Constructor loading artifacts and pools for validations.
@@ -71,7 +71,7 @@ class ValidatorInstance implements Closeable {
         checkerPool.setMaxTotalPerKey(this.properties.getInteger("pools.checker.maxTotalPerKey"));
 
         // New pool for presenters
-        presenterPool = new GenericKeyedObjectPool<>(new PresenterPoolFactory(validatorEngine));
+        presenterPool = new GenericKeyedObjectPool<>(new RendererPoolFactory(validatorEngine));
         presenterPool.setBlockWhenExhausted(this.properties.getBoolean("pools.presenter.blockerWhenExhausted"));
         presenterPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
         presenterPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
@@ -104,21 +104,21 @@ class ValidatorInstance implements Closeable {
         // Add configuration to map containing configurations ready to use.
         configurationMap.put(documentDeclaration, configuration);
 
-        // Return confiuration.
+        // Return configuration.
         return configuration;
     }
 
     /**
-     * Present document using stylesheet
+     * Render document using stylesheet
      *
      * @param stylesheet Stylesheet identifier from configuration.
      * @param document Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    void present(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
-        Presenter presenter;
+    void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
+        Renderer renderer;
         try {
-            presenter = presenterPool.borrowObject(stylesheet.getIdentifier());
+            renderer = presenterPool.borrowObject(stylesheet.getIdentifier());
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             throw new ValidatorException(
@@ -126,9 +126,9 @@ class ValidatorInstance implements Closeable {
         }
 
         try {
-            presenter.present(document, new CombinedProperties(properties, this.properties), outputStream);
+            renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
         } finally {
-            presenterPool.returnObject(stylesheet.getIdentifier(), presenter);
+            presenterPool.returnObject(stylesheet.getIdentifier(), renderer);
         }
     }
 

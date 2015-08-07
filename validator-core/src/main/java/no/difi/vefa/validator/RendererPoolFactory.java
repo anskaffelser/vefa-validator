@@ -1,39 +1,39 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Presenter;
-import no.difi.vefa.validator.api.PresenterInfo;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.RendererInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.presenter.XsltPresenter;
+import no.difi.vefa.validator.renderer.XsltRenderer;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
-class PresenterPoolFactory extends BaseKeyedPooledObjectFactory<String, Presenter> {
+class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer> {
 
     private static Class[] implementations = new Class[] {
-            XsltPresenter.class,
+            XsltRenderer.class,
     };
 
     private ValidatorEngine validatorEngine;
 
-    PresenterPoolFactory(ValidatorEngine validatorEngine) {
+    RendererPoolFactory(ValidatorEngine validatorEngine) {
         this.validatorEngine = validatorEngine;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Presenter create(String key) throws Exception {
+    public Renderer create(String key) throws Exception {
         try {
             StylesheetType stylesheetType = validatorEngine.getStylesheet(key);
 
             for (Class cls : implementations) {
                 try {
-                    for (String extension : ((PresenterInfo) cls.getAnnotation(PresenterInfo.class)).value()) {
+                    for (String extension : ((RendererInfo) cls.getAnnotation(RendererInfo.class)).value()) {
                         if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
-                            Presenter presenter = (Presenter) cls.getConstructor().newInstance();
-                            presenter.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
-                            return presenter;
+                            Renderer renderer = (Renderer) cls.getConstructor().newInstance();
+                            renderer.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
+                            return renderer;
                         }
                     }
                 } catch (Exception e) {
@@ -49,7 +49,7 @@ class PresenterPoolFactory extends BaseKeyedPooledObjectFactory<String, Presente
     }
 
     @Override
-    public PooledObject<Presenter> wrap(Presenter presenter) {
-        return new DefaultPooledObject<>(presenter);
+    public PooledObject<Renderer> wrap(Renderer renderer) {
+        return new DefaultPooledObject<>(renderer);
     }
 }

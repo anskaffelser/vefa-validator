@@ -75,7 +75,7 @@ public class WorkspaceService {
 
         try {
             fileOutputStream = new FileOutputStream(new File(folder, "view.html"));
-            validation.present(fileOutputStream);
+            validation.render(fileOutputStream);
             fileOutputStream.close();
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);

@@ -46,7 +46,7 @@ public class Testing {
             }
 
             OutputStream outputStream = new FileOutputStream("target/test-simple-feilkoder.html");
-            validation.present(outputStream);
+            validation.render(outputStream);
             outputStream.close();
 
             assertEquals(validation.getReport().getFlag(), FlagType.ERROR);
@@ -71,7 +71,7 @@ public class Testing {
             }
 
             OutputStream outputStream = new FileOutputStream("target/test-simple-invoice.html");
-            validation.present(outputStream);
+            validation.render(outputStream);
             outputStream.close();
 
             assertEquals(validation.getReport().getFlag(), FlagType.OK);
@@ -90,7 +90,7 @@ public class Testing {
             logger.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
 
         /*OutputStream outputStream = new FileOutputStream("target/test-huge.html");
-        validation.present(outputStream);
+        validation.render(outputStream);
         outputStream.close();*/
 
         assertEquals(validation.getReport().getFlag(), FlagType.ERROR);

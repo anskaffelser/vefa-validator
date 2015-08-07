@@ -1,11 +1,11 @@
-package no.difi.vefa.validator.presenter;
+package no.difi.vefa.validator.renderer;
 
 import net.sf.saxon.TransformerFactoryImpl;
 import no.difi.vefa.validator.Document;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Presenter;
-import no.difi.vefa.validator.api.PresenterInfo;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.RendererInfo;
 import no.difi.vefa.validator.util.PathURIResolver;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
@@ -22,8 +22,8 @@ import java.nio.file.Path;
 /**
  * Defines presenter for templates defined by XSLT.
  */
-@PresenterInfo({".xsl", ".xslt"})
-public class XsltPresenter implements Presenter {
+@RendererInfo({".xsl", ".xslt"})
+public class XsltRenderer implements Renderer {
 
     /**
      * Holds the transformer ready for use.
@@ -59,7 +59,7 @@ public class XsltPresenter implements Presenter {
      * {@inheritDoc}
      */
     @Override
-    public void present(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
+    public void render(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         try {
             // Look through default values for stylesheet.
             for (SettingType setting : stylesheetType.getSetting())

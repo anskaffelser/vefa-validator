@@ -141,8 +141,8 @@ public class Validation {
      * @param outputStream Stream to use.
      * @throws Exception
      */
-    public void present(OutputStream outputStream) throws Exception {
-        present(outputStream, null);
+    public void render(OutputStream outputStream) throws Exception {
+        render(outputStream, null);
     }
 
     /**
@@ -152,13 +152,13 @@ public class Validation {
      * @param properties Extra configuration to use for this rendering.
      * @throws Exception
      */
-    public void present(OutputStream outputStream, Properties properties) throws Exception {
+    public void render(OutputStream outputStream, Properties properties) throws Exception {
         if (configuration.getStylesheet() == null)
             throw new ValidatorException("No stylesheet is defined for document type.");
         if (getReport().getFlag().equals(FlagType.FATAL))
             throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
 
-        validatorInstance.present(configuration.getStylesheet(), document, properties, outputStream);
+        validatorInstance.render(configuration.getStylesheet(), document, properties, outputStream);
     }
 
     /**
