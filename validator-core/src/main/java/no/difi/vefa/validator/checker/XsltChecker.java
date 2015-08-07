@@ -1,12 +1,11 @@
 package no.difi.vefa.validator.checker;
 
 import net.sf.saxon.TransformerFactoryImpl;
+import no.difi.vefa.validator.Document;
+import no.difi.vefa.validator.Section;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.Document;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.Configuration;
-import no.difi.vefa.validator.Section;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
@@ -36,7 +35,7 @@ public class XsltChecker implements Checker {
     }
 
     @Override
-    public Section check(Document document, Configuration configuration) throws ValidatorException {
+    public void check(Document document, Section section) throws ValidatorException {
         long tsStart = System.currentTimeMillis();
         try {
             transformer.transform(new StreamSource(document.getInputStream()), jaxbResult);
@@ -44,18 +43,15 @@ public class XsltChecker implements Checker {
 
             SchematronOutput output = (SchematronOutput) jaxbResult.getResult();
 
-            Section section = new Section(document, configuration);
             section.setTitle(output.getTitle());
             section.setRuntime((tsEnd - tsStart) + "ms");
 
             for (Object o : output.getActivePatternAndFiredRuleAndFailedAssert())
                 if (o instanceof FailedAssert)
                     section.add((FailedAssert) o);
-
-            return section;
         } catch (Exception e) {
             throw new ValidatorException(
-                    String.format("Unable to perform configuration '%s': %s", configuration.getIdentifier(), e.getMessage()), e);
+                    String.format("Unable to perform check: %s", e.getMessage()), e);
         }
     }
 }

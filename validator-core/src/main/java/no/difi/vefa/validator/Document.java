@@ -1,5 +1,7 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.Properties;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +20,7 @@ public class Document {
     private DocumentExpectation documentExpectation;
 
     @SuppressWarnings("all")
-    Document(InputStream inputStream) throws IOException {
+    Document(InputStream inputStream, Properties properties) throws IOException {
         if (inputStream instanceof ByteArrayInputStream) {
             // Use stream as-is.
             byteArrayInputStream = (ByteArrayInputStream) inputStream;
@@ -36,8 +38,10 @@ public class Document {
 
         // Detect declaration
         documentDeclaration = new DocumentDeclaration(content);
+
         // Detect expectation
-        documentExpectation = new DocumentExpectation(content);
+        if (properties.getBoolean("feature.expectation"))
+            documentExpectation = new DocumentExpectation(content);
     }
 
     /**
@@ -45,7 +49,7 @@ public class Document {
      *
      * @return Declaration
      */
-    public DocumentDeclaration getDeclaration() {
+    public Declaration getDeclaration() {
         return documentDeclaration;
     }
 
@@ -54,8 +58,12 @@ public class Document {
      *
      * @return Expectations
      */
-    public DocumentExpectation getExpectation() {
+    DocumentExpectation getDocumentExpectation() {
         return documentExpectation;
+    }
+
+    DocumentDeclaration getDocumentDeclaration() {
+        return documentDeclaration;
     }
 
     /**

@@ -1,12 +1,14 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.Declaration;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Document declaration containing profileId and customizationId.
  */
-class DocumentDeclaration {
+class DocumentDeclaration implements Declaration {
 
     private static final Pattern regexCustomizationId = Pattern.compile("<\\w*:{0,1}CustomizationID\\s*>(.*)</\\w*:{0,1}CustomizationID\\s*>", Pattern.MULTILINE);
     private static final Pattern regexProfileId = Pattern.compile("<\\w*:{0,1}ProfileID\\s*>(.*)</\\w*:{0,1}ProfileID\\s*>", Pattern.MULTILINE);

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.FlagFilterer;
 import no.difi.xsd.vefa.validator._1.*;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Configurations found in validation artifacts are updated to this kind of object.
  */
-public class Configuration extends ConfigurationType {
+class Configuration extends ConfigurationType implements FlagFilterer {
 
     private Map<String, RuleActionType> ruleActions = new HashMap<>();
 

@@ -5,6 +5,7 @@ import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.build.api.Preparer;
+import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.io.FileUtils;
@@ -161,7 +162,13 @@ public class Builder {
     }
 
     public void test() throws Exception {
-        Validator validator = ValidatorBuilder.newValidator().setSource(new DirectorySource(targetFolder.toPath())).build();
+        Validator validator = ValidatorBuilder
+                .newValidator()
+                .setProperties(new SimpleProperties()
+                    .set("feature.expectation", true)
+                )
+                .setSource(new DirectorySource(targetFolder.toPath()))
+                .build();
         validations = new ArrayList<>();
 
         for (File testFolder : testFolders) {

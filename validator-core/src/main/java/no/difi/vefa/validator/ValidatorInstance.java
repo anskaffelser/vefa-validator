@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.xsd.vefa.validator._1.FileType;
+import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
@@ -87,6 +88,10 @@ class ValidatorInstance implements Closeable {
         return validatorEngine.getPackages();
     }
 
+    Properties getProperties() {
+        return properties;
+    }
+
     /**
      * Return validation configuration.
      *
@@ -150,9 +155,11 @@ class ValidatorInstance implements Closeable {
                     String.format("Unable to borrow checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
-        Section section;
+        Section section = new Section(new CombinedFlagFilterer(configuration, document.getDocumentExpectation()));
+        section.setFlag(FlagType.OK);
+
         try {
-            section = checker.check(document, configuration);
+            checker.check(document, section);
         } finally {
             checkerPool.returnObject(fileType.getPath(), checker);
         }

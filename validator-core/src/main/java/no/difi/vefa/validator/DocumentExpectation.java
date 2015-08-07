@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.FlagFilterer;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.slf4j.Logger;
@@ -8,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-class DocumentExpectation {
+class DocumentExpectation implements FlagFilterer {
 
     /**
      * Logger

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.api.FlagFilterer;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -14,25 +15,15 @@ public class Section extends SectionType {
      */
     private static Logger logger = LoggerFactory.getLogger(Section.class);
 
-    /**
-     * Document subject to section. May be null.
-     */
-    private Document document;
-
-    /**
-     * Configuration subject to section. May be null.
-     */
-    private Configuration configuration;
+    private FlagFilterer flagFilterer;
 
     /**
      * Initiate section.
      *
-     * @param document Document subject to section.
-     * @param configuration Configuration subject to section.
+     * @param flagFilterer
      */
-    public Section(Document document, Configuration configuration) {
-        this.document = document;
-        this.configuration = configuration;
+    public Section(FlagFilterer flagFilterer) {
+        this.flagFilterer = flagFilterer;
 
         this.setFlag(FlagType.OK);
     }
@@ -80,8 +71,7 @@ public class Section extends SectionType {
                 break;
         }
 
-        configuration.filterFlag(assertionType);
-        document.getExpectation().filterFlag(assertionType);
+        flagFilterer.filterFlag(assertionType);
 
         add(assertionType);
     }

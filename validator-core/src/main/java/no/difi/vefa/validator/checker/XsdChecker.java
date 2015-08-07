@@ -1,11 +1,10 @@
 package no.difi.vefa.validator.checker;
 
-import no.difi.vefa.validator.Configuration;
 import no.difi.vefa.validator.Document;
 import no.difi.vefa.validator.Section;
-import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.PathLSResolveResource;
 import no.difi.xsd.vefa.validator._1.FlagType;
 
@@ -35,11 +34,10 @@ public class XsdChecker implements Checker {
     }
 
     @Override
-    public Section check(Document document, Configuration configuration) {
-        Source xmlFile = new StreamSource(document.getInputStream());
-        Section section = new Section(document, configuration);
+    public void check(Document document, Section section) {
         section.setTitle("XSD validation");
-        section.setFlag(FlagType.OK);
+
+        Source xmlFile = new StreamSource(document.getInputStream());
 
         long tsStart = System.currentTimeMillis();
         try {
@@ -49,7 +47,5 @@ public class XsdChecker implements Checker {
         }
 
         section.setRuntime((System.currentTimeMillis() - tsStart) + "ms");
-
-        return section;
     }
 }

@@ -9,6 +9,7 @@ import no.difi.xsd.vefa.validator._1.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -33,7 +34,7 @@ public class Validation {
     /**
      * Section used to gather problems during validation.
      */
-    private Section section = new Section(null, null);
+    private Section section = new Section(new CombinedFlagFilterer());
 
     /**
      * Document subject to validation.
@@ -51,14 +52,16 @@ public class Validation {
         this.section.setFlag(FlagType.OK);
 
         try {
-            document = new Document(inputStream);
-            report.setDescription(document.getExpectation().getDescription());
+            document = new Document(inputStream, validatorInstance.getProperties());
+
+            if (document.getDocumentExpectation() != null)
+                report.setDescription(document.getDocumentExpectation().getDescription());
 
             loadConfiguration();
 
             if (configuration != null)
                 validate();
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.warn(e.getMessage(), e);
         }
 
@@ -95,7 +98,7 @@ public class Validation {
 
         // Get configuration using declaration
         try {
-            this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
+            this.configuration = validatorInstance.getConfiguration(document.getDocumentDeclaration());
         } catch (ValidatorException e) {
             // Add FATAL to report if validation artifacts for declaration is not found
             section.add("SYSTEM-003", "Unable to find validation configuration based on ProfileId and CustomizationId.", FlagType.FATAL);
@@ -112,7 +115,7 @@ public class Validation {
         report.setFlag(FlagType.OK);
     }
 
-    void validate() throws Exception {
+    void validate() {
         for (FileType fileType : configuration.getFile()) {
             logger.debug("Validate: " + fileType.getPath());
 
@@ -132,7 +135,8 @@ public class Validation {
                 break;
         }
 
-        document.getExpectation().verify(section);
+        if (document.getDocumentExpectation() != null)
+            document.getDocumentExpectation().verify(section);
     }
 
     /**
