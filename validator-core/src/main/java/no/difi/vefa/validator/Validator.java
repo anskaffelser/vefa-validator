@@ -99,7 +99,7 @@ public class Validator implements Closeable {
      *
      * @param properties Configuration
      */
-    public void setProperties(Properties properties) {
+    void setProperties(Properties properties) {
         this.properties = properties;
     }
 
@@ -135,7 +135,7 @@ public class Validator implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (validatorInstance != null) {
             validatorInstance.close();
             validatorInstance = null;

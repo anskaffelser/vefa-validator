@@ -2,6 +2,9 @@ package no.difi.vefa.validator.properties;
 
 import no.difi.vefa.validator.api.Properties;
 
+/**
+ * Implementation of Properties making it easy to access multiple instances of Properties.
+ */
 public class CombinedProperties extends AbstractProperties {
 
     private Properties[] properties;

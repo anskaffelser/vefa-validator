@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
+/**
+ * Simple implementation of Properties using a HashMap to store values.
+ */
 public class SimpleProperties extends AbstractProperties {
 
     private static Logger logger = LoggerFactory.getLogger(SimpleProperties.class);
