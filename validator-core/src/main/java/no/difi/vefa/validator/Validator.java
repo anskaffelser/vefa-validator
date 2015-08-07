@@ -1,7 +1,6 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.ReloadableContext;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.source.RepositorySource;
@@ -9,6 +8,7 @@ import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * Validator is thread safe and should normally be created only once in a program.
  */
-public class Validator implements ReloadableContext {
+public class Validator implements Closeable {
 
     /**
      * Logger
@@ -117,7 +117,7 @@ public class Validator implements ReloadableContext {
      *
      * @throws ValidatorException
      */
-    public void load() throws ValidatorException {
+    void load() throws ValidatorException {
         try {
             // Make sure to default to repository source if no source is set.
             if (source == null)
@@ -131,6 +131,14 @@ public class Validator implements ReloadableContext {
             // Exceptions during running is not a problem, but exception before the first validator is created is a problem.
             if (validatorInstance == null)
                 throw new ValidatorException("Unable to load validator.", e);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (validatorInstance != null) {
+            validatorInstance.close();
+            validatorInstance = null;
         }
     }
 }

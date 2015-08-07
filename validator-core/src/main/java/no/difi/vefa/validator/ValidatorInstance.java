@@ -9,6 +9,7 @@ import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
  */
-class ValidatorInstance {
+class ValidatorInstance implements Closeable {
 
     /**
      * Logger
@@ -157,5 +158,13 @@ class ValidatorInstance {
         }
 
         return section;
+    }
+
+    public void close() {
+        checkerPool.close();
+        checkerPool = null;
+
+        presenterPool.close();
+        presenterPool = null;
     }
 }
