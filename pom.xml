@@ -48,6 +48,7 @@
     </licenses>
 
     <modules>
+        <module>validator-api</module>
         <module>validator-build</module>
         <module>validator-core</module>
         <module>validator-repo</module>
@@ -75,6 +76,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- Validator -->
+            <dependency>
+                <groupId>no.difi.vefa</groupId>
+                <artifactId>validator-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>no.difi.vefa</groupId>
                 <artifactId>validator-core</artifactId>
@@ -225,8 +231,9 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <excludePackageNames>org.oclc.*:no.difi.xsd.*</excludePackageNames>
+                        <excludePackageNames>org.oclc.*</excludePackageNames>
                         <encoding>${java.encoding}</encoding>
+                        <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
             </plugins>
