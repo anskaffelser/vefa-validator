@@ -6,14 +6,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to define filestypes used by an implementation of Presenter.
+ * Annotation used to define file types used by an implementation of Presenter.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PresenterInfo {
 
     /**
-     * List of filenames.
+     * List of file extensions.
+     *
+     * @return List extensions.
      */
     String[] value();
 }

@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.source;
 
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.SourceInstance;
 
 import java.nio.file.Path;

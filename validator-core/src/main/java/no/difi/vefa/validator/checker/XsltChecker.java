@@ -4,7 +4,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.Document;
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.Configuration;
 import no.difi.vefa.validator.Section;
 import org.oclc.purl.dsdl.svrl.FailedAssert;

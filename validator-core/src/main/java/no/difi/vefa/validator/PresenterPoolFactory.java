@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.PresenterInfo;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.presenter.XsltPresenter;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;

@@ -9,7 +9,7 @@ public class CombinedProperties extends AbstractProperties {
     /**
      * Allow combination of configs, the most specific first.
      *
-     * @param properties
+     * @param properties List containing instances of Properties to be combined.
      */
     public CombinedProperties(Properties... properties) {
         this.properties = properties;

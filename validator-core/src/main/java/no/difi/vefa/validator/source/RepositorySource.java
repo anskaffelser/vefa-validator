@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.source;
 
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.SourceInstance;
 
 import java.net.URI;
@@ -35,6 +35,8 @@ public class RepositorySource extends AbstractSource {
 
     /**
      * Initiate the new source.
+     *
+     * @param uri Uri used to fetch validation artifacts.
      */
     public RepositorySource(URI uri) {
         this.rootUri = uri;

@@ -68,6 +68,7 @@ public class Builder {
      * @param buildIdentifier Build identifier
      * @param weight Build weight
      * @param signatureHelper SignatureHelper from ASiC library. Set to null to use the self-signed certificate.
+     * @throws Exception
      */
     public void build(String name, String buildIdentifier, long weight, SignatureHelper signatureHelper) throws Exception {
         GenericKeyedObjectPool<String, Preparer> preparerPool = new GenericKeyedObjectPool<>(new PreparerPoolFactory());

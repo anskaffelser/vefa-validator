@@ -2,13 +2,12 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.checker.XsdChecker;
 import no.difi.vefa.validator.checker.XsltChecker;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-
-import java.nio.file.Path;
 
 class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
 

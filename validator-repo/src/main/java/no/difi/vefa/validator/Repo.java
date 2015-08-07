@@ -58,6 +58,9 @@ public class Repo {
 
     /**
      * Entry point when using cli.
+     *
+     * @param args Cli arguments.
+     * @throws Exception
      */
     public static void main(String... args) throws Exception {
         // Loop over input. Normally just one folder, but multiple is supported.
@@ -67,6 +70,11 @@ public class Repo {
 
     /**
      * Generates list of artifacts for a given directory.
+     *
+     * @param directory Directory for repository.
+     * @param writeToDisk Set to true if list of artifacts is to be written do disk.
+     * @return List of current artifacts.
+     * @throws Exception
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.

@@ -2,7 +2,7 @@ package no.difi.vefa.validator.presenter;
 
 import net.sf.saxon.TransformerFactoryImpl;
 import no.difi.vefa.validator.Document;
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Presenter;
 import no.difi.vefa.validator.api.PresenterInfo;
@@ -36,7 +36,7 @@ public class XsltPresenter implements Presenter {
     private StylesheetType stylesheetType;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void prepare(StylesheetType stylesheetType, Path path) throws ValidatorException {
@@ -56,7 +56,7 @@ public class XsltPresenter implements Presenter {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void present(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {

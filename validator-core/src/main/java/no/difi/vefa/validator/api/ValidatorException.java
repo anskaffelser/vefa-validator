@@ -1,4 +1,4 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.api;
 
 /**
  * Exception specific to validator.

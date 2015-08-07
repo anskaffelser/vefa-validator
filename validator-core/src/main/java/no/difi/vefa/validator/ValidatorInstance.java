@@ -1,9 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Presenter;
-import no.difi.vefa.validator.api.SourceInstance;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.PackageType;

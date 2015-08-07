@@ -1,13 +1,16 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.ReloadableContext;
 import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +21,7 @@ import java.util.List;
  *
  * Validator is thread safe and should normally be created only once in a program.
  */
-public class Validator {
+public class Validator implements ReloadableContext {
 
     /**
      * Logger
@@ -48,9 +51,13 @@ public class Validator {
     }
 
     /**
-     * @see #validate(Path)
+     * Validate file.
+     *
+     * @param file File to validate.
+     * @return Validation result.
+     * @throws IOException
      */
-    public Validation validate(File file) throws Exception {
+    public Validation validate(File file) throws IOException {
         return validate(file.toPath());
     }
 
@@ -59,9 +66,9 @@ public class Validator {
      *
      * @param file File to validate.
      * @return Validation result.
-     * @throws Exception
+     * @throws IOException
      */
-    public Validation validate(Path file) throws Exception {
+    public Validation validate(Path file) throws IOException {
         InputStream inputStream = Files.newInputStream(file);
         Validation validation = validate(inputStream);
         inputStream.close();
@@ -73,9 +80,8 @@ public class Validator {
      *
      * @param inputStream Stream containing content.
      * @return Validation result.
-     * @throws Exception
      */
-    public Validation validate(InputStream inputStream) throws Exception {
+    public Validation validate(InputStream inputStream) {
         return new Validation(this.validatorInstance, inputStream);
     }
 
@@ -111,7 +117,7 @@ public class Validator {
      *
      * @throws ValidatorException
      */
-    void load() throws ValidatorException {
+    public void load() throws ValidatorException {
         try {
             // Make sure to default to repository source if no source is set.
             if (source == null)
@@ -120,9 +126,9 @@ public class Validator {
             // Create a new instance based on source.
             validatorInstance = new ValidatorInstance(source.createInstance(), properties);
         } catch (ValidatorException e) {
-            logger.warn(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
 
-            // Exceptions during running is not a problem, but excpetion before the first validator is created is a problem.
+            // Exceptions during running is not a problem, but exception before the first validator is created is a problem.
             if (validatorInstance == null)
                 throw new ValidatorException("Unable to load validator.", e);
         }

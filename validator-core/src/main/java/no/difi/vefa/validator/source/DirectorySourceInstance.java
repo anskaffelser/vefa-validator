@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.source;
 
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.apache.commons.io.FileUtils;

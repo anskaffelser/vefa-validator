@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.api.ValidatorException;
 
 /**
  * Builder supporting creation of validator.
@@ -34,6 +35,7 @@ public class ValidatorBuilder {
      * Defines configuration to use for validator.
      *
      * @param properties Configuration
+     * @return Builder
      */
     public ValidatorBuilder setProperties(Properties properties) {
         this.validator.setProperties(properties);

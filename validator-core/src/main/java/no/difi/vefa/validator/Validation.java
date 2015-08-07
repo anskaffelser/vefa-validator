@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;

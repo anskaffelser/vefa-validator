@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.build;
 
-import no.difi.vefa.validator.ValidatorException;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.build.api.Preparer;
 import no.difi.vefa.validator.build.api.PreparerInfo;
 import no.difi.vefa.validator.build.preparer.SchematronPreparer;
