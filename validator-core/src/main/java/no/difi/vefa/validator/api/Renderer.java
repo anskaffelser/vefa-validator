@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.api;
 
-import no.difi.vefa.validator.Document;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
 import java.io.OutputStream;

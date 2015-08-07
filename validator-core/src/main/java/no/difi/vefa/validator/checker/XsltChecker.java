@@ -1,13 +1,17 @@
 package no.difi.vefa.validator.checker;
 
 import net.sf.saxon.TransformerFactoryImpl;
-import no.difi.vefa.validator.Document;
-import no.difi.vefa.validator.Section;
+import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
+import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.xsd.vefa.validator._1.AssertionType;
+import no.difi.xsd.vefa.validator._1.FlagType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBResult;
@@ -19,6 +23,8 @@ import java.nio.file.Path;
 
 @CheckerInfo({".xsl", ".xslt"})
 public class XsltChecker implements Checker {
+
+    private static Logger logger = LoggerFactory.getLogger(XsltChecker.class);
 
     private static TransformerFactory transformerFactory = new TransformerFactoryImpl();
 
@@ -48,10 +54,40 @@ public class XsltChecker implements Checker {
 
             for (Object o : output.getActivePatternAndFiredRuleAndFailedAssert())
                 if (o instanceof FailedAssert)
-                    section.add((FailedAssert) o);
+                    add(section, (FailedAssert) o);
         } catch (Exception e) {
             throw new ValidatorException(
                     String.format("Unable to perform check: %s", e.getMessage()), e);
         }
+    }
+
+    public void add(Section section, FailedAssert failedAssert) {
+        AssertionType assertionType = new AssertionType();
+
+        String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "");
+        if (text.startsWith("[") && text.contains("]-")) {
+            assertionType.setIdentifier(text.substring(1, text.indexOf("]-")).trim());
+            text = text.substring(text.indexOf("]-") + 2).trim();
+        } else {
+            assertionType.setIdentifier("UNKNOWN");
+        }
+
+        assertionType.setText(text);
+        assertionType.setLocation(failedAssert.getLocation());
+        assertionType.setTest(failedAssert.getTest());
+
+        switch (failedAssert.getFlag()) {
+            case "fatal":
+                assertionType.setFlag(FlagType.ERROR);
+                break;
+            case "warning":
+                assertionType.setFlag(FlagType.WARNING);
+                break;
+            default:
+                logger.warn("Unknown: " + failedAssert.getFlag());
+                break;
+        }
+
+        section.add(assertionType);
     }
 }

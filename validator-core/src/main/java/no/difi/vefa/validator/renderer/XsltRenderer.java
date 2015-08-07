@@ -1,11 +1,7 @@
 package no.difi.vefa.validator.renderer;
 
 import net.sf.saxon.TransformerFactoryImpl;
-import no.difi.vefa.validator.Document;
-import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Renderer;
-import no.difi.vefa.validator.api.RendererInfo;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.PathURIResolver;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;

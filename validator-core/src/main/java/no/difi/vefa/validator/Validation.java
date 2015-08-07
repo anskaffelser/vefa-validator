@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
@@ -170,7 +171,7 @@ public class Validation {
      *
      * @return Document object.
      */
-    public Document getDocument() {
+    public no.difi.vefa.validator.api.Document getDocument() {
         return document;
     }
 

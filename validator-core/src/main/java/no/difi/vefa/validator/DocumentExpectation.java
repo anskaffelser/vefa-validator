@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.FlagFilterer;
+import no.difi.vefa.validator.api.Section;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.slf4j.Logger;

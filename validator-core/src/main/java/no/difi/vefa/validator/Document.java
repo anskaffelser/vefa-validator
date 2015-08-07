@@ -12,7 +12,7 @@ import java.io.InputStream;
 /**
  * Representation of validation document.
  */
-public class Document {
+class Document implements no.difi.vefa.validator.api.Document {
 
     private ByteArrayInputStream byteArrayInputStream;
 
