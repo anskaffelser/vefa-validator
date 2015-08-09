@@ -14,6 +14,9 @@ import java.io.InputStream;
  */
 class Document implements no.difi.vefa.validator.api.Document {
 
+    /**
+     * Document as #ByteArrayInputStream.
+     */
     private ByteArrayInputStream byteArrayInputStream;
 
     private DocumentDeclaration documentDeclaration;
@@ -62,6 +65,11 @@ class Document implements no.difi.vefa.validator.api.Document {
         return documentExpectation;
     }
 
+    /**
+     * Declaration detected in document for validation.
+     *
+     * @return Declaration
+     */
     DocumentDeclaration getDocumentDeclaration() {
         return documentDeclaration;
     }

@@ -76,7 +76,7 @@ class ValidatorEngine {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (matcher.matches(file)) {
-                        String configurationSource = addConfigurationSource(file.getParent());
+                        String configurationSource = addResource(file.getParent());
                         try {
                             loadConfigurations(configurationSource, Files.newInputStream(file));
                         } catch (ValidatorException e) {
@@ -216,7 +216,7 @@ class ValidatorEngine {
         return new ArrayList<>(declarationMap.keySet());
     }
 
-    private String addConfigurationSource(Path source) {
+    private String addResource(Path source) {
         String identifier = source.toString();
         configurationSourceMap.put(identifier, source);
         return identifier;

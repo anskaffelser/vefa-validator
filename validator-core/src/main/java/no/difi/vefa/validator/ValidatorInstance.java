@@ -88,6 +88,11 @@ class ValidatorInstance implements Closeable {
         return validatorEngine.getPackages();
     }
 
+    /**
+     * Fetch properties for internal use.
+     *
+     * @return Current properties.
+     */
     Properties getProperties() {
         return properties;
     }

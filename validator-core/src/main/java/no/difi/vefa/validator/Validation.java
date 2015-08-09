@@ -42,6 +42,12 @@ public class Validation {
      */
     private Document document;
 
+    /**
+     * Constructing new validator using validator instance and #InputStream containing document to validate.
+     *
+     * @param validatorInstance Instance of validator.
+     * @param inputStream Document to validate.
+     */
     Validation(ValidatorInstance validatorInstance, InputStream inputStream) {
         long start = System.currentTimeMillis();
         this.validatorInstance = validatorInstance;
