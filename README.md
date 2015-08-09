@@ -6,16 +6,11 @@ Current version: **2.0.0-RC1**
 ## Features
 
 * **Very easy to use.**
-* **Much faster** than the old validator.
-* Supports parsing documents for **presentation**.
+* **[Much](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_001.md) [faster](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_002.md)** than the old validator.
+* Supports **rendering documents**.
 * Very **low footprint** in your code.
 * **Pooling** of resources.
 * Supports **different lifecycles** of validation artifacts.
-
-Looking for a performance test?
-
-* [Performance test #001](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_001.md)
-* [Performance test #002](https://github.com/difi/vefa-validator/blob/master/doc/test_performance_002.md)
 
 
 ## Getting started
