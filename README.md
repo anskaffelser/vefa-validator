@@ -1,6 +1,6 @@
 # VEFA Validator 2.0
 
-Current version: **2.0.0-RC1**
+Current version: **2.0.0-RC2**
 
 
 ## Features
@@ -21,7 +21,7 @@ Include dependency in your pom.xml:
 <dependency>
 	<groupId>no.difi.vefa</groupId>
 	<artifactId>validator-core</artifactId>
-	<version>2.0.0-RC1</version>
+	<version>2.0.0-RC2</version>
 </dependency>
 ```
 
