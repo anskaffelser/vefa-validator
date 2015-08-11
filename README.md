@@ -11,6 +11,7 @@ Current version: **2.0.0-RC1**
 * Very **low footprint** in your code.
 * **Pooling** of resources.
 * Supports **different lifecycles** of validation artifacts.
+* **[Configurable](https://github.com/difi/vefa-validator/blob/master/doc/configurations.md)** to fit multiple sizes.
 
 
 ## Getting started
