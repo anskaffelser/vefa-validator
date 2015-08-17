@@ -1,8 +1,11 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.source.DirectorySource;
-import no.difi.xsd.vefa.validator._1.*;
+import no.difi.vefa.validator.source.SimpleDirectorySource;
+import no.difi.xsd.vefa.validator._1.ArtifactType;
+import no.difi.xsd.vefa.validator._1.Artifacts;
+import no.difi.xsd.vefa.validator._1.Configurations;
+import no.difi.xsd.vefa.validator._1.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +81,7 @@ public class Repo {
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.
-        SourceInstance sourceInstance = new DirectorySource(directory).createInstance();
+        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance();
         ValidatorEngine validatorEngine = new ValidatorEngine(sourceInstance);
 
         // Holds files associated with current configuration.
