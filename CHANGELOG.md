@@ -2,6 +2,8 @@
 
 ## Next release
 
+## 2.0.0-RC2
+
 * DirectorySourceInstance looks for artifacts.xml in directory.
 * Testing and fixing of detection of CustomizationID and ProfileID.
 * Functionality for configuring validator.

@@ -161,13 +161,15 @@ public class Validation {
      *
      * @param outputStream Stream to use.
      * @param properties Extra configuration to use for this rendering.
-     * @throws Exception
+     * @throws ValidatorException
      */
-    public void render(OutputStream outputStream, Properties properties) throws Exception {
-        if (configuration.getStylesheet() == null)
-            throw new ValidatorException("No stylesheet is defined for document type.");
+    public void render(OutputStream outputStream, Properties properties) throws ValidatorException {
         if (getReport().getFlag().equals(FlagType.FATAL))
             throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
+        if (configuration == null)
+            throw new ValidatorException("Configuration was not detected, configuration is need for rendering.");
+        if (configuration.getStylesheet() == null)
+            throw new ValidatorException("No stylesheet is defined for document type.");
 
         validatorInstance.render(configuration.getStylesheet(), document, properties, outputStream);
     }

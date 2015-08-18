@@ -2,6 +2,7 @@ package no.difi.vefa.validator.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.difi.vefa.validator.Validation;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -52,34 +53,38 @@ public class WorkspaceService {
     @SuppressWarnings("all")
     public String saveValidation(Validation validation) throws Exception {
         String identifier = UUID.randomUUID().toString();
-        File folder = getFolder(identifier);
-        folder.mkdirs();
-
-        FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, "source.xml.gz"));
-        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-        IOUtils.copy(validation.getDocument().getInputStream(), gzipOutputStream);
-        gzipOutputStream.close();
-        fileOutputStream.close();
-
-        fileOutputStream = new FileOutputStream(new File(folder, "report.xml.gz"));
-        gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-        reportMarshaller.marshal(validation.getReport(), gzipOutputStream);
-        gzipOutputStream.close();
-        fileOutputStream.close();
-
-        fileOutputStream = new FileOutputStream(new File(folder, "report.json.gz"));
-        gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-        objectMapper.writeValue(gzipOutputStream, validation.getReport());
-        gzipOutputStream.close();
-        fileOutputStream.close();
 
         try {
+            File folder = getFolder(identifier);
+            folder.mkdirs();
+
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, "source.xml.gz"));
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+            IOUtils.copy(validation.getDocument().getInputStream(), gzipOutputStream);
+            gzipOutputStream.close();
+            fileOutputStream.close();
+
+            fileOutputStream = new FileOutputStream(new File(folder, "report.xml.gz"));
+            gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+            reportMarshaller.marshal(validation.getReport(), gzipOutputStream);
+            gzipOutputStream.close();
+            fileOutputStream.close();
+
+            fileOutputStream = new FileOutputStream(new File(folder, "report.json.gz"));
+            gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+            objectMapper.writeValue(gzipOutputStream, validation.getReport());
+            gzipOutputStream.close();
+            fileOutputStream.close();
+
             fileOutputStream = new FileOutputStream(new File(folder, "view.html"));
             validation.render(fileOutputStream);
             fileOutputStream.close();
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            logger.error(e.getMessage(), e);
+        } catch (ValidatorException e) {
             logger.warn(String.format("%s: %s", identifier, e.getMessage()));
-            // No action
+        } catch (Exception e) {
+            logger.warn(String.format("%s: %s", identifier, e.getMessage()), e);
         }
 
         return identifier;
