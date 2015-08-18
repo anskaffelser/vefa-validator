@@ -76,9 +76,11 @@ public class WorkspaceService {
             gzipOutputStream.close();
             fileOutputStream.close();
 
-            fileOutputStream = new FileOutputStream(new File(folder, "view.html"));
-            validation.render(fileOutputStream);
-            fileOutputStream.close();
+            if (validation.isRenderable()) {
+                fileOutputStream = new FileOutputStream(new File(folder, "view.html"));
+                validation.render(fileOutputStream);
+                fileOutputStream.close();
+            }
         } catch (NullPointerException e) {
             logger.error(e.getMessage(), e);
         } catch (ValidatorException e) {

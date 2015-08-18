@@ -175,6 +175,15 @@ public class Validation {
     }
 
     /**
+     * Returns true if validated document is renderable based upon same criteria as may be provide exception when using #render(...).
+     *
+     * @return 'true' if validated document is renderable.
+     */
+    public boolean isRenderable() {
+        return configuration != null && configuration.getStylesheet() != null && !getReport().getFlag().equals(FlagType.FATAL);
+    }
+
+    /**
      * Document used for validation as represented in the validator.
      *
      * @return Document object.
