@@ -78,7 +78,7 @@ public class WorkspaceService {
             validation.render(fileOutputStream);
             fileOutputStream.close();
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(String.format("%s: %s", identifier, e.getMessage()));
             // No action
         }
 
