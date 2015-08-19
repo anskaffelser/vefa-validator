@@ -112,8 +112,9 @@ public class Validation {
             return;
         }
 
-        for (String notLoaded : configuration.getNotLoaded())
-            section.add("SYSTEM-007", String.format("Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
+        if (!validatorInstance.getProperties().getBoolean("feature.suppress_notloaded"))
+            for (String notLoaded : configuration.getNotLoaded())
+                section.add("SYSTEM-007", String.format("Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
 
         // Update report using configuration for declaration
         report.setTitle(configuration.getTitle());

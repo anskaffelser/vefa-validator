@@ -166,6 +166,7 @@ public class Builder {
                 .newValidator()
                 .setProperties(new SimpleProperties()
                     .set("feature.expectation", true)
+                    .set("feature.suppress_notloaded", true)
                 )
                 .setSource(new DirectorySource(targetFolder.toPath()))
                 .build();
