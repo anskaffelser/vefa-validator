@@ -69,6 +69,15 @@ public class DocumentDeclarationTest {
         assertNull(declaration.getProfileId());
     }
 
+    @Test
+    public void validOioublDeclaration() {
+        DocumentDeclaration declaration = new DocumentDeclaration(
+                "<xml><cbc:ProfileID schemeAgencyID=\"320\" schemeID=\"urn:oioubl:id:profileid-1.2\">Procurement-OrdSimR-BilSim-1.0</cbc:ProfileID><cbc:CustomizationID>OIOUBL-2.02</cbc:CustomizationID></xml>"
+        );
+        assertEquals(declaration.getCustomizationId(), "OIOUBL-2.02");
+        assertEquals(declaration.getProfileId(), "Procurement-OrdSimR-BilSim-1.0");
+    }
+
     @SuppressWarnings("all")
     @Test
     public void equals() {
