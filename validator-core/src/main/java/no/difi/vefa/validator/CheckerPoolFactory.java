@@ -8,8 +8,12 @@ import no.difi.vefa.validator.checker.XsltChecker;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
+
+    private static Logger logger = LoggerFactory.getLogger(CheckerPoolFactory.class);
 
     private static Class[] implementations = new Class[] {
             XsltChecker.class,
@@ -30,6 +34,7 @@ class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
                 try {
                     for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value()) {
                         if (key.toLowerCase().endsWith(extension)) {
+                            logger.debug(String.format("Creating checker '%s'", key));
                             Checker checker = (Checker) cls.getConstructor().newInstance();
                             checker.prepare(validatorEngine.getResource(key));
                             return checker;

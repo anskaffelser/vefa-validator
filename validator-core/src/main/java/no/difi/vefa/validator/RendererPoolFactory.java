@@ -8,8 +8,12 @@ import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer> {
+
+    private static Logger logger = LoggerFactory.getLogger(RendererPoolFactory.class);
 
     private static Class[] implementations = new Class[] {
             XsltRenderer.class,
@@ -31,6 +35,7 @@ class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer>
                 try {
                     for (String extension : ((RendererInfo) cls.getAnnotation(RendererInfo.class)).value()) {
                         if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
+                            logger.debug(String.format("Creating checker '%s'", key));
                             Renderer renderer = (Renderer) cls.getConstructor().newInstance();
                             renderer.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
                             return renderer;
