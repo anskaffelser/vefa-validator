@@ -18,6 +18,7 @@ class DocumentExpectation implements FlagFilterer {
     private static Logger logger = LoggerFactory.getLogger(DocumentExpectation.class);
 
     private String description;
+    private Map<String, Integer> successes = new HashMap<>();
     private Map<String, Integer> warnings = new HashMap<>();
     private Map<String, Integer> errors = new HashMap<>();
     private Map<String, Integer> fatals = new HashMap<>();
@@ -34,6 +35,11 @@ class DocumentExpectation implements FlagFilterer {
                 case "content":
                 case "description":
                     description = parts[1].trim().replaceAll("\\n", " ").replaceAll("  ", " ");
+                    break;
+
+                case "success":
+                case "successes":
+                    extractRules(parts, successes);
                     break;
 
                 case "warning":
@@ -75,19 +81,24 @@ class DocumentExpectation implements FlagFilterer {
 
     public void filterFlag(AssertionType assertionType) {
         if (assertionType.getFlag() != null) {
-            switch (assertionType.getFlag()) {
-                case FATAL:
-                    if (isExpected(assertionType.getIdentifier(), fatals))
-                        assertionType.setFlag(FlagType.EXPECTED);
-                    break;
-                case ERROR:
-                    if (isExpected(assertionType.getIdentifier(), errors))
-                        assertionType.setFlag(FlagType.EXPECTED);
-                    break;
-                case WARNING:
-                    if (isExpected(assertionType.getIdentifier(), warnings))
-                        assertionType.setFlag(FlagType.EXPECTED);
-                    break;
+            if (successes.containsKey(assertionType.getIdentifier())) {
+                assertionType.setFlag(FlagType.ERROR);
+                successes.put(assertionType.getIdentifier(), successes.get(assertionType.getIdentifier()) + 1);
+            } else {
+                switch (assertionType.getFlag()) {
+                    case FATAL:
+                        if (isExpected(assertionType.getIdentifier(), fatals))
+                            assertionType.setFlag(FlagType.EXPECTED);
+                        break;
+                    case ERROR:
+                        if (isExpected(assertionType.getIdentifier(), errors))
+                            assertionType.setFlag(FlagType.EXPECTED);
+                        break;
+                    case WARNING:
+                        if (isExpected(assertionType.getIdentifier(), warnings))
+                            assertionType.setFlag(FlagType.EXPECTED);
+                        break;
+                }
             }
         }
     }
@@ -109,5 +120,11 @@ class DocumentExpectation implements FlagFilterer {
         for (String key : warnings.keySet())
             if (warnings.get(key) > 0)
                 section.add("SYSTEM-006", "Rule '" + key + "' (WARNING) not fired " + warnings.get(key) + " time(s).", FlagType.ERROR);
+        for (String key : successes.keySet()) {
+            if (successes.get(key) == 1)
+                section.add(key, "Rule '" + key + "' not fired.", FlagType.EXPECTED);
+            else
+                section.add("SYSTEM-009", "Rule '" + key + "' fired " + (successes.get(key) - 1) + " time(s).", FlagType.ERROR);
+        }
     }
 }
