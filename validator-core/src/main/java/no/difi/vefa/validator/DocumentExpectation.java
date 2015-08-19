@@ -122,7 +122,7 @@ class DocumentExpectation implements FlagFilterer {
                 section.add("SYSTEM-006", "Rule '" + key + "' (WARNING) not fired " + warnings.get(key) + " time(s).", FlagType.ERROR);
         for (String key : successes.keySet()) {
             if (successes.get(key) == 1)
-                section.add(key, "Rule '" + key + "' not fired.", FlagType.EXPECTED);
+                section.add(key, "Rule not fired.", FlagType.SUCCESS);
             else
                 section.add("SYSTEM-009", "Rule '" + key + "' fired " + (successes.get(key) - 1) + " time(s).", FlagType.ERROR);
         }

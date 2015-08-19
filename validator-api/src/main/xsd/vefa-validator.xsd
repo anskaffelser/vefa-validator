@@ -132,6 +132,7 @@
 
     <xs:simpleType name="flagType">
         <xs:restriction base="xs:string">
+            <xs:enumeration value="success" />
             <xs:enumeration value="info" />
             <xs:enumeration value="ok" />
             <xs:enumeration value="expected" />

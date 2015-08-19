@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <style>
+        .status-SUCCESS { background-color: #dff0d8; color: #3c763d; }
         .status-OK { background-color: #dff0d8; color: #3c763d; }
         .status-EXPECTED { background-color: #d9edf7; color: #31708f; }
         .status-WARNING { background-color: #fcf8e3; color: #8a6d3b; }

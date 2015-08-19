@@ -2,6 +2,9 @@
 
 ## Next release
 
+* Allow tracing successful test.
+* Adding FlagType.SUCCESS in API.
+
 ## 2.0.0-RC2
 
 * DirectorySourceInstance looks for artifacts.xml in directory.

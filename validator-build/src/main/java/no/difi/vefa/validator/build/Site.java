@@ -208,7 +208,7 @@ class Site {
         public void add(FlagType flagType) {
             if (flagType.equals(FlagType.EXPECTED))
                 expected++;
-            else if (flagType.equals(FlagType.OK))
+            else if (flagType.equals(FlagType.SUCCESS))
                 success++;
             else
                 unexpected++;
