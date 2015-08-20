@@ -173,10 +173,7 @@ class ValidatorInstance implements Closeable {
     }
 
     public void close() {
-        checkerPool.close();
-        checkerPool = null;
-
-        presenterPool.close();
-        presenterPool = null;
+        checkerPool.clear();
+        presenterPool.clear();
     }
 }
