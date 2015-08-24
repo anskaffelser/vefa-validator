@@ -28,8 +28,7 @@ public class HomeController {
         return "home";
     }
 
-    // @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(method = RequestMethod.POST)
     public String upload(@RequestParam("file") MultipartFile file) throws Exception {
         InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 
