@@ -3,8 +3,6 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.checker.XsdChecker;
-import no.difi.vefa.validator.checker.XsltChecker;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -15,15 +13,12 @@ class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
 
     private static Logger logger = LoggerFactory.getLogger(CheckerPoolFactory.class);
 
-    private static Class[] implementations = new Class[] {
-            XsltChecker.class,
-            XsdChecker.class,
-    };
-
     private ValidatorEngine validatorEngine;
+    private Class<? extends Checker>[] implementations;
 
-    CheckerPoolFactory(ValidatorEngine validatorEngine) {
+    CheckerPoolFactory(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
         this.validatorEngine = validatorEngine;
+        this.implementations = implementations;
     }
 
     @SuppressWarnings("unchecked")

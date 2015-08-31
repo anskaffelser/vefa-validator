@@ -1,8 +1,9 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Source;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.checker.XsdChecker;
+import no.difi.vefa.validator.checker.XsltChecker;
+import no.difi.vefa.validator.renderer.XsltRenderer;
 
 /**
  * Builder supporting creation of validator.
@@ -25,10 +26,36 @@ public class ValidatorBuilder {
     private Validator validator = new Validator();
 
     /**
+     * Implementations of checker to use.
+     */
+    @SuppressWarnings("unchecked")
+    private Class<? extends Checker>[] checkerImpls = new Class[] {
+            XsltChecker.class,
+            XsdChecker.class,
+    };
+
+    /**
+     * Implementations of renderer to use.
+     */
+    @SuppressWarnings("unchecked")
+    private Class<? extends Renderer>[] rendererImpls = new Class[] {
+            XsltRenderer.class,
+    };
+
+    /**
      * Internal constructor, no action needed.
      */
     private ValidatorBuilder() {
         // No action
+    }
+
+    /**
+     * Defines implementations of Checker to use.
+     *
+     * @param checkerImpls Implementations
+     */
+    public void setCheckerImpls(Class<? extends Checker>... checkerImpls) {
+        this.checkerImpls = checkerImpls;
     }
 
     /**
@@ -40,6 +67,15 @@ public class ValidatorBuilder {
     public ValidatorBuilder setProperties(Properties properties) {
         this.validator.setProperties(properties);
         return this;
+    }
+
+    /**
+     * Defines implementations of Renderer to use.
+     *
+     * @param rendererImpls Implementations
+     */
+    public void setRendererImpls(Class<? extends Renderer>... rendererImpls) {
+        this.rendererImpls = rendererImpls;
     }
 
     /**
@@ -60,7 +96,7 @@ public class ValidatorBuilder {
      * @throws ValidatorException
      */
     public Validator build() throws ValidatorException {
-        validator.load();
+        validator.load(checkerImpls, rendererImpls);
 
         return validator;
     }

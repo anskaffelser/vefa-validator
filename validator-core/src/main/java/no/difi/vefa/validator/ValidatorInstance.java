@@ -49,7 +49,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Pool of presenters.
      */
-    private GenericKeyedObjectPool<String, Renderer> presenterPool;
+    private GenericKeyedObjectPool<String, Renderer> rendererPool;
 
     /**
      * Constructor loading artifacts and pools for validations.
@@ -57,7 +57,7 @@ class ValidatorInstance implements Closeable {
      * @param sourceInstance Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(SourceInstance sourceInstance, Properties properties) throws ValidatorException {
+    ValidatorInstance(SourceInstance sourceInstance, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
@@ -65,18 +65,18 @@ class ValidatorInstance implements Closeable {
         validatorEngine = new ValidatorEngine(sourceInstance);
 
         // New pool for checkers
-        checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine));
+        checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine, checkerImpls));
         checkerPool.setBlockWhenExhausted(this.properties.getBoolean("pools.checker.blockerWhenExhausted"));
         checkerPool.setLifo(this.properties.getBoolean("pools.checker.lifo"));
         checkerPool.setMaxTotal(this.properties.getInteger("pools.checker.maxTotal"));
         checkerPool.setMaxTotalPerKey(this.properties.getInteger("pools.checker.maxTotalPerKey"));
 
         // New pool for presenters
-        presenterPool = new GenericKeyedObjectPool<>(new RendererPoolFactory(validatorEngine));
-        presenterPool.setBlockWhenExhausted(this.properties.getBoolean("pools.presenter.blockerWhenExhausted"));
-        presenterPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
-        presenterPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
-        presenterPool.setMaxTotalPerKey(this.properties.getInteger("pools.presenter.maxTotalPerKey"));
+        rendererPool = new GenericKeyedObjectPool<>(new RendererPoolFactory(validatorEngine, rendererImpls));
+        rendererPool.setBlockWhenExhausted(this.properties.getBoolean("pools.presenter.blockerWhenExhausted"));
+        rendererPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
+        rendererPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
+        rendererPool.setMaxTotalPerKey(this.properties.getInteger("pools.presenter.maxTotalPerKey"));
     }
 
     /**
@@ -128,7 +128,7 @@ class ValidatorInstance implements Closeable {
     void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
         try {
-            renderer = presenterPool.borrowObject(stylesheet.getIdentifier());
+            renderer = rendererPool.borrowObject(stylesheet.getIdentifier());
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             throw new ValidatorException(
@@ -138,7 +138,7 @@ class ValidatorInstance implements Closeable {
         try {
             renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
         } finally {
-            presenterPool.returnObject(stylesheet.getIdentifier(), renderer);
+            rendererPool.returnObject(stylesheet.getIdentifier(), renderer);
         }
     }
 
@@ -174,6 +174,6 @@ class ValidatorInstance implements Closeable {
 
     public void close() {
         checkerPool.clear();
-        presenterPool.clear();
+        rendererPool.clear();
     }
 }

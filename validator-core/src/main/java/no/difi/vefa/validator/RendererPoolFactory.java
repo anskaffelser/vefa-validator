@@ -3,7 +3,6 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.RendererInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.renderer.XsltRenderer;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
@@ -15,14 +14,12 @@ class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer>
 
     private static Logger logger = LoggerFactory.getLogger(RendererPoolFactory.class);
 
-    private static Class[] implementations = new Class[] {
-            XsltRenderer.class,
-    };
-
     private ValidatorEngine validatorEngine;
+    private Class<? extends Renderer>[] implementations;
 
-    RendererPoolFactory(ValidatorEngine validatorEngine) {
+    RendererPoolFactory(ValidatorEngine validatorEngine, Class<? extends Renderer>[] implementations) {
         this.validatorEngine = validatorEngine;
+        this.implementations = implementations;
     }
 
     @SuppressWarnings("unchecked")
