@@ -85,7 +85,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>no.difi.vefa.validator.Repo</mainClass>
+                            <mainClass>no.difi.vefa.validator.Cli</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

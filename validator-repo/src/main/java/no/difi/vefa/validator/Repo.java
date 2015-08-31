@@ -60,18 +60,6 @@ public class Repo {
     }
 
     /**
-     * Entry point when using cli.
-     *
-     * @param args Cli arguments.
-     * @throws Exception
-     */
-    public static void main(String... args) throws Exception {
-        // Loop over input. Normally just one folder, but multiple is supported.
-        for (String directory : args)
-            generateArtifacts(Paths.get(directory), true);
-    }
-
-    /**
      * Generates list of artifacts for a given directory.
      *
      * @param directory Directory for repository.

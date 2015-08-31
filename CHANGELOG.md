@@ -2,12 +2,13 @@
 
 ## Next release
 
-* Allow tracing successful test.
+* Allow tracing successful tests.
 * Adding FlagType.SUCCESS in API.
 * Added more logging.
 * Updating version of no.difi.commons:commons-schematron.
 * Functionality to sign validation artifacts defined by parameters.
 * Fixing UTF-8 thing in presentation of rendered documents in sample application.
+* Allow override of implementations of checker og renderer to use.
 
 ## 2.0.0-RC2
 
