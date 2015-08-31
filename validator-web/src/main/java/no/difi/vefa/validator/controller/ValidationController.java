@@ -68,7 +68,7 @@ public class ValidationController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/view", produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(value = "/view", produces = MediaType.TEXT_HTML_VALUE + "; charset=utf-8")
     public FileSystemResource presentView(@PathVariable String identifier) throws Exception {
         if (!workspaceService.exists(identifier))
             throw new Exception("Workspace not found.");
