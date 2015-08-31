@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 2.0.0
 
 * Allow tracing successful tests.
 * Adding FlagType.SUCCESS in API.
