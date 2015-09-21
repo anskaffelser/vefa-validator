@@ -4,8 +4,11 @@ import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 public class Section extends SectionType {
 
+    @XmlTransient
     private FlagFilterer flagFilterer;
 
     /**
