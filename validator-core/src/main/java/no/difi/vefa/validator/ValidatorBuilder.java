@@ -2,7 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.checker.XsdChecker;
-import no.difi.vefa.validator.checker.XsltChecker;
+import no.difi.vefa.validator.checker.SvrlXsltChecker;
 import no.difi.vefa.validator.renderer.XsltRenderer;
 
 /**
@@ -30,7 +30,7 @@ public class ValidatorBuilder {
      */
     @SuppressWarnings("unchecked")
     private Class<? extends Checker>[] checkerImpls = new Class[] {
-            XsltChecker.class,
+            SvrlXsltChecker.class,
             XsdChecker.class,
     };
 

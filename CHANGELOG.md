@@ -1,5 +1,10 @@
 # Changelog
 
+## Next release
+
+* Adding anotation XmlTranisent to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
+* XsltChecker changed name to ScrlXsltChecker.
+
 ## 2.0.0
 
 * Allow tracing successful tests.

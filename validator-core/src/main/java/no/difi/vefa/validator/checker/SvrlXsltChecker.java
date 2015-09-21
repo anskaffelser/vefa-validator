@@ -21,10 +21,10 @@ import javax.xml.transform.stream.StreamSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@CheckerInfo({".xsl", ".xslt"})
-public class XsltChecker implements Checker {
+@CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt"})
+public class SvrlXsltChecker implements Checker {
 
-    private static Logger logger = LoggerFactory.getLogger(XsltChecker.class);
+    private static Logger logger = LoggerFactory.getLogger(SvrlXsltChecker.class);
 
     private static TransformerFactory transformerFactory = new TransformerFactoryImpl();
 
