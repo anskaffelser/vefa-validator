@@ -110,7 +110,7 @@
                         <c:set var="namespace" value="${f[1].split('\\\'')[1]}" />
                         <!-- ':' / 58 -->
                         <c:set var="parent" value="${fn:substring(namespace, namespace.lastIndexOf(58) + 1, fn:length(namespace))}" />
-                        \ <span title="<c:out value="${namespace}" />"><c:out value="${fn:replace(fn:replace(parent, 'CommonBasicComponents-2', 'cbc'), 'CommonAggregateComponents-2', 'cac')}" /></span>:<strong>${f[0].split(':')[1]}</strong>[${f[2]}
+                        \ <span title="<c:out value="${namespace}" />"><c:out value="${fn:replace(fn:replace(fn:replace(parent, 'CommonBasicComponents-2', 'cbc'), 'CommonAggregateComponents-2', 'cac'), 'urn:oasis:names:specification:ubl:schema:xsd:', '')}" /></span>:<strong>${f[0].split(':')[1]}</strong>[${f[2]}
                     </c:if>
                     <c:if test="${fn:startsWith(e, '@') == true}">
                         \ <strong><c:out value="${e}" /></strong>

@@ -30,6 +30,9 @@ class ValidatorDefaults {
         .set("pools.presenter.maxTotal", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL)
         .set("pools.presenter.maxTotalPerKey", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL_PER_KEY)
 
+        // source
+        .set("source.in-memory", true)
+
         // finish
         ;
 

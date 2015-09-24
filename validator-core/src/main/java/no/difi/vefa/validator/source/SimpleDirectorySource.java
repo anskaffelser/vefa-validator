@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.api.ValidatorException;
 
@@ -21,7 +22,8 @@ public class SimpleDirectorySource extends AbstractSource {
         this.directory = directory;
     }
 
-    public SourceInstance createInstance() throws ValidatorException {
-        return new SimpleDirectorySourceInstance(directory);
+    @Override
+    public SourceInstance createInstance(Properties properties) throws ValidatorException {
+        return new SimpleDirectorySourceInstance(properties, directory);
     }
 }

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -15,7 +16,8 @@ class RepositorySourceInstance extends AbstractSourceInstance {
 
     private URI rootUri;
 
-    public RepositorySourceInstance(URI rootUri) throws ValidatorException {
+    public RepositorySourceInstance(Properties properties, URI rootUri) throws ValidatorException {
+        super(properties);
         this.rootUri = rootUri;
 
         try {

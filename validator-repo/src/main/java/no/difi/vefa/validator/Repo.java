@@ -69,7 +69,7 @@ public class Repo {
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.
-        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance();
+        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance(ValidatorDefaults.PROPERTIES);
         ValidatorEngine validatorEngine = new ValidatorEngine(sourceInstance);
 
         // Holds files associated with current configuration.

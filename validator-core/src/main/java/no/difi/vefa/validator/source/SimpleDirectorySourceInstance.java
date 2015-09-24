@@ -1,17 +1,14 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.xsd.vefa.validator._1.ArtifactType;
-import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -30,9 +27,9 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
      * @param directory Directory containing validation artifacts.
      * @throws ValidatorException
      */
-    public SimpleDirectorySourceInstance(Path directory) throws ValidatorException {
+    public SimpleDirectorySourceInstance(Properties properties, Path directory) throws ValidatorException {
         // Call #AbstractSourceInstance().
-        super();
+        super(properties);
 
         logger.info(String.format("Directory: %s", directory));
 

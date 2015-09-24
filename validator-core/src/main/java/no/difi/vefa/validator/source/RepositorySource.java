@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.SourceInstance;
 
@@ -43,7 +44,7 @@ public class RepositorySource extends AbstractSource {
     }
 
     @Override
-    public SourceInstance createInstance() throws ValidatorException{
-        return new RepositorySourceInstance(rootUri);
+    public SourceInstance createInstance(Properties properties) throws ValidatorException{
+        return new RepositorySourceInstance(properties, rootUri);
     }
 }

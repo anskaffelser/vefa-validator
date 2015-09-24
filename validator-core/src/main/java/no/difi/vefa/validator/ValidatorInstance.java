@@ -54,15 +54,15 @@ class ValidatorInstance implements Closeable {
     /**
      * Constructor loading artifacts and pools for validations.
      *
-     * @param sourceInstance Source for validation artifacts
+     * @param source Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(SourceInstance sourceInstance, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls) throws ValidatorException {
+    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
-        validatorEngine = new ValidatorEngine(sourceInstance);
+        validatorEngine = new ValidatorEngine(source.createInstance(this.properties));
 
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine, checkerImpls));

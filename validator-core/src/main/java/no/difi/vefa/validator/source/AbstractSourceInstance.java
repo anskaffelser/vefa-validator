@@ -5,6 +5,7 @@ import com.google.common.jimfs.Jimfs;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.asic.SignatureMethod;
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.xsd.asic.model._1.Certificate;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -35,8 +36,12 @@ class AbstractSourceInstance implements SourceInstance {
 
     protected FileSystem fileSystem;
 
-    public AbstractSourceInstance() {
-        fileSystem = Jimfs.newFileSystem(Configuration.unix());
+    public AbstractSourceInstance(Properties properties) {
+        if (properties.getBoolean("source.in-memory"))
+            fileSystem = Jimfs.newFileSystem(Configuration.unix());
+        else {
+            throw new IllegalStateException("Source storage not defined.");
+        }
     }
 
     protected void unpackContainer(AsicReader asicReader, String targetName) throws IOException {
@@ -48,7 +53,7 @@ class AbstractSourceInstance implements SourceInstance {
         while ((filename = asicReader.getNextFile()) != null) {
             Path outputPath = targetDirectory.resolve(filename);
             Files.createDirectories(outputPath.getParent());
-            logger.debug(outputPath.toString());
+            logger.debug("{}", outputPath);
 
             asicReader.writeFile(outputPath);
         }

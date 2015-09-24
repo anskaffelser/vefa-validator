@@ -122,7 +122,7 @@ public class Validator implements Closeable {
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source.createInstance(), properties, checkerImpls, rendererImpls);
+            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, rendererImpls);
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
 

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -30,9 +31,9 @@ class DirectorySourceInstance extends AbstractSourceInstance {
      * @param directory Directory containing validation artifacts.
      * @throws ValidatorException
      */
-    public DirectorySourceInstance(Path directory) throws ValidatorException {
+    public DirectorySourceInstance(Properties properties, Path directory) throws ValidatorException {
         // Call #AbstractSourceInstance().
-        super();
+        super(properties);
 
         logger.info(String.format("Directory: %s", directory));
 
