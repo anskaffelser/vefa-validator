@@ -1,7 +1,8 @@
 package no.difi.vefa.validator.source;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
+import com.google.common.jimfs.JimfsFileSystemProvider;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.asic.SignatureMethod;
@@ -14,9 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.spi.FileSystemProvider;
+import java.util.List;
 
 class AbstractSourceInstance implements SourceInstance {
 
@@ -37,10 +41,19 @@ class AbstractSourceInstance implements SourceInstance {
     protected FileSystem fileSystem;
 
     public AbstractSourceInstance(Properties properties) {
-        if (properties.getBoolean("source.in-memory"))
-            fileSystem = Jimfs.newFileSystem(Configuration.unix());
-        else {
-            throw new IllegalStateException("Source storage not defined.");
+        List<FileSystemProvider> list = JimfsFileSystemProvider.installedProviders();
+        try {
+            URI uri = new URI("jimfs", "vefa", null, null);
+            ImmutableMap<String, ?> env = ImmutableMap.of("config", Configuration.unix());
+
+            for (FileSystemProvider provider : list)
+                if (provider instanceof JimfsFileSystemProvider)
+                    fileSystem = provider.newFileSystem(uri, env);
+
+            if (fileSystem == null)
+                fileSystem = new JimfsFileSystemProvider().newFileSystem(uri, env);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to create VEFA Validator instance", e);
         }
     }
 
