@@ -2,9 +2,12 @@
 
 ## Next release
 
-* Adding anotation XmlTranisent to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
+## 2.0.1
+
+* Adding annotation XmlTransient to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
 * XsltChecker changed name to ScrlXsltChecker.
 * Changed signature of no.difi.vefa.validator.api.Source.createInstance(...).
+* Loading necessary modules when initiating JimFS. [#9](https://github.com/difi/vefa-validator/issues/9)
 
 ## 2.0.0
 
