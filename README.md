@@ -1,6 +1,6 @@
 # VEFA Validator 2.0
 
-Current version: **[2.0.0](https://github.com/difi/vefa-validator/releases/tag/2.0.0)**
+Current version: **[2.0.1](https://github.com/difi/vefa-validator/releases/tag/2.0.1)**
 
 
 ## Features
