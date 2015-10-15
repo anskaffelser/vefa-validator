@@ -17,7 +17,7 @@ public class RepositorySource extends AbstractSource {
     }
 
     public static RepositorySource forProduction() {
-        return create("http://vefa.difi.no/validator/repo/");
+        return create("https://vefa.difi.no/validator/repo/");
     }
 
     static RepositorySource create(String uri) {
