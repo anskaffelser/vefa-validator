@@ -1,6 +1,6 @@
 # VEFA Validator 2.0
 
-Current version: **2.0.0**
+Current version: **[2.0.1](https://github.com/difi/vefa-validator/releases/tag/2.0.1)**
 
 
 ## Features
@@ -22,7 +22,7 @@ Include dependency in your pom.xml:
 <dependency>
 	<groupId>no.difi.vefa</groupId>
 	<artifactId>validator-core</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ The validator is expensive to create, one instance should be enough.
 
 Artifacts may be found here:
 
-* Production (current): [http://vefa.difi.no/validator/repo/](http://vefa.difi.no/validator/repo/)
+* Production (current): [https://vefa.difi.no/validator/repo/](http://vefa.difi.no/validator/repo/)
 * Test (upcoming): [https://test-vefa.difi.no/validator/repo/](https://test-vefa.difi.no/validator/repo/)
 
 Difi does not guarantee the availability of the repositories containing validation artifacts. Local copy is always recommended for production environments.
