@@ -78,6 +78,15 @@ public class DocumentDeclarationTest {
         assertEquals(declaration.getProfileId(), "Procurement-OrdSimR-BilSim-1.0");
     }
 
+    @Test
+    public void issue17() {
+        DocumentDeclaration declaration = new DocumentDeclaration(
+                "<xml><cbc:CustomizationID schemeID=\"PEPPOL\">urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol4a:ver2.0</cbc:CustomizationID></xml>"
+        );
+        assertEquals(declaration.getCustomizationId(), "urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol4a:ver2.0");
+        assertNull(declaration.getProfileId());
+    }
+
     @SuppressWarnings("all")
     @Test
     public void equals() {
