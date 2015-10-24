@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 
+import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -28,6 +29,8 @@ public class Testing {
     public void beforeClass() throws Exception {
         validator = ValidatorBuilder
                 .newValidator()
+                .setProperties(new SimpleProperties()
+                        .set("feature.expectation", true))
                 .setSource(new DirectorySource(Paths.get(getClass().getResource("/rules").toURI())))
                 // .setSource(RepositorySource.forTest())
                 .build();

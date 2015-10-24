@@ -114,7 +114,7 @@ public class Validation {
         if (validatorInstance.getProperties().getBoolean("feature.expectation")) {
             expectation = declaration.expectations(content);
             if (expectation != null)
-                report.setDescription(document.getExpectation().getDescription());
+                report.setDescription(expectation.getDescription());
         }
 
         document = new Document(byteArrayInputStream, declaration.detect(content), expectation);
