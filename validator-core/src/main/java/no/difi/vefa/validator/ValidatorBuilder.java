@@ -1,8 +1,9 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.checker.XsdChecker;
 import no.difi.vefa.validator.checker.SvrlXsltChecker;
+import no.difi.vefa.validator.checker.XsdChecker;
+import no.difi.vefa.validator.declaration.UblDeclaration;
 import no.difi.vefa.validator.renderer.XsltRenderer;
 
 /**
@@ -24,6 +25,14 @@ public class ValidatorBuilder {
      * Validator to be delivered.
      */
     private Validator validator = new Validator();
+
+    /**
+     * Implementations of declarations to use.
+     */
+    @SuppressWarnings("unchecked")
+    private Declaration[] declarationImpls = new Declaration[] {
+            new UblDeclaration()
+    };
 
     /**
      * Implementations of checker to use.
@@ -53,9 +62,16 @@ public class ValidatorBuilder {
      * Defines implementations of Checker to use.
      *
      * @param checkerImpls Implementations
+     * @return Builder
      */
-    public void setCheckerImpls(Class<? extends Checker>... checkerImpls) {
+    public ValidatorBuilder setCheckerImpls(Class<? extends Checker>... checkerImpls) {
         this.checkerImpls = checkerImpls;
+        return this;
+    }
+
+    ValidatorBuilder setDeclarations(Declaration... declarations) {
+        this.declarationImpls = declarations;
+        return this;
     }
 
     /**
@@ -73,9 +89,11 @@ public class ValidatorBuilder {
      * Defines implementations of Renderer to use.
      *
      * @param rendererImpls Implementations
+     * @return Builder
      */
-    public void setRendererImpls(Class<? extends Renderer>... rendererImpls) {
+    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
         this.rendererImpls = rendererImpls;
+        return this;
     }
 
     /**
@@ -96,7 +114,7 @@ public class ValidatorBuilder {
      * @throws ValidatorException
      */
     public Validator build() throws ValidatorException {
-        validator.load(checkerImpls, rendererImpls);
+        validator.load(checkerImpls, rendererImpls, declarationImpls);
 
         return validator;
     }

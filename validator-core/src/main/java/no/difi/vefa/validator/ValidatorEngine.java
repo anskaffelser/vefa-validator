@@ -52,7 +52,7 @@ class ValidatorEngine {
     /**
      * Map containing raw configurations indexed by document declaration.
      */
-    private Map<DocumentDeclaration, ConfigurationType> declarationMap = new HashMap<>();
+    private Map<String, ConfigurationType> declarationMap = new HashMap<>();
 
     /**
      * Stylesheet declarations found in configurations indexed by identifier of stylesheet declaration.
@@ -151,10 +151,14 @@ class ValidatorEngine {
                     identifierMap.put(identifierBuild, configuration);
             }
 
-            if (configuration.getProfileId() != null && configuration.getCustomizationId() != null) {
-                DocumentDeclaration declaration = new DocumentDeclaration(configuration.getCustomizationId(), configuration.getProfileId());
-                if (!declarationMap.containsKey(declaration) || declarationMap.get(declaration).getWeight() < configuration.getWeight())
-                    declarationMap.put(declaration, configuration);
+            if (configuration.getStandardId() == null) {
+                if (configuration.getProfileId() != null && configuration.getCustomizationId() != null)
+                    configuration.setStandardId(configuration.getProfileId() + "#" + configuration.getCustomizationId());
+            }
+
+            if (configuration.getStandardId() != null) {
+                if (!declarationMap.containsKey(configuration.getStandardId()) || declarationMap.get(configuration.getStandardId()).getWeight() < configuration.getWeight())
+                    declarationMap.put(configuration.getStandardId(), configuration);
             }
         }
     }
@@ -176,7 +180,7 @@ class ValidatorEngine {
      * @return Configuration
      * @throws ValidatorException Thrown if no configuration is found for the document declaration.
      */
-    public ConfigurationType getConfiguration(DocumentDeclaration declaration) throws ValidatorException {
+    public ConfigurationType getConfigurationByDeclaration(String declaration) throws ValidatorException {
         if (!declarationMap.containsKey(declaration))
             throw new ValidatorException(String.format("Configuration for '%s' not found", declaration));
 
@@ -212,7 +216,7 @@ class ValidatorEngine {
      *
      * @return List of declarations.
      */
-    public List<DocumentDeclaration> getDeclarations() {
+    public List<String> getDeclarations() {
         return new ArrayList<>(declarationMap.keySet());
     }
 

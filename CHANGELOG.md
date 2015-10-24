@@ -2,6 +2,11 @@
 
 ## Next release
 
+* Rewrite of Declaration.
+* Rewrite of Expectation.
+* no.difi.vefa.validator.api.Document.getDeclaration() returns a string, not an object.
+* Fixing methods in ValidatorBuilder returning void.
+
 ## 2.0.1
 
 * Adding annotation XmlTransient to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)

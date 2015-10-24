@@ -1,6 +1,6 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.expectation;
 
-import no.difi.vefa.validator.api.FlagFilterer;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.Section;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-class DocumentExpectation implements FlagFilterer {
+public class XmlExpectation implements Expectation {
 
     /**
      * Logger
      */
-    private static Logger logger = LoggerFactory.getLogger(DocumentExpectation.class);
+    private static Logger logger = LoggerFactory.getLogger(XmlExpectation.class);
 
     private String description;
     private Map<String, Integer> successes = new HashMap<>();
@@ -23,7 +23,7 @@ class DocumentExpectation implements FlagFilterer {
     private Map<String, Integer> errors = new HashMap<>();
     private Map<String, Integer> fatals = new HashMap<>();
 
-    DocumentExpectation(String content) {
+    public XmlExpectation(String content) {
         if (!content.contains("<!--") || !content.contains("-->"))
             return;
 
@@ -75,10 +75,12 @@ class DocumentExpectation implements FlagFilterer {
         }
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void filterFlag(AssertionType assertionType) {
         if (assertionType.getFlag() != null) {
             if (successes.containsKey(assertionType.getIdentifier())) {
@@ -110,7 +112,8 @@ class DocumentExpectation implements FlagFilterer {
         return true;
     }
 
-    void verify(Section section) {
+    @Override
+    public void verify(Section section) {
         for (String key : fatals.keySet())
             if (fatals.get(key) > 0)
                 section.add("SYSTEM-004", "Rule '" + key + "' (FATAL) not fired " + fatals.get(key) + " time(s).", FlagType.ERROR);

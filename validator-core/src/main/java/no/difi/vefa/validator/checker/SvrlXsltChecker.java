@@ -1,11 +1,7 @@
 package no.difi.vefa.validator.checker;
 
 import net.sf.saxon.TransformerFactoryImpl;
-import no.difi.vefa.validator.api.Section;
-import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.api.Document;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;

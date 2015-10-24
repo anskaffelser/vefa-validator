@@ -78,7 +78,7 @@ public class Repo {
         Set<String> unavailable = new TreeSet<>();
 
         // Run through all valid declarations in the validator engine.
-        for (DocumentDeclaration declaration : validatorEngine.getDeclarations()) {
+        for (String declaration : validatorEngine.getDeclarations()) {
             // Fetch configuration
             Configuration configuration = new Configuration(validatorEngine.getConfiguration(declaration));
             // Normalize it to detect resources used and referenced.

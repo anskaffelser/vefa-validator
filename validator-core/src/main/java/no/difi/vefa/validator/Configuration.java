@@ -29,6 +29,7 @@ class Configuration extends ConfigurationType implements FlagFilterer {
         // Copy rule
         this.setIdentifier(configurationType.getIdentifier());
         this.setTitle(configurationType.getTitle());
+        this.setStandardId(configurationType.getStandardId());
         this.setCustomizationId(configurationType.getCustomizationId());
         this.setProfileId(configurationType.getProfileId());
         this.setWeight(configurationType.getWeight());

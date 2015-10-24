@@ -39,7 +39,12 @@ class ValidatorInstance implements Closeable {
     /**
      * Normalized configurations indexed by document declarations.
      */
-    private Map<DocumentDeclaration, Configuration> configurationMap = new HashMap<>();
+    private Map<String, Configuration> configurationMap = new HashMap<>();
+
+    /**
+     * Declarations to use.
+     */
+    private Declaration[] declarations;
 
     /**
      * Pool of checkers.
@@ -57,12 +62,15 @@ class ValidatorInstance implements Closeable {
      * @param source Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls) throws ValidatorException {
+    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
         validatorEngine = new ValidatorEngine(source.createInstance(this.properties));
+
+        // Declarations
+        this.declarations = declarations;
 
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine, checkerImpls));
@@ -100,22 +108,26 @@ class ValidatorInstance implements Closeable {
     /**
      * Return validation configuration.
      *
-     * @param documentDeclaration Fetch configuration using declaration.
+     * @param declaration Fetch configuration using declaration.
      */
-    Configuration getConfiguration(DocumentDeclaration documentDeclaration) throws ValidatorException {
+    Configuration getConfiguration(String declaration) throws ValidatorException {
         // Check cache of configurations is ready to use.
-        if (configurationMap.containsKey(documentDeclaration))
-            return configurationMap.get(documentDeclaration);
+        if (configurationMap.containsKey(declaration))
+            return configurationMap.get(declaration);
 
         // Create a new instance of configuration using the raw configuration.
-        Configuration configuration = new Configuration(validatorEngine.getConfiguration(documentDeclaration));
+        Configuration configuration = new Configuration(validatorEngine.getConfigurationByDeclaration(declaration));
         // Normalize configuration using inheritance declarations.
         configuration.normalize(validatorEngine);
         // Add configuration to map containing configurations ready to use.
-        configurationMap.put(documentDeclaration, configuration);
+        configurationMap.put(declaration, configuration);
 
         // Return configuration.
         return configuration;
+    }
+
+    Declaration[] getDeclarations() {
+        return declarations;
     }
 
     /**
@@ -160,7 +172,7 @@ class ValidatorInstance implements Closeable {
                     String.format("Unable to borrow checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
-        Section section = new Section(new CombinedFlagFilterer(configuration, document.getDocumentExpectation()));
+        Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
         section.setFlag(FlagType.OK);
 
         try {

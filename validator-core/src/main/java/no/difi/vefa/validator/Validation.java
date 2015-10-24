@@ -1,18 +1,15 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Section;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.Report;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * Result of a validation.
@@ -59,17 +56,15 @@ public class Validation {
         this.section.setFlag(FlagType.OK);
 
         try {
-            document = new Document(inputStream, validatorInstance.getProperties());
-
-            if (document.getDocumentExpectation() != null)
-                report.setDescription(document.getDocumentExpectation().getDescription());
-
+            loadDocument(inputStream);
             loadConfiguration();
 
             if (configuration != null)
                 validate();
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
+        } catch (ValidatorException e) {
+            section.add("SYSTEM-001", e.getMessage(), FlagType.FATAL);
         }
 
         if (section.getAssertion().size() > 0) {
@@ -86,26 +81,53 @@ public class Validation {
         report.setRuntime((System.currentTimeMillis() - start) + "ms");
     }
 
+    void loadDocument(InputStream inputStream) throws ValidatorException, IOException {
+        ByteArrayInputStream byteArrayInputStream;
+        if (inputStream instanceof ByteArrayInputStream) {
+            // Use stream as-is.
+            byteArrayInputStream = (ByteArrayInputStream) inputStream;
+        } else {
+            // Convert stream to ByteArrayOutputStream
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            IOUtils.copy(inputStream, byteArrayOutputStream);
+            byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        }
+
+        // Read first 10kB for detections
+        byte[] bytes = new byte[10*1024];
+        byteArrayInputStream.read(bytes);
+        String content = new String(bytes);
+
+        // Use declaration implementations to detect declaration to use.
+        Declaration declaration = null;
+        for (Declaration d : validatorInstance.getDeclarations()) {
+            if (d.verify(content)) {
+                declaration = d;
+                break;
+            }
+        }
+        if (declaration == null)
+            throw new ValidatorException("Unable to detect type of content.");
+
+        // Detect expectation
+        Expectation expectation = null;
+        if (validatorInstance.getProperties().getBoolean("feature.expectation")) {
+            expectation = declaration.expectations(content);
+            if (expectation != null)
+                report.setDescription(document.getExpectation().getDescription());
+        }
+
+        document = new Document(byteArrayInputStream, declaration.detect(content), expectation);
+    }
+
     void loadConfiguration() {
         // Default values for report
         report.setTitle("Unknown document type");
         report.setFlag(FlagType.FATAL);
 
-        // Verify presence of profileId
-        if (document.getDeclaration().getProfileId() == null) {
-            section.add("SYSTEM-001", "Unable to detect ProfileId.", FlagType.FATAL);
-            return;
-        }
-
-        // Verify presence of customizationId
-        if (document.getDeclaration().getCustomizationId() == null) {
-            section.add("SYSTEM-002", "Unable to detect CustomizationId.", FlagType.FATAL);
-            return;
-        }
-
         // Get configuration using declaration
         try {
-            this.configuration = validatorInstance.getConfiguration(document.getDocumentDeclaration());
+            this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
         } catch (ValidatorException e) {
             // Add FATAL to report if validation artifacts for declaration is not found
             section.add("SYSTEM-003", "Unable to find validation configuration based on ProfileId and CustomizationId.", FlagType.FATAL);
@@ -143,8 +165,8 @@ public class Validation {
                 break;
         }
 
-        if (document.getDocumentExpectation() != null)
-            document.getDocumentExpectation().verify(section);
+        if (document.getExpectation() != null)
+            document.getExpectation().verify(section);
     }
 
     /**
@@ -189,7 +211,7 @@ public class Validation {
      *
      * @return Document object.
      */
-    public no.difi.vefa.validator.api.Document getDocument() {
+    public Document getDocument() {
         return document;
     }
 

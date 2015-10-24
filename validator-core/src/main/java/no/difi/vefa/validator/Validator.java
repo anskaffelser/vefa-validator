@@ -115,14 +115,14 @@ public class Validator implements Closeable {
      *
      * @throws ValidatorException
      */
-    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls) throws ValidatorException {
+    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls, Declaration... declarationImpls) throws ValidatorException {
         try {
             // Make sure to default to repository source if no source is set.
             if (source == null)
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, rendererImpls);
+            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, rendererImpls, declarationImpls);
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
 

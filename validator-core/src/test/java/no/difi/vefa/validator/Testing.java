@@ -51,7 +51,7 @@ public class Testing {
 
             assertEquals(validation.getReport().getFlag(), FlagType.ERROR);
             assertEquals(validation.getReport().getSection().get(5).getAssertion().size(), 5);
-            assertEquals(validation.getDocument().getDeclaration().getProfileId(), "urn:www.cenbii.eu:profile:bii04:ver2.0");
+            assertEquals(validation.getDocument().getDeclaration(), "urn:www.cenbii.eu:profile:bii04:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol4a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             fail("Received exception.");
@@ -75,7 +75,7 @@ public class Testing {
             outputStream.close();
 
             assertEquals(validation.getReport().getFlag(), FlagType.OK);
-            assertEquals(validation.getDocument().getDeclaration().getProfileId(), "urn:www.cenbii.eu:profile:bii05:ver2.0");
+            assertEquals(validation.getDocument().getDeclaration(), "urn:www.cenbii.eu:profile:bii05:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             fail("Received exception.");

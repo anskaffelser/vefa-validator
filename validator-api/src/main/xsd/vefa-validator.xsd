@@ -43,6 +43,7 @@
             <xs:element name="title" type="xs:string" minOccurs="1" />
             <xs:element name="profileId" type="xs:string" minOccurs="0" />
             <xs:element name="customizationId" type="xs:string" minOccurs="0" />
+            <xs:element name="standardId" type="xs:string" minOccurs="0" />
             <xs:element name="inherit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="stylesheet" type="stylesheetType" minOccurs="0" maxOccurs="1" />
             <xs:element name="file" type="fileType" minOccurs="0" maxOccurs="unbounded" />
