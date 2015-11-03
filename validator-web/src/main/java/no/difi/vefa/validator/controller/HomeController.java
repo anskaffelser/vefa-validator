@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.controller;
 
+import no.difi.vefa.validator.service.PiwikService;
 import no.difi.vefa.validator.service.ValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,11 +21,14 @@ public class HomeController {
 
     @Autowired
     private ValidatorService validatorService;
+    @Autowired
+    private PiwikService piwikService;
 
     @RequestMapping
     public String view(ModelMap modelMap) {
         modelMap.put("packages", validatorService.getPackages());
 
+        piwikService.update(modelMap);
         return "home";
     }
 

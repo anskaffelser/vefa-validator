@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.controller;
 
+import no.difi.vefa.validator.service.PiwikService;
 import no.difi.vefa.validator.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -19,6 +20,8 @@ public class ValidationController {
 
     @Autowired
     private WorkspaceService workspaceService;
+    @Autowired
+    private PiwikService piwikService;
 
     @RequestMapping
     public String present(@PathVariable String identifier, ModelMap modelMap) throws Exception {
@@ -29,6 +32,7 @@ public class ValidationController {
         modelMap.put("report", workspaceService.getReport(identifier));
         modelMap.put("viewExists", workspaceService.getView(identifier).exists());
 
+        piwikService.update(modelMap);
         return "validation";
     }
 
