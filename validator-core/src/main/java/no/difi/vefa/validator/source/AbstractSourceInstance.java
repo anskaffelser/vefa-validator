@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.List;
 
-class AbstractSourceInstance implements SourceInstance {
+abstract class AbstractSourceInstance implements SourceInstance {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractSourceInstance.class);
 
@@ -40,7 +40,11 @@ class AbstractSourceInstance implements SourceInstance {
 
     protected FileSystem fileSystem;
 
+    protected Properties properties;
+
     public AbstractSourceInstance(Properties properties) {
+        this.properties = properties;
+
         List<FileSystemProvider> list = JimfsFileSystemProvider.installedProviders();
         try {
             URI uri = new URI("jimfs", "vefa", null, null);

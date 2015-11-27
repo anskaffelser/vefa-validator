@@ -1,15 +1,21 @@
 package no.difi.vefa.validator;
 
+import com.google.common.reflect.ClassPath;
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.checker.SvrlXsltChecker;
-import no.difi.vefa.validator.checker.XsdChecker;
-import no.difi.vefa.validator.declaration.UblDeclaration;
-import no.difi.vefa.validator.renderer.XsltRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Builder supporting creation of validator.
  */
 public class ValidatorBuilder {
+
+    private static Logger logger = LoggerFactory.getLogger(ValidatorBuilder.class);
 
     /**
      * Initiate creation of a new validator.
@@ -29,27 +35,17 @@ public class ValidatorBuilder {
     /**
      * Implementations of declarations to use.
      */
-    @SuppressWarnings("unchecked")
-    private Declaration[] declarationImpls = new Declaration[] {
-            new UblDeclaration()
-    };
+    private List<Declaration> declarations = new ArrayList<>();
 
     /**
      * Implementations of checker to use.
      */
-    @SuppressWarnings("unchecked")
-    private Class<? extends Checker>[] checkerImpls = new Class[] {
-            SvrlXsltChecker.class,
-            XsdChecker.class,
-    };
+    private List<Class<? extends Checker>> checkers = new ArrayList<>();
 
     /**
      * Implementations of renderer to use.
      */
-    @SuppressWarnings("unchecked")
-    private Class<? extends Renderer>[] rendererImpls = new Class[] {
-            XsltRenderer.class,
-    };
+    private List<Class<? extends Renderer>> renderers = new ArrayList<>();
 
     /**
      * Internal constructor, no action needed.
@@ -64,13 +60,87 @@ public class ValidatorBuilder {
      * @param checkerImpls Implementations
      * @return Builder
      */
+    @Deprecated
     public ValidatorBuilder setCheckerImpls(Class<? extends Checker>... checkerImpls) {
-        this.checkerImpls = checkerImpls;
+        this.checkers.clear();
+        Collections.addAll(this.checkers, checkerImpls);
+
         return this;
     }
 
+    ValidatorBuilder loadCheckers(String... namespaces) {
+        try {
+            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+
+            for (String namespace : namespaces) {
+                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
+                    logger.debug("Checker found: {}", classInfo.getName());
+                    Class<?> cls = classInfo.load();
+                    this.checkers.add((Class<? extends Checker>) cls);
+                }
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return this;
+    }
+
+    @Deprecated
     ValidatorBuilder setDeclarations(Declaration... declarations) {
-        this.declarationImpls = declarations;
+        this.declarations.clear();
+        Collections.addAll(this.declarations, declarations);
+
+        return this;
+    }
+
+    ValidatorBuilder loadDeclarations(String... namespaces) {
+        try {
+            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+
+            for (String namespace : namespaces) {
+                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
+                    logger.debug("Declaration found: {}", classInfo.getName());
+                    Class<?> cls = classInfo.load();
+                    this.declarations.add((Declaration) cls.newInstance());
+                }
+            }
+        } catch (IOException | InstantiationException | IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return this;
+    }
+
+    /**
+     * Defines implementations of Renderer to use.
+     *
+     * @param rendererImpls Implementations
+     * @return Builder
+     */
+    @Deprecated
+    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
+        this.renderers.clear();
+        Collections.addAll(this.renderers, rendererImpls);
+
+        return this;
+    }
+
+    ValidatorBuilder loadRenderers(String... namespaces) {
+        try {
+            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+
+            for (String namespace : namespaces) {
+                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
+                    logger.debug("Renderer found: {}", classInfo.getName());
+                    Class<?> cls = classInfo.load();
+                    this.renderers.add((Class<? extends Renderer>) cls);
+                }
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         return this;
     }
 
@@ -82,17 +152,6 @@ public class ValidatorBuilder {
      */
     public ValidatorBuilder setProperties(Properties properties) {
         this.validator.setProperties(properties);
-        return this;
-    }
-
-    /**
-     * Defines implementations of Renderer to use.
-     *
-     * @param rendererImpls Implementations
-     * @return Builder
-     */
-    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
-        this.rendererImpls = rendererImpls;
         return this;
     }
 
@@ -113,8 +172,20 @@ public class ValidatorBuilder {
      * @return Validator ready for use.
      * @throws ValidatorException
      */
+    @SuppressWarnings("unchecked")
     public Validator build() throws ValidatorException {
-        validator.load(checkerImpls, rendererImpls, declarationImpls);
+        if (checkers.isEmpty())
+            loadCheckers("no.difi.vefa.validator.checker");
+        if (declarations.isEmpty())
+            loadDeclarations("no.difi.vefa.validator.declaration");
+        if (renderers.isEmpty())
+            loadRenderers("no.difi.vefa.validator.renderer");
+
+        validator.load(
+                checkers.toArray(new Class[checkers.size()]),
+                renderers.toArray(new Class[renderers.size()]),
+                declarations.toArray(new Declaration[declarations.size()])
+        );
 
         return validator;
     }

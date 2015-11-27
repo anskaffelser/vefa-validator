@@ -7,11 +7,12 @@
 * no.difi.vefa.validator.api.Document.getDeclaration() returns a string, not an object.
 * Fixing methods in ValidatorBuilder returning void.
 * Adding support for Piwik in sample application. Not turned on by default.
+* Refactoring of validator-build.
 
 ## 2.0.1
 
 * Adding annotation XmlTransient to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
-* XsltChecker changed name to ScrlXsltChecker.
+* XsltChecker changed name to SvrlXsltChecker.
 * Changed signature of no.difi.vefa.validator.api.Source.createInstance(...).
 * Loading necessary modules when initiating JimFS. [#9](https://github.com/difi/vefa-validator/issues/9)
 

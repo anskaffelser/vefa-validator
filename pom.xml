@@ -68,8 +68,8 @@
     <properties>
         <java.encoding>UTF-8</java.encoding>
         <java.version>1.7</java.version>
-        <jackson.version>2.6.2</jackson.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <jackson.version>2.6.3</jackson.version>
+        <slf4j.version>1.7.13</slf4j.version>
         <tiles.version>3.0.5</tiles.version>
     </properties>
 
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.9.6</version>
+            <version>6.9.9</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -93,12 +93,12 @@
             </dependency>
             <dependency>
                 <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-core</artifactId>
+                <artifactId>validator-build</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-build</artifactId>
+                <artifactId>validator-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -118,7 +118,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>9.6.0-7</version>
+                <version>9.7.0-1</version>
             </dependency>
 
             <!-- Logging -->
@@ -160,11 +160,16 @@
                 <version>1.10</version>
             </dependency>
 
-            <!-- JimFS -->
+            <!-- Google -->
             <dependency>
                 <groupId>com.google.jimfs</groupId>
                 <artifactId>jimfs</artifactId>
                 <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

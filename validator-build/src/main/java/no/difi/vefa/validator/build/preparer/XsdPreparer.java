@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.build.preparer;
 
+import no.difi.vefa.validator.build.api.Build;
 import no.difi.vefa.validator.build.api.Preparer;
 import no.difi.vefa.validator.build.api.PreparerInfo;
 import org.apache.commons.io.IOUtils;
@@ -12,7 +13,7 @@ import java.io.FileInputStream;
 public class XsdPreparer implements Preparer {
 
     @Override
-    public ByteArrayOutputStream prepare(File file) throws Exception {
+    public ByteArrayOutputStream prepare(Build build, File file) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         FileInputStream inputStream = new FileInputStream(file);
 
@@ -22,5 +23,4 @@ public class XsdPreparer implements Preparer {
 
         return byteArrayOutputStream;
     }
-
 }

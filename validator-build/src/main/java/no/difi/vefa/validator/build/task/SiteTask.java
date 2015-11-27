@@ -1,8 +1,9 @@
-package no.difi.vefa.validator.build;
+package no.difi.vefa.validator.build.task;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import no.difi.vefa.validator.Validation;
+import no.difi.vefa.validator.build.api.Build;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -13,9 +14,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 
-class Site {
+public class SiteTask {
 
-    private static Logger logger = LoggerFactory.getLogger(Site.class);
+    private static Logger logger = LoggerFactory.getLogger(SiteTask.class);
 
     private File rootFolder;
     private File siteFolder;
@@ -28,16 +29,13 @@ class Site {
 
     private Configuration configuration;
 
-    public Site(File rootFolder, File siteFolder) throws Exception {
-        this.rootFolder = rootFolder;
-        this.siteFolder = siteFolder;
-
+    public SiteTask() throws Exception {
         configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setClassForTemplateLoading(getClass(), "/site");
     }
 
-    public void setConfigurations(Configurations configurations) {
+    private void setConfigurations(Configurations configurations) {
         this.configurations = configurations;
 
         Collections.sort(configurations.getConfiguration(), new Comparator<ConfigurationType>() {
@@ -53,7 +51,7 @@ class Site {
         Collections.sort(types);
     }
 
-    public void setValidations(List<Validation> validations) {
+    private void setValidations(List<Validation> validations) {
         this.validations = validations;
 
         for (Validation validation : validations) {
@@ -62,7 +60,13 @@ class Site {
         }
     }
 
-    public void build() throws Exception {
+    public void build(Build build) throws Exception {
+        this.rootFolder = build.getProjectPath().toFile();
+        this.siteFolder = new File(build.getTargetFolder().toFile(), "site");
+
+        setConfigurations(build.getConfigurations());
+        setValidations(build.getTestValidations());
+
         if (siteFolder.isDirectory())
             FileUtils.deleteDirectory(siteFolder);
         if (!siteFolder.mkdir())

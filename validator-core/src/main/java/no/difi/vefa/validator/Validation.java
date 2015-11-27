@@ -117,7 +117,14 @@ public class Validation {
                 report.setDescription(expectation.getDescription());
         }
 
-        document = new Document(byteArrayInputStream, declaration.detect(content), expectation);
+        if (declaration instanceof DeclarationAndConverter) {
+            ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
+            ((DeclarationAndConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
+
+            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(content), expectation);
+        } else {
+            document = new Document(byteArrayInputStream, declaration.detect(content), expectation);
+        }
     }
 
     void loadConfiguration() {

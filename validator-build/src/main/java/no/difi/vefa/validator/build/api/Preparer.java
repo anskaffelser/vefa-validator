@@ -4,5 +4,5 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public interface Preparer {
-    ByteArrayOutputStream prepare(File file) throws Exception;
+    ByteArrayOutputStream prepare(Build build, File file) throws Exception;
 }

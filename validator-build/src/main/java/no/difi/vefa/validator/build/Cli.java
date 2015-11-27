@@ -1,6 +1,9 @@
 package no.difi.vefa.validator.build;
 
 import no.difi.asic.SignatureHelper;
+import no.difi.vefa.validator.build.api.Build;
+import no.difi.vefa.validator.build.task.SiteTask;
+import no.difi.vefa.validator.build.task.TestTask;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,29 +31,29 @@ public class Cli {
         CommandLine cmd = parser.parse(options, args);
 
         for (String arg : cmd.getArgs()) {
-            Builder builder = new Builder(Paths.get(arg));
-
-            SignatureHelper signatureHelper = null;
+            SignatureHelper signatureHelper;
             if (cmd.hasOption("ksf")) {
                 logger.info("Signing information detected.");
                 signatureHelper = new SignatureHelper(
                         new File(cmd.getOptionValue("ksf")),
                         cmd.getOptionValue("ksp"),
                         cmd.getOptionValue("pkp"));
+            } else {
+                signatureHelper = new SignatureHelper(Cli.class.getResourceAsStream("/keystore-self-signed.jks"), "changeit", null, "changeit");
             }
 
-            builder.build(
-                    cmd.getOptionValue("name", "rules"),
-                    cmd.getOptionValue("build", UUID.randomUUID().toString()),
-                    Long.parseLong(cmd.getOptionValue("weight", "0")),
-                    signatureHelper
-            );
+            Build build = new Build(Paths.get(arg));
+            build.setSetting("name", cmd.getOptionValue("name", "rules"));
+            build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
+            build.setSetting("weight", cmd.getOptionValue("weight", "0"));
+
+            new Builder().build(build, signatureHelper);
 
             if (cmd.hasOption("test"))
-                builder.test();
+                new TestTask().test(build);
 
             if (cmd.hasOption("site"))
-                builder.site();
+                new SiteTask().build(build);
         }
     }
 }
