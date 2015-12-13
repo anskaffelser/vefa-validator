@@ -1,8 +1,8 @@
 package no.difi.vefa.validator.build;
 
 import no.difi.asic.*;
-import no.difi.vefa.validator.build.api.Build;
-import no.difi.vefa.validator.build.api.Preparer;
+import no.difi.vefa.validator.api.build.Build;
+import no.difi.vefa.validator.api.build.Preparer;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;

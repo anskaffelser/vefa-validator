@@ -1,9 +1,9 @@
 package no.difi.vefa.validator.service;
 
-import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
@@ -58,7 +58,7 @@ public class ValidatorService {
             }
 
             SimpleProperties config = new SimpleProperties();
-            List<Map.Entry<Object,Object>> entries = new ArrayList<>(propertiesFactoryBean.getObject().entrySet());
+            List<Map.Entry<Object, Object>> entries = new ArrayList<>(propertiesFactoryBean.getObject().entrySet());
             for (Map.Entry<Object, Object> entry : entries)
                 if (String.valueOf(entry.getKey()).startsWith("validator."))
                     config.set(entry.getKey().toString().substring(10), entry.getValue());

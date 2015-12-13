@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.build;
 
 import no.difi.asic.SignatureHelper;
-import no.difi.vefa.validator.build.api.Build;
+import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.build.task.SiteTask;
 import no.difi.vefa.validator.build.task.TestTask;
 import org.apache.commons.cli.*;

@@ -13,8 +13,11 @@ import java.io.*;
 
 /**
  * Result of a validation.
+ *
+ * Deprecated: Use no.difi.vefa.validator.api.Validation.
  */
-public class Validation {
+@Deprecated
+public class Validation implements no.difi.vefa.validator.api.Validation {
 
     /**
      * Logger.

@@ -1,4 +1,4 @@
-package no.difi.vefa.validator.build.api;
+package no.difi.vefa.validator.api.build;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

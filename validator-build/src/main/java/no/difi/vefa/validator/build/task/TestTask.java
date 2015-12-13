@@ -1,9 +1,9 @@
 package no.difi.vefa.validator.build.task;
 
-import no.difi.vefa.validator.Validation;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
-import no.difi.vefa.validator.build.api.Build;
+import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import org.apache.commons.io.FileUtils;

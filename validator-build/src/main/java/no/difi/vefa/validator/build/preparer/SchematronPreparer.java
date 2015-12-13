@@ -1,9 +1,9 @@
 package no.difi.vefa.validator.build.preparer;
 
 import no.difi.commons.schematron.SchematronTransformer;
-import no.difi.vefa.validator.build.api.Build;
-import no.difi.vefa.validator.build.api.Preparer;
-import no.difi.vefa.validator.build.api.PreparerInfo;
+import no.difi.vefa.validator.api.build.Build;
+import no.difi.vefa.validator.api.build.Preparer;
+import no.difi.vefa.validator.api.build.PreparerInfo;
 
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.ByteArrayOutputStream;

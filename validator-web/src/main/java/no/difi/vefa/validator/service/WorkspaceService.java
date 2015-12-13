@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.difi.vefa.validator.Validation;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.FileUtils;

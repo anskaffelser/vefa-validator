@@ -2,8 +2,8 @@ package no.difi.vefa.validator.build.task;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import no.difi.vefa.validator.Validation;
-import no.difi.vefa.validator.build.api.Build;
+import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.api.build.Build;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;

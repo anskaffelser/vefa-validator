@@ -1,6 +1,6 @@
-package no.difi.vefa.validator.build.api;
+package no.difi.vefa.validator.api.build;
 
-import no.difi.vefa.validator.Validation;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.io.File;
