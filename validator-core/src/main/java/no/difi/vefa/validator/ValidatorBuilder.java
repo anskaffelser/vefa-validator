@@ -100,12 +100,16 @@ public class ValidatorBuilder {
 
             for (String namespace : namespaces) {
                 for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
-                    logger.debug("Declaration found: {}", classInfo.getName());
                     Class<?> cls = classInfo.load();
-                    this.declarations.add((Declaration) cls.newInstance());
+                    try {
+                        this.declarations.add((Declaration) cls.newInstance());
+                        logger.debug("Declaration found: {}", classInfo.getName());
+                    } catch (Exception e) {
+                        logger.info("Unable to use {}; {}", cls, e.getMessage());
+                    }
                 }
             }
-        } catch (IOException | InstantiationException | IllegalAccessException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
 
