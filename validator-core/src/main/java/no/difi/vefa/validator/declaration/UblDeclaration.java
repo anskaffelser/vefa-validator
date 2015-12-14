@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.declaration;
 
-import com.sun.xml.internal.stream.events.CharacterEvent;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
@@ -11,6 +10,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
 
@@ -40,14 +40,14 @@ public class UblDeclaration implements Declaration {
 
                     if ("CustomizationID".equals(startElement.getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
-                        if (xmlEvent instanceof CharacterEvent)
-                            customizationId = ((CharacterEvent) xmlEvent).getData();
+                        if (xmlEvent instanceof Characters)
+                            customizationId = ((Characters) xmlEvent).getData();
                     }
 
                     if ("ProfileID".equals(startElement.getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
-                        if (xmlEvent instanceof CharacterEvent)
-                            profileId = ((CharacterEvent) xmlEvent).getData();
+                        if (xmlEvent instanceof Characters)
+                            profileId = ((Characters) xmlEvent).getData();
 
                         // ProfileID is the last in sequence.
                         return String.format("%s#%s", profileId, customizationId);
