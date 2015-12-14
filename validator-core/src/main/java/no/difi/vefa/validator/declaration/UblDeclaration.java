@@ -1,43 +1,64 @@
 package no.difi.vefa.validator.declaration;
 
+import com.sun.xml.internal.stream.events.CharacterEvent;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.XmlExpectation;
+import no.difi.vefa.validator.util.XmlUtils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
+import java.io.ByteArrayInputStream;
 
 /**
  * Document declaration for OASIS Universal Business Language (UBL).
  */
 public class UblDeclaration implements Declaration {
 
-    private static final Pattern regexCustomizationId = Pattern.compile("<\\w*:{0,1}CustomizationID.*>(.*)</\\w*:{0,1}CustomizationID\\s*>", Pattern.MULTILINE);
-    private static final Pattern regexProfileId = Pattern.compile("<\\w*:{0,1}ProfileID.*>(.*)</\\w*:{0,1}ProfileID\\s*>", Pattern.MULTILINE);
+    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
     public boolean verify(String content) throws ValidatorException {
-        return content.contains("urn:oasis:names:specification:ubl:schema:xsd:");
+        String namespace = XmlUtils.extractRootNamespace(content);
+        return namespace != null && namespace.startsWith("urn:oasis:names:specification:ubl:schema:xsd:");
     }
 
     public String detect(String content) throws ValidatorException {
         String customizationId = null;
         String profileId = null;
 
-        Matcher matcher = regexCustomizationId.matcher(content);
-        if (matcher.find())
-            customizationId = matcher.group(1).trim();
+        try {
+            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
+            while (xmlEventReader.hasNext()) {
+                XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
-        matcher = regexProfileId.matcher(content);
-        if (matcher.find())
-            profileId = matcher.group(1).trim();
+                if (xmlEvent.isStartElement()) {
+                    StartElement startElement = (StartElement) xmlEvent;
 
-        if (customizationId == null)
-            throw new ValidatorException("Unable to detect customizationId.");
-        if (profileId == null)
-            throw new ValidatorException("Unable to detect profileId.");
+                    if ("CustomizationID".equals(startElement.getName().getLocalPart())) {
+                        xmlEvent = xmlEventReader.nextEvent();
+                        if (xmlEvent instanceof CharacterEvent)
+                            customizationId = ((CharacterEvent) xmlEvent).getData();
+                    }
 
-        return String.format("%s#%s", profileId, customizationId);
+                    if ("ProfileID".equals(startElement.getName().getLocalPart())) {
+                        xmlEvent = xmlEventReader.nextEvent();
+                        if (xmlEvent instanceof CharacterEvent)
+                            profileId = ((CharacterEvent) xmlEvent).getData();
+
+                        // ProfileID is the last in sequence.
+                        return String.format("%s#%s", profileId, customizationId);
+                    }
+                }
+            }
+        } catch (XMLStreamException e) {
+            throw new ValidatorException(e.getMessage());
+        }
+
+        return null;
     }
 
     @Override

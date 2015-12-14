@@ -140,7 +140,7 @@ public class Validation implements no.difi.vefa.validator.api.Validation {
             this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
         } catch (ValidatorException e) {
             // Add FATAL to report if validation artifacts for declaration is not found
-            section.add("SYSTEM-003", "Unable to find validation configuration based on ProfileId and CustomizationId.", FlagType.FATAL);
+            section.add("SYSTEM-003", String.format("Unable to find validation configuration based on ProfileId and CustomizationId. (%s)", e.getMessage()), FlagType.FATAL);
             return;
         }
 
