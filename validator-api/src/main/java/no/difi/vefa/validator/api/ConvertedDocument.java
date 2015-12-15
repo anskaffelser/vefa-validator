@@ -10,4 +10,8 @@ public class ConvertedDocument extends Document {
         super(inputStream, declaration, expectation);
         this.source = source;
     }
+
+    public ByteArrayInputStream getSource() {
+        return source;
+    }
 }
