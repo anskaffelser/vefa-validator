@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/difi/vefa-validator.svg?branch=master)](https://travis-ci.org/difi/vefa-validator)
+
 # VEFA Validator 2.0
 
 Current version: **[2.0.1](https://github.com/difi/vefa-validator/releases/tag/2.0.1)**
