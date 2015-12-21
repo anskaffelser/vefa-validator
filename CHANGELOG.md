@@ -8,6 +8,8 @@
 * Fixing methods in ValidatorBuilder returning void.
 * Adding support for Piwik in sample application. Not turned on by default.
 * Refactoring of validator-build.
+* Adding SbdhDeclaration.
+* Updating to [Saxon 9.7](http://www.saxonica.com/products/latest.xml#saxon9-7).
 
 ## 2.0.1
 
