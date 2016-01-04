@@ -186,14 +186,12 @@ class ValidatorInstance implements Closeable {
         return section;
     }
 
-    public void close() {
+    @Override
+    public void close() throws IOException {
         checkerPool.clear();
         rendererPool.clear();
-        try {
-            validatorEngine.close();
-        } catch (IOException e) {
-            logger.info("Failed to close validator engine", e);
-        }
-            
+
+        // This is last statement, allow to propagate.
+        validatorEngine.close();
     }
 }

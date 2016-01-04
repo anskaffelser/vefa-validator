@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.List;
 
-abstract class AbstractSourceInstance implements SourceInstance {
+abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractSourceInstance.class);
 

@@ -1,10 +1,11 @@
 package no.difi.vefa.validator.api;
 
-import java.io.IOException;
 import java.nio.file.FileSystem;
 
 /**
  * An instance representing a source.
+ * <p/>
+ * Implementations in need of close() method should implement java.io.Closeable.
  */
 public interface SourceInstance {
 
@@ -14,7 +15,5 @@ public interface SourceInstance {
      * @return Filesystem instance.
      */
     FileSystem getFileSystem();
-    
-    void close() throws IOException;
 
 }

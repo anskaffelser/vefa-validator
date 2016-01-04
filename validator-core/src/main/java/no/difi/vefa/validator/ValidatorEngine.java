@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
@@ -19,7 +20,7 @@ import java.util.*;
  * This class handles all raw configurations detected in source of validation artifacts and preserves links
  * between source and configurations.
  */
-class ValidatorEngine {
+class ValidatorEngine implements Closeable {
 
     /**
      * Logger
@@ -234,8 +235,10 @@ class ValidatorEngine {
         String[] parts = resource.split("#", 2);
         return configurationSourceMap.get(parts[0]).resolve(parts[1]);
     }
-    
+
+    @Override
     public void close() throws IOException {
-        sourceInstance.close();
+        if (sourceInstance instanceof Closeable)
+            ((Closeable) sourceInstance).close();
     }
 }

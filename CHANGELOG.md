@@ -10,6 +10,7 @@
 * Refactoring of validator-build.
 * Adding SbdhDeclaration.
 * Updating to [Saxon 9.7](http://www.saxonica.com/products/latest.xml#saxon9-7).
+* Close Jimfs when closing the validator. [#22](https://github.com/difi/vefa-validator/pull/22)
 
 ## 2.0.1
 

@@ -134,8 +134,12 @@ public class Validator implements Closeable {
 
     @Override
     public void close() {
-        if (validatorInstance != null) {
-            validatorInstance.close();
+        try {
+            if (validatorInstance != null)
+                validatorInstance.close();
+        } catch (IOException e) {
+            logger.warn("Exception when closing Validator: {}", e.getMessage(), e);
+        } finally {
             validatorInstance = null;
         }
     }
