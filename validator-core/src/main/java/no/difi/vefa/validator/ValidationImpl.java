@@ -13,16 +13,13 @@ import java.io.*;
 
 /**
  * Result of a validation.
- *
- * Deprecated: Use no.difi.vefa.validator.api.Validation.
  */
-@Deprecated
-public class Validation implements no.difi.vefa.validator.api.Validation {
+class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(Validation.class);
+    private static Logger logger = LoggerFactory.getLogger(ValidationImpl.class);
 
     private ValidatorInstance validatorInstance;
     private Configuration configuration;
@@ -48,7 +45,7 @@ public class Validation implements no.difi.vefa.validator.api.Validation {
      * @param validatorInstance Instance of validator.
      * @param inputStream Document to validate.
      */
-    Validation(ValidatorInstance validatorInstance, InputStream inputStream) {
+    ValidationImpl(ValidatorInstance validatorInstance, InputStream inputStream) {
         long start = System.currentTimeMillis();
         this.validatorInstance = validatorInstance;
 

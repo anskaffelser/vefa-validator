@@ -2,6 +2,10 @@
 
 ## Next release
 
+* Changes visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
+
+## 2.0.2
+
 * Rewrite of Declaration.
 * Rewrite of Expectation.
 * no.difi.vefa.validator.api.Document.getDeclaration() returns a string, not an object.

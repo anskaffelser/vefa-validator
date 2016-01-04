@@ -1,7 +1,6 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
@@ -81,7 +80,7 @@ public class Validator implements Closeable {
      * @return Validation result.
      */
     public Validation validate(InputStream inputStream) {
-        return new no.difi.vefa.validator.Validation(this.validatorInstance, inputStream);
+        return new ValidationImpl(this.validatorInstance, inputStream);
     }
 
     /**

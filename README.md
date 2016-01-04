@@ -2,7 +2,7 @@
 
 # VEFA Validator 2.0
 
-Current version: **[2.0.1](https://github.com/difi/vefa-validator/releases/tag/2.0.1)**
+Current version: **[2.0.2](https://github.com/difi/vefa-validator/releases/tag/2.0.2)**
 
 
 ## Features
@@ -24,7 +24,7 @@ Include dependency in your pom.xml:
 <dependency>
 	<groupId>no.difi.vefa</groupId>
 	<artifactId>validator-core</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.2</version>
 </dependency>
 ```
 
