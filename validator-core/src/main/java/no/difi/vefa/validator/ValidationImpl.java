@@ -1,11 +1,11 @@
 package no.difi.vefa.validator;
 
+import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.Report;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         } else {
             // Convert stream to ByteArrayOutputStream
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            IOUtils.copy(inputStream, byteArrayOutputStream);
+            ByteStreams.copy(inputStream, byteArrayOutputStream);
             byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         }
 
@@ -182,6 +182,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      * @param outputStream Stream to use.
      * @throws Exception
      */
+    @Override
     public void render(OutputStream outputStream) throws Exception {
         render(outputStream, null);
     }
@@ -193,6 +194,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      * @param properties Extra configuration to use for this rendering.
      * @throws ValidatorException
      */
+    @Override
     public void render(OutputStream outputStream, Properties properties) throws ValidatorException {
         if (getReport().getFlag().equals(FlagType.FATAL))
             throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
@@ -209,6 +211,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      *
      * @return 'true' if validated document is renderable.
      */
+    @Override
     public boolean isRenderable() {
         return configuration != null && configuration.getStylesheet() != null && !getReport().getFlag().equals(FlagType.FATAL);
     }
@@ -218,6 +221,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      *
      * @return Document object.
      */
+    @Override
     public Document getDocument() {
         return document;
     }
@@ -227,6 +231,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      *
      * @return Report
      */
+    @Override
     public Report getReport() {
         return report;
     }

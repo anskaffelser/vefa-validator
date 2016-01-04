@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.util;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.ByteStreams;
 import org.w3c.dom.ls.LSInput;
 
 import java.io.ByteArrayOutputStream;
@@ -25,7 +25,7 @@ public class PathLSInput implements LSInput {
 
         try {
             InputStream inputStream = Files.newInputStream(file);
-            IOUtils.copy(inputStream, outputStream);
+            ByteStreams.copy(inputStream, outputStream);
             inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);

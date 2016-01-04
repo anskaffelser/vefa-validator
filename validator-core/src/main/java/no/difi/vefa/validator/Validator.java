@@ -55,7 +55,7 @@ public class Validator implements Closeable {
      * @return Validation result.
      * @throws IOException
      */
-    public no.difi.vefa.validator.api.Validation validate(File file) throws IOException {
+    public Validation validate(File file) throws IOException {
         return validate(file.toPath());
     }
 
