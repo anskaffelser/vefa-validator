@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 
+import no.difi.vefa.validator.api.Validation;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.junit.Assert;
 import org.testng.annotations.BeforeClass;

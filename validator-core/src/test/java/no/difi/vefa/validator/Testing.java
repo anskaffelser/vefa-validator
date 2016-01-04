@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
