@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.api;
 
+import java.io.IOException;
 import java.nio.file.FileSystem;
 
 /**
@@ -13,5 +14,7 @@ public interface SourceInstance {
      * @return Filesystem instance.
      */
     FileSystem getFileSystem();
+    
+    void close() throws IOException;
 
 }

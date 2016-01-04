@@ -64,10 +64,14 @@ class ValidatorEngine {
      */
     private List<PackageType> packages = new ArrayList<>();
 
+    private SourceInstance sourceInstance;
+    
     /**
      * Loading a new validator engine loading configurations from current source.
      */
     ValidatorEngine(SourceInstance sourceInstance) throws ValidatorException {
+        this.sourceInstance = sourceInstance;
+        
         // Matcher to find configuration files.
         final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
 
@@ -229,5 +233,9 @@ class ValidatorEngine {
     public Path getResource(String resource) throws IOException {
         String[] parts = resource.split("#", 2);
         return configurationSourceMap.get(parts[0]).resolve(parts[1]);
+    }
+    
+    public void close() throws IOException {
+        sourceInstance.close();
     }
 }

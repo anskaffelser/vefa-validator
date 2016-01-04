@@ -6,11 +6,13 @@ import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
+
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -187,5 +189,11 @@ class ValidatorInstance implements Closeable {
     public void close() {
         checkerPool.clear();
         rendererPool.clear();
+        try {
+            validatorEngine.close();
+        } catch (IOException e) {
+            logger.info("Failed to close validator engine", e);
+        }
+            
     }
 }
