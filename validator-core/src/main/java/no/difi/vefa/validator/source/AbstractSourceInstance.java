@@ -89,4 +89,12 @@ abstract class AbstractSourceInstance implements SourceInstance {
     public FileSystem getFileSystem() {
         return fileSystem;
     }
+    
+    @Override
+    public void close() throws IOException {
+        if (fileSystem != null) {
+            fileSystem.close();
+            fileSystem = null;
+        }
+    }
 }
