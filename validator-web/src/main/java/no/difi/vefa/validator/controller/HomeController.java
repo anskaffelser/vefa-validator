@@ -3,7 +3,6 @@ package no.difi.vefa.validator.controller;
 import no.difi.vefa.validator.service.PiwikService;
 import no.difi.vefa.validator.service.ValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +33,9 @@ public class HomeController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String upload(@RequestParam("file") MultipartFile file) throws Exception {
+        if (file.getSize() == 0)
+            return "redirect:/";
+
         InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 
         if ("application/x-gzip".equals(file.getContentType()))

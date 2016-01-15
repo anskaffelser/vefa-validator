@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="input-group input-group-lg">
-                <input type="file" name="file" class="form-control">
+                <input type="file" name="file" class="form-control" required="required" />
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">Validate!</button>
                 </span>
