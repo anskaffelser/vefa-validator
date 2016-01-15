@@ -93,10 +93,12 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         }
 
+        document = new Document(byteArrayInputStream, null, null);
+
         // Read first 10kB for detections
         byte[] bytes = new byte[10*1024];
-        byteArrayInputStream.read(bytes);
-        String content = new String(bytes);
+        int length = byteArrayInputStream.read(bytes);
+        String content = new String(bytes).substring(0, length);
 
         // Use declaration implementations to detect declaration to use.
         Declaration declaration = null;
