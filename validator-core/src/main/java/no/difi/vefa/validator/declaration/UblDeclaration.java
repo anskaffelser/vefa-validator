@@ -13,6 +13,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.text.ParseException;
 
 /**
  * Document declaration for OASIS Universal Business Language (UBL).
@@ -54,11 +55,11 @@ public class UblDeclaration implements Declaration {
                     }
                 }
             }
-        } catch (XMLStreamException e) {
-            throw new ValidatorException(e.getMessage());
+        } catch (Exception e) {
+            // No action.
         }
 
-        return null;
+        throw new ValidatorException("Unable to find CustomizationID and ProfileID.");
     }
 
     @Override
