@@ -165,6 +165,7 @@ class ValidatorInstance implements Closeable {
      */
     Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
         Checker checker;
+        int count = checkerPool.getNumActive() + checkerPool.getNumIdle();
         try {
             checker = checkerPool.borrowObject(fileType.getPath());
         } catch (Exception e) {
@@ -181,6 +182,10 @@ class ValidatorInstance implements Closeable {
         } finally {
             checkerPool.returnObject(fileType.getPath(), checker);
         }
+
+        int newCount = checkerPool.getNumActive() + checkerPool.getNumIdle();
+        if (count != newCount)
+            logger.info("Num checerks: {}", newCount);
 
         return section;
     }
