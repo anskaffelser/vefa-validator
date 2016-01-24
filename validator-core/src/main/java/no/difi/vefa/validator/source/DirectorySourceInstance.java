@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * Defines a directory as source for validation artifacts.
@@ -31,12 +32,12 @@ class DirectorySourceInstance extends AbstractSourceInstance {
      * @param directories Directories containing validation artifacts.
      * @throws ValidatorException
      */
-    public DirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
+    public DirectorySourceInstance(Properties properties, Set<String> capabilities, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
         super(properties);
 
         for (Path directory : directories) {
-            logger.info(String.format("Directory: %s", directory));
+            logger.info("Directory: {}", directory);
 
             try {
                 // Directories containing artifacts.xml results in lower memory footprint.
@@ -46,21 +47,30 @@ class DirectorySourceInstance extends AbstractSourceInstance {
 
                     // Read artifacts.xml
                     Path artifactsPath = directory.resolve("artifacts.xml");
-                    logger.info(String.format("Loading %s", artifactsPath));
+                    logger.info("Loading {}", artifactsPath);
                     Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(Files.newInputStream(artifactsPath));
 
                     // Loop through artifacts.
                     for (ArtifactType artifact : artifactsType.getArtifact()) {
-                        // Load validation artifact to memory.
-                        Path artifactPath = directory.resolve(artifact.getFilename());
-                        logger.info(String.format("Loading %s", artifactPath));
-                        unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
+                        boolean loadArtifact = true;
+
+                        if (artifact.getCapabilities() != null)
+                            for (String capability : artifact.getCapabilities().split(","))
+                                if (capabilities.contains(capability))
+                                    loadArtifact = false;
+
+                        if (loadArtifact) {
+                            // Load validation artifact to memory.
+                            Path artifactPath = directory.resolve(artifact.getFilename());
+                            logger.info("Loading {}", artifactPath);
+                            unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
+                        }
                     }
                 } else {
                     // Detect all ASiC-E-files in the directory.
                     for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
                         // Load validation artifact to memory.
-                        logger.info(String.format("Loading: %s", file));
+                        logger.info("Loading: {}", file);
                         unpackContainer(asicReaderFactory.open(file), file.getName());
                     }
                 }

@@ -1,9 +1,13 @@
 # Changelog
 
+
 ## Next release
 
-* Changes visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
+* Changed visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
 * Allow multiple directories when using DirectorySource and SimpleDirectorySource.
+* Refactored ValidatorBuilder to use ValidatorPlugin to declare functionality.
+* Support for capabilities when loading artificats.
+
 
 ## 2.0.2
 
@@ -17,12 +21,14 @@
 * Updating to [Saxon 9.7](http://www.saxonica.com/products/latest.xml#saxon9-7).
 * Close Jimfs when closing the validator. [#22](https://github.com/difi/vefa-validator/pull/22)
 
+
 ## 2.0.1
 
 * Adding annotation XmlTransient to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
 * XsltChecker changed name to SvrlXsltChecker.
 * Changed signature of no.difi.vefa.validator.api.Source.createInstance(...).
 * Loading necessary modules when initiating JimFS. [#9](https://github.com/difi/vefa-validator/issues/9)
+
 
 ## 2.0.0
 
@@ -33,6 +39,7 @@
 * Functionality to sign validation artifacts defined by parameters.
 * Fixing UTF-8 thing in presentation of rendered documents in sample application.
 * Allow override of implementations of checker og renderer to use.
+
 
 ## 2.0.0-RC2
 
@@ -46,6 +53,7 @@
 * Renaming 'Presenter' and associated to 'Renderer' for better communication. 
 * Moving no.difi.vefa.validator.api to module validator-api.
 * More Javadoc in code.
+
 
 ## 2.0.0-RC1
 

@@ -1,14 +1,14 @@
 package no.difi.vefa.validator;
 
-import com.google.common.reflect.ClassPath;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.plugin.SbdhPlugin;
+import no.difi.vefa.validator.plugin.UblPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Builder supporting creation of validator.
@@ -18,12 +18,22 @@ public class ValidatorBuilder {
     private static Logger logger = LoggerFactory.getLogger(ValidatorBuilder.class);
 
     /**
+     * Initiate creation of a new validator. Loads default plugins.
+     *
+     * @return Builder
+     */
+    public static ValidatorBuilder newValidator() {
+        return emptyValidator()
+                .plugin(UblPlugin.class)
+                .plugin(SbdhPlugin.class);
+    }
+
+    /**
      * Initiate creation of a new validator.
      *
      * @return Builder
-     * @throws ValidatorException
      */
-    public static ValidatorBuilder newValidator() throws ValidatorException{
+    public static ValidatorBuilder emptyValidator() {
         return new ValidatorBuilder();
     }
 
@@ -32,20 +42,22 @@ public class ValidatorBuilder {
      */
     private Validator validator = new Validator();
 
+    private Set<String> capabilities = new HashSet<>();
+
     /**
      * Implementations of declarations to use.
      */
-    private List<Declaration> declarations = new ArrayList<>();
+    private Set<Declaration> declarations = new HashSet<>();
 
     /**
      * Implementations of checker to use.
      */
-    private List<Class<? extends Checker>> checkers = new ArrayList<>();
+    private Set<Class<? extends Checker>> checkers = new HashSet<>();
 
     /**
      * Implementations of renderer to use.
      */
-    private List<Class<? extends Renderer>> renderers = new ArrayList<>();
+    private Set<Class<? extends Renderer>> renderers = new HashSet<>();
 
     /**
      * Internal constructor, no action needed.
@@ -57,94 +69,69 @@ public class ValidatorBuilder {
     /**
      * Defines implementations of Checker to use.
      *
-     * @param checkerImpls Implementations
+     * @param checkers Implementations
      * @return Builder
      */
-    @Deprecated
-    public ValidatorBuilder setCheckerImpls(Class<? extends Checker>... checkerImpls) {
-        this.checkers.clear();
-        Collections.addAll(this.checkers, checkerImpls);
-
+    @SafeVarargs
+    public final ValidatorBuilder checker(Class<? extends Checker>... checkers) {
+        Collections.addAll(this.checkers, checkers);
         return this;
     }
 
-    ValidatorBuilder loadCheckers(String... namespaces) {
-        try {
-            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+    @Deprecated
+    public ValidatorBuilder setCheckerImpls(Class<? extends Checker>... checkerImpls) {
+        this.checkers.clear();
+        return checker(checkerImpls);
+    }
 
-            for (String namespace : namespaces) {
-                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
-                    logger.debug("Checker found: {}", classInfo.getName());
-                    Class<?> cls = classInfo.load();
-                    this.checkers.add((Class<? extends Checker>) cls);
-                }
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
+    public ValidatorBuilder declaration(Declaration... declarations) {
+        Collections.addAll(this.declarations, declarations);
         return this;
     }
 
     @Deprecated
     ValidatorBuilder setDeclarations(Declaration... declarations) {
         this.declarations.clear();
-        Collections.addAll(this.declarations, declarations);
-
-        return this;
-    }
-
-    ValidatorBuilder loadDeclarations(String... namespaces) {
-        try {
-            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
-
-            for (String namespace : namespaces) {
-                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
-                    Class<?> cls = classInfo.load();
-                    try {
-                        this.declarations.add((Declaration) cls.newInstance());
-                        logger.debug("Declaration found: {}", classInfo.getName());
-                    } catch (Exception e) {
-                        logger.info("Unable to use {}; {}", cls, e.getMessage());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return this;
+        return declaration(declarations);
     }
 
     /**
      * Defines implementations of Renderer to use.
      *
-     * @param rendererImpls Implementations
+     * @param renderers Implementations
      * @return Builder
      */
-    @Deprecated
-    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
-        this.renderers.clear();
-        Collections.addAll(this.renderers, rendererImpls);
-
+    @SafeVarargs
+    public final ValidatorBuilder renderer(Class<? extends Renderer>... renderers) {
+        Collections.addAll(this.renderers, renderers);
         return this;
     }
 
-    ValidatorBuilder loadRenderers(String... namespaces) {
-        try {
-            ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+    @Deprecated
+    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
+        this.renderers.clear();
+        return renderer(rendererImpls);
+    }
 
-            for (String namespace : namespaces) {
-                for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClasses(namespace)) {
-                    logger.debug("Renderer found: {}", classInfo.getName());
-                    Class<?> cls = classInfo.load();
-                    this.renderers.add((Class<? extends Renderer>) cls);
-                }
+    @SafeVarargs
+    public final ValidatorBuilder plugin(Class<? extends ValidatorPlugin>... plugins) {
+        for (Class<? extends ValidatorPlugin> plugin : plugins) {
+            try {
+                plugin(plugin.newInstance());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         }
+        return this;
+    }
 
+    public ValidatorBuilder plugin(ValidatorPlugin... plugins) {
+        for (ValidatorPlugin plugin : plugins) {
+            this.capabilities.addAll(plugin.capabilities());
+            this.checkers.addAll(plugin.checkers());
+            this.declarations.addAll(plugin.declarations());
+            this.renderers.addAll(plugin.renderers());
+        }
         return this;
     }
 
@@ -178,17 +165,11 @@ public class ValidatorBuilder {
      */
     @SuppressWarnings("unchecked")
     public Validator build() throws ValidatorException {
-        if (checkers.isEmpty())
-            loadCheckers("no.difi.vefa.validator.checker");
-        if (declarations.isEmpty())
-            loadDeclarations("no.difi.vefa.validator.declaration");
-        if (renderers.isEmpty())
-            loadRenderers("no.difi.vefa.validator.renderer");
-
         validator.load(
                 checkers.toArray(new Class[checkers.size()]),
                 renderers.toArray(new Class[renderers.size()]),
-                declarations.toArray(new Declaration[declarations.size()])
+                declarations.toArray(new Declaration[declarations.size()]),
+                capabilities
         );
 
         return validator;

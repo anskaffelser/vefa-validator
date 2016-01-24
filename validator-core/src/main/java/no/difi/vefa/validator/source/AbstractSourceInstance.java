@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.List;
+import java.util.Set;
 
 abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 

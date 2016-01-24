@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * Defines a directory as source for validation artifacts.
@@ -27,7 +28,7 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
      * @param directories Directories containing validation artifacts.
      * @throws ValidatorException
      */
-    public SimpleDirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
+    public SimpleDirectorySourceInstance(Properties properties, Set<String> capabilities, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
         super(properties);
 

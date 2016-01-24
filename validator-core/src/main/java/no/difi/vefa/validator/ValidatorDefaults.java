@@ -17,6 +17,7 @@ class ValidatorDefaults {
         // feature
         .set("feature.expectation", false)
         .set("feature.suppress_notloaded", false)
+        .set("feature.nesting", false)
 
         // pools.checker
         .set("pools.checker.blockerWhenExhausted", GenericKeyedObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED)

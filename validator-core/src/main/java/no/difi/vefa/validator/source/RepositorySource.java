@@ -6,6 +6,7 @@ import no.difi.vefa.validator.api.SourceInstance;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
 
 /**
  * Defines a repository as source for validation artifacts.
@@ -44,7 +45,7 @@ public class RepositorySource extends AbstractSource {
     }
 
     @Override
-    public SourceInstance createInstance(Properties properties) throws ValidatorException{
-        return new RepositorySourceInstance(properties, rootUri);
+    public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException{
+        return new RepositorySourceInstance(properties, capabilities, rootUri);
     }
 }

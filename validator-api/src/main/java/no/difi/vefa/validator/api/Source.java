@@ -1,5 +1,7 @@
 package no.difi.vefa.validator.api;
 
+import java.util.Set;
+
 /**
  * Source for validation artifacts.
  */
@@ -11,6 +13,6 @@ public interface Source {
      * @throws ValidatorException
      * @return Instance containing validation artifacts.
      */
-    SourceInstance createInstance(Properties properties) throws ValidatorException;
+    SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException;
 
 }

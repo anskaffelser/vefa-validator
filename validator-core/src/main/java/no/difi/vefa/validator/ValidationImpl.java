@@ -39,6 +39,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      */
     private Document document;
 
+    private Declaration declaration = null;
+
     /**
      * Constructing new validator using validator instance and #InputStream containing document to validate.
      *
@@ -81,7 +83,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         report.setRuntime((System.currentTimeMillis() - start) + "ms");
     }
 
-    void loadDocument(InputStream inputStream) throws ValidatorException, IOException {
+    private void loadDocument(InputStream inputStream) throws ValidatorException, IOException {
         ByteArrayInputStream byteArrayInputStream;
         if (inputStream instanceof ByteArrayInputStream) {
             // Use stream as-is.
@@ -101,7 +103,6 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         String content = new String(bytes).trim();
 
         // Use declaration implementations to detect declaration to use.
-        Declaration declaration = null;
         for (Declaration d : validatorInstance.getDeclarations()) {
             if (d.verify(content)) {
                 declaration = d;
@@ -119,9 +120,9 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
                 report.setDescription(expectation.getDescription());
         }
 
-        if (declaration instanceof DeclarationAndConverter) {
+        if (declaration instanceof DeclarationWithConverter) {
             ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
-            ((DeclarationAndConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
+            ((DeclarationWithConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
 
             document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(content), expectation);
         } else {
@@ -129,7 +130,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         }
     }
 
-    void loadConfiguration() {
+    private void loadConfiguration() {
         // Default values for report
         report.setTitle("Unknown document type");
         report.setFlag(FlagType.FATAL);
@@ -139,7 +140,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
         } catch (ValidatorException e) {
             // Add FATAL to report if validation artifacts for declaration is not found
-            section.add("SYSTEM-003", String.format("Unable to find validation configuration based on identifier '%s'.", e.getMessage()), FlagType.FATAL);
+            section.add("SYSTEM-003", e.getMessage(), FlagType.FATAL);
             return;
         }
 
@@ -154,7 +155,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         report.setFlag(FlagType.OK);
     }
 
-    void validate() {
+    private void validate() {
         for (FileType fileType : configuration.getFile()) {
             logger.debug("Validate: " + fileType.getPath());
 
@@ -176,6 +177,18 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
         if (document.getExpectation() != null)
             document.getExpectation().verify(section);
+
+        // Handling nested validation.
+        if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting"))
+            for (InputStream inputStream : ((DeclarationWithChildren) declaration).children(document.getInputStream()))
+                addChildValidation(new ValidationImpl(validatorInstance, inputStream));
+    }
+
+    private void addChildValidation(Validation validation) {
+        if (report.getChildren() == null)
+            report.setChildren(new Report.Children());
+
+        report.getChildren().getReport().add(validation.getReport());
     }
 
     /**
@@ -237,5 +250,4 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     public Report getReport() {
         return report;
     }
-
 }
