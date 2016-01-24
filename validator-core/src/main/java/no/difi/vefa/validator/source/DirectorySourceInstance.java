@@ -28,45 +28,47 @@ class DirectorySourceInstance extends AbstractSourceInstance {
     /**
      * Constructor, loads validation artifacts into memory.
      *
-     * @param directory Directory containing validation artifacts.
+     * @param directories Directories containing validation artifacts.
      * @throws ValidatorException
      */
-    public DirectorySourceInstance(Properties properties, Path directory) throws ValidatorException {
+    public DirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
         super(properties);
 
-        logger.info(String.format("Directory: %s", directory));
+        for (Path directory : directories) {
+            logger.info(String.format("Directory: %s", directory));
 
-        try {
-            // Directories containing artifacts.xml results in lower memory footprint.
-            if (Files.exists(directory.resolve("artifacts.xml"))) {
-                // Create unmarshaller (XML => Java)
-                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            try {
+                // Directories containing artifacts.xml results in lower memory footprint.
+                if (Files.exists(directory.resolve("artifacts.xml"))) {
+                    // Create unmarshaller (XML => Java)
+                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-                // Read artifacts.xml
-                Path artifactsPath = directory.resolve("artifacts.xml");
-                logger.info(String.format("Loading %s", artifactsPath));
-                Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(Files.newInputStream(artifactsPath));
+                    // Read artifacts.xml
+                    Path artifactsPath = directory.resolve("artifacts.xml");
+                    logger.info(String.format("Loading %s", artifactsPath));
+                    Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(Files.newInputStream(artifactsPath));
 
-                // Loop through artifacts.
-                for (ArtifactType artifact : artifactsType.getArtifact()) {
-                    // Load validation artifact to memory.
-                    Path artifactPath = directory.resolve(artifact.getFilename());
-                    logger.info(String.format("Loading %s", artifactPath));
-                    unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
+                    // Loop through artifacts.
+                    for (ArtifactType artifact : artifactsType.getArtifact()) {
+                        // Load validation artifact to memory.
+                        Path artifactPath = directory.resolve(artifact.getFilename());
+                        logger.info(String.format("Loading %s", artifactPath));
+                        unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
+                    }
+                } else {
+                    // Detect all ASiC-E-files in the directory.
+                    for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
+                        // Load validation artifact to memory.
+                        logger.info(String.format("Loading: %s", file));
+                        unpackContainer(asicReaderFactory.open(file), file.getName());
+                    }
                 }
-            } else {
-                // Detect all ASiC-E-files in the directory.
-                for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
-                    // Load validation artifact to memory.
-                    logger.info(String.format("Loading: %s", file));
-                    unpackContainer(asicReaderFactory.open(file), file.getName());
-                }
+            } catch (Exception e) {
+                // Log and throw ValidatorException.
+                logger.warn(e.getMessage());
+                throw new ValidatorException(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            // Log and throw ValidatorException.
-            logger.warn(e.getMessage());
-            throw new ValidatorException(e.getMessage(), e);
         }
     }
 }

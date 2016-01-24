@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,11 @@ public class ValidatorService {
 
             switch (propSource) {
                 case "directory":
-                    source = new DirectorySource(Paths.get(dirRules));
+                    List<Path> paths = new ArrayList<>();
+                    for (String dir : dirRules.split(";"))
+                        paths.add(Paths.get(dir));
+
+                    source = new DirectorySource(paths.toArray(new Path[paths.size()]));
                     break;
                 case "repository":
                     source = new RepositorySource(propRepository);

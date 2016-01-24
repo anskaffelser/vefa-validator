@@ -3,6 +3,7 @@
 ## Next release
 
 * Changes visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
+* Allow multiple directories when using DirectorySource and SimpleDirectorySource.
 
 ## 2.0.2
 

@@ -24,26 +24,28 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
     /**
      * Constructor, loads validation artifacts into memory.
      *
-     * @param directory Directory containing validation artifacts.
+     * @param directories Directories containing validation artifacts.
      * @throws ValidatorException
      */
-    public SimpleDirectorySourceInstance(Properties properties, Path directory) throws ValidatorException {
+    public SimpleDirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
         super(properties);
 
-        logger.info(String.format("Directory: %s", directory));
+        for (Path directory : directories) {
+            logger.info(String.format("Directory: %s", directory));
 
-        try {
-            // Detect all ASiC-E-files in the directory.
-            for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
-                // Load validation artifact to memory.
-                logger.info(String.format("Loading: %s", file));
-                unpackContainer(asicReaderFactory.open(file), file.getName());
+            try {
+                // Detect all ASiC-E-files in the directory.
+                for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
+                    // Load validation artifact to memory.
+                    logger.info(String.format("Loading: %s", file));
+                    unpackContainer(asicReaderFactory.open(file), file.getName());
+                }
+            } catch (Exception e) {
+                // Log and throw ValidatorException.
+                logger.warn(e.getMessage());
+                throw new ValidatorException(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            // Log and throw ValidatorException.
-            logger.warn(e.getMessage());
-            throw new ValidatorException(e.getMessage(), e);
         }
     }
 }

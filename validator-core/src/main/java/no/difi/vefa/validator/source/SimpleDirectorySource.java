@@ -11,19 +11,19 @@ import java.nio.file.Path;
  */
 public class SimpleDirectorySource extends AbstractSource {
 
-    private Path directory;
+    private Path[] directories;
 
     /**
      * Initiate the new source.
      *
-     * @param directory Directory containing validation artifacts.
+     * @param directories Directory containing validation artifacts.
      */
-    public SimpleDirectorySource(Path directory) {
-        this.directory = directory;
+    public SimpleDirectorySource(Path... directories) {
+        this.directories = directories;
     }
 
     @Override
     public SourceInstance createInstance(Properties properties) throws ValidatorException {
-        return new SimpleDirectorySourceInstance(properties, directory);
+        return new SimpleDirectorySourceInstance(properties, directories);
     }
 }
