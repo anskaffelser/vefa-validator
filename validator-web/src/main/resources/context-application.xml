@@ -27,6 +27,7 @@
 
     <context:component-scan base-package="no.difi.vefa.validator">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
     </context:component-scan>
 
     <task:annotation-driven />

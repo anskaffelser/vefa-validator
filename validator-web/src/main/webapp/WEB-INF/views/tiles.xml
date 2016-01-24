@@ -12,4 +12,8 @@
         <put-attribute name="main" value="/WEB-INF/views/validation.jsp" />
     </definition>
 
+    <definition name="error" extends="template">
+        <put-attribute name="main" value="/WEB-INF/views/error.jsp" />
+    </definition>
+
 </tiles-definitions>
