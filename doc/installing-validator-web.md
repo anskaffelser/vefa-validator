@@ -6,6 +6,7 @@ Validator-web is not created to be an API, and future improvements may break beh
 
 It is the application made available by Difi to support developers testing files during implementation of supported standards.
 
+
 ## Getting a war
 
 The war-file is compiled and available for download from Maven Central, but may also be created using Maven. For maven, this is the command:
@@ -16,11 +17,13 @@ mvn clean package
 
 After compiling is the war file available in 'PROJECTROOT\validator-web\target'.
 
+
 ## Installing war
 
 The war file is created to run on an application server. Difi uses Tomcat 7.
 
 Please consult documentation of your application server.
+
 
 ## Configuration
 
