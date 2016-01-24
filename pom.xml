@@ -68,9 +68,7 @@
     <properties>
         <java.encoding>UTF-8</java.encoding>
         <java.version>1.7</java.version>
-        <jackson.version>2.6.3</jackson.version>
         <slf4j.version>1.7.13</slf4j.version>
-        <tiles.version>3.0.5</tiles.version>
     </properties>
 
     <dependencies>

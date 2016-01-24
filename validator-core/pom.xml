@@ -60,14 +60,26 @@
     </licenses>
 
     <dependencies>
+
+        <!-- VEFA Validator -->
         <dependency>
             <groupId>no.difi.vefa</groupId>
             <artifactId>validator-api</artifactId>
         </dependency>
+
+        <!-- Difi Commons -->
+        <dependency>
+            <groupId>no.difi.commons</groupId>
+            <artifactId>commons-asic</artifactId>
+        </dependency>
+
+        <!-- Saxon -->
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
         </dependency>
+
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -77,14 +89,14 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.difi.commons</groupId>
-            <artifactId>commons-asic</artifactId>
-        </dependency>
+
+        <!-- Google -->
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
