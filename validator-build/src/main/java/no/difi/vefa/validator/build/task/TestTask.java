@@ -19,27 +19,34 @@ public class TestTask {
     private static Logger logger = LoggerFactory.getLogger(TestTask.class);
 
     public void test(Build build) throws Exception {
-        Validator validator = ValidatorBuilder
-                .newValidator()
-                .setProperties(new SimpleProperties()
-                                .set("feature.expectation", true)
-                                .set("feature.suppress_notloaded", true)
-                )
-                .setSource(new DirectorySource(build.getTargetFolder()))
-                .build();
+        Validator validator = null;
 
-        for (Path testFolder : build.getTestFolders()) {
-            for (File file : FileUtils.listFiles(testFolder.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE)) {
-                try {
-                    Validation validation = validator.validate(file);
-                    validation.getReport().setFilename(file.toString());
+        try {
+            validator = ValidatorBuilder
+                    .newValidator()
+                    .setProperties(new SimpleProperties()
+                                    .set("feature.expectation", true)
+                                    .set("feature.suppress_notloaded", true)
+                    )
+                    .setSource(new DirectorySource(build.getTargetFolder()))
+                    .build();
 
-                    build.addTestValidation(validation);
-                    logger.info(String.format("%s (%s)", file, validation.getReport().getFlag()));
-                } catch (Exception e) {
-                    logger.warn(String.format("%s (%s)", file, e.getMessage()));
+            for (Path testFolder : build.getTestFolders()) {
+                for (File file : FileUtils.listFiles(testFolder.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE)) {
+                    try {
+                        Validation validation = validator.validate(file);
+                        validation.getReport().setFilename(file.toString());
+
+                        build.addTestValidation(validation);
+                        logger.info(String.format("%s (%s)", file, validation.getReport().getFlag()));
+                    } catch (Exception e) {
+                        logger.warn(String.format("%s (%s)", file, e.getMessage()));
+                    }
                 }
             }
+        } finally {
+            if (validator != null)
+                validator.close();
         }
     }
 }
