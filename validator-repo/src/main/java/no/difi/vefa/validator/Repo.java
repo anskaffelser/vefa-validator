@@ -80,7 +80,7 @@ public class Repo {
         // Run through all valid declarations in the validator engine.
         for (String declaration : validatorEngine.getDeclarations()) {
             // Fetch configuration
-            Configuration configuration = new Configuration(validatorEngine.getConfiguration(declaration));
+            Configuration configuration = new Configuration(validatorEngine.getConfigurationByDeclaration(declaration));
             // Normalize it to detect resources used and referenced.
             configuration.normalize(validatorEngine);
 
