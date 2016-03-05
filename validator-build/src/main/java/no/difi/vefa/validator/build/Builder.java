@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.build;
 
+import com.google.common.base.Joiner;
 import no.difi.asic.*;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
@@ -17,6 +18,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Builder {
 
@@ -50,6 +53,9 @@ public class Builder {
      * @throws Exception
      */
     public void build(Build build, SignatureHelper signatureHelper) throws Exception {
+        if (signatureHelper == null)
+            signatureHelper = new SignatureHelper(Cli.class.getResourceAsStream("/keystore-self-signed.jks"), "changeit", null, "changeit");
+
         File workFolder = build.getProjectPath().toFile();
 
         logger.info(String.format("Using folder: %s", workFolder.getAbsolutePath()));
@@ -61,6 +67,8 @@ public class Builder {
 
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         AsicWriter asicWriter = asicWriterFactory.newContainer(new File(build.getTargetFolder().toFile(), String.format("%s-%s.asice", build.getSetting("name"), build.getSetting("build"))));
+
+        Set<String> capabilities = new TreeSet<>();
 
         // Find configurations
         for (File file : FileUtils.listFiles(workFolder, new NameFileFilter("buildconfig.xml"), TrueFileFilter.INSTANCE)) {
@@ -108,6 +116,10 @@ public class Builder {
                     asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("something"));
                 }
 
+                if (config.getCapabilities() != null)
+                    for (String s : config.getCapabilities().split(","))
+                        capabilities.add(s.trim());
+
                 for (PackageType pkg : config.getPackage())
                     configurations.getPackage().add(pkg);
 
@@ -120,6 +132,9 @@ public class Builder {
                 e.printStackTrace();
             }
         }
+
+        if (capabilities.size() > 0)
+            configurations.setCapabilities(Joiner.on(",").join(capabilities));
 
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

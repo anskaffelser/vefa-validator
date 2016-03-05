@@ -121,6 +121,8 @@ public class Repo {
                             artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
                             // Fetch timestamp of creation.
                             artifactType.setTimestamp(configurations.getTimestamp());
+                            // Fetch capabilities.
+                            artifactType.setCapabilities(configurations.getCapabilities());
                             // Add artifact to list of artifacts.
                             artifacts.getArtifact().add(artifactType);
                         }

@@ -25,6 +25,7 @@
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="include" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
+            <xs:attribute name="capabilities" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 
@@ -36,6 +37,7 @@
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
             <xs:attribute name="timestamp" type="xs:long"/>
+            <xs:attribute name="capabilities" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

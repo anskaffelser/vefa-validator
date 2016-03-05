@@ -31,15 +31,13 @@ public class Cli {
         CommandLine cmd = parser.parse(options, args);
 
         for (String arg : cmd.getArgs()) {
-            SignatureHelper signatureHelper;
+            SignatureHelper signatureHelper = null;
             if (cmd.hasOption("ksf")) {
                 logger.info("Signing information detected.");
                 signatureHelper = new SignatureHelper(
                         new File(cmd.getOptionValue("ksf")),
                         cmd.getOptionValue("ksp"),
                         cmd.getOptionValue("pkp"));
-            } else {
-                signatureHelper = new SignatureHelper(Cli.class.getResourceAsStream("/keystore-self-signed.jks"), "changeit", null, "changeit");
             }
 
             Build build = new Build(Paths.get(arg));
