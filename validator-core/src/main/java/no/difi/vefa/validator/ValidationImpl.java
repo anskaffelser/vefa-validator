@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * Result of a validation.
@@ -99,12 +100,16 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
         // Read first 10kB for detections
         byte[] bytes = new byte[10*1024];
-        byteArrayInputStream.read(bytes);
-        String content = new String(bytes).trim();
+        int length = byteArrayInputStream.read(bytes);
+
+        if (length == -1)
+            throw new IOException("Empty file");
+
+        bytes = Arrays.copyOfRange(bytes, 0, length);
 
         // Use declaration implementations to detect declaration to use.
         for (Declaration d : validatorInstance.getDeclarations()) {
-            if (d.verify(content)) {
+            if (d.verify(bytes)) {
                 declaration = d;
                 break;
             }
@@ -115,7 +120,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         // Detect expectation
         Expectation expectation = null;
         if (validatorInstance.getProperties().getBoolean("feature.expectation")) {
-            expectation = declaration.expectations(content);
+            expectation = declaration.expectations(bytes);
             if (expectation != null)
                 report.setDescription(expectation.getDescription());
         }
@@ -124,9 +129,9 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
             ((DeclarationWithConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
 
-            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(content), expectation);
+            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(bytes), expectation);
         } else {
-            document = new Document(byteArrayInputStream, declaration.detect(content), expectation);
+            document = new Document(byteArrayInputStream, declaration.detect(bytes), expectation);
         }
     }
 

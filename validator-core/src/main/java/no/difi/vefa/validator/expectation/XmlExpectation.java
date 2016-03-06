@@ -23,7 +23,8 @@ public class XmlExpectation implements Expectation {
     private Map<String, Integer> errors = new HashMap<>();
     private Map<String, Integer> fatals = new HashMap<>();
 
-    public XmlExpectation(String content) {
+    public XmlExpectation(byte[] bytes) {
+        String content = new String(bytes);
         if (!content.contains("<!--") || !content.contains("-->"))
             return;
 

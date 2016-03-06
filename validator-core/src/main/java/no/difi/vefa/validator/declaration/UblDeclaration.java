@@ -20,17 +20,17 @@ public class UblDeclaration implements Declaration {
 
     private static XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
-    public boolean verify(String content) throws ValidatorException {
-        String namespace = XmlUtils.extractRootNamespace(content);
+    public boolean verify(byte[] content) throws ValidatorException {
+        String namespace = XmlUtils.extractRootNamespace(new String(content));
         return namespace != null && namespace.startsWith("urn:oasis:names:specification:ubl:schema:xsd:");
     }
 
-    public String detect(String content) throws ValidatorException {
+    public String detect(byte[] content) throws ValidatorException {
         String customizationId = null;
         String profileId = null;
 
         try {
-            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
+            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
@@ -61,7 +61,7 @@ public class UblDeclaration implements Declaration {
     }
 
     @Override
-    public Expectation expectations(String content) throws ValidatorException {
+    public Expectation expectations(byte[] content) throws ValidatorException {
         return new XmlExpectation(content);
     }
 }

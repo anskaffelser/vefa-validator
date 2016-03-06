@@ -5,6 +5,7 @@
 <style>
     div.status { float: right; text-align: center; width: 80pt; padding: 0.7pt 0; }
     div.status.status-SUCCESS { background-color: #dff0d8; color: #3c763d; }
+    div.status.status-INFO { background-color: #dff0d8; color: #3c763d; }
     div.status.status-OK { background-color: #dff0d8; color: #3c763d; }
     div.status.status-EXPECTED { background-color: #d9edf7; color: #31708f; }
     div.status.status-WARNING { background-color: #fcf8e3; color: #8a6d3b; }
@@ -91,7 +92,7 @@
 
         <c:forEach items="${section.assertion}" var="test">
         <div class="assertion">
-            <div class="status status-<c:out value="${test.flag}" />"><span class="glyphicon <c:out value="${test.flag == 'OK' or test.flag == 'EXPECTED' ? 'glyphicon-ok' : 'glyphicon-remove'}" />"></span> <c:out value="${test.flag}" /></div>
+            <div class="status status-<c:out value="${test.flag}" />"><span class="glyphicon <c:out value="${test.flag == 'OK' or test.flag == 'EXPECTED' or test.flag == 'INFO' ? 'glyphicon-ok' : 'glyphicon-remove'}" />"></span> <c:out value="${test.flag}" /></div>
             <div class="title<c:if test="${test.location != null or test.test != null}"> collapsable</c:if>">
                 <c:if test="${test.location != null or test.test != null}">
                     <span class="glyphicon glyphicon-expand"></span>

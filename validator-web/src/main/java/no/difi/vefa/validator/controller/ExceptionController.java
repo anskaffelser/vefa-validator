@@ -17,5 +17,4 @@ public class ExceptionController {
         logger.warn(e.getMessage(), e);
         return new ModelAndView("error", "exception", e);
     }
-
 }

@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.plugin.AsicePlugin;
 import no.difi.vefa.validator.plugin.SbdhPlugin;
 import no.difi.vefa.validator.plugin.UblPlugin;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ public class ValidatorBuilder {
     public static ValidatorBuilder newValidator() {
         return emptyValidator()
                 .plugin(UblPlugin.class)
-                .plugin(SbdhPlugin.class);
+                .plugin(SbdhPlugin.class)
+                .plugin(AsicePlugin.class);
     }
 
     /**

@@ -15,8 +15,8 @@ public class SbdhDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml"), byteArrayOutputStream);
 
-        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toString()));
-        Assert.assertEquals(declaration.detect(byteArrayOutputStream.toString()), "SBDH:1.0");
+        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
+        Assert.assertEquals(declaration.detect(byteArrayOutputStream.toByteArray()), "SBDH:1.0");
     }
 
     @Test
@@ -24,7 +24,7 @@ public class SbdhDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"), byteArrayOutputStream);
 
-        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toString()));
+        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray()));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class SbdhDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/edifact-invoic-d-97b-un.txt"), byteArrayOutputStream);
 
-        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toString()));
+        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray()));
     }
 
 }
