@@ -106,13 +106,14 @@
                 <xs:element name="title" type="xs:string" minOccurs="0"/>
                 <xs:element name="description" type="xs:string"/>
                 <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="children" minOccurs="0" maxOccurs="1">
+                <!-- <xs:element name="children" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element ref="report" minOccurs="0" maxOccurs="unbounded"/>
                         </xs:sequence>
                     </xs:complexType>
-                </xs:element>
+                </xs:element> -->
+                <xs:element ref="report" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="flag" type="flagType"/>
             <xs:attribute name="runtime" type="xs:string"/>

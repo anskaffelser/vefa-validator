@@ -190,10 +190,11 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     }
 
     private void addChildValidation(Validation validation) {
-        if (report.getChildren() == null)
-            report.setChildren(new Report.Children());
+        Report childReport = validation.getReport();
+        report.getReport().add(childReport);
 
-        report.getChildren().getReport().add(validation.getReport());
+        if (report.getFlag().compareTo(childReport.getFlag()) < 0)
+            report.setFlag(childReport.getFlag());
     }
 
     /**
