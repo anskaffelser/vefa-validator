@@ -1,15 +1,17 @@
 package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
-import no.difi.vefa.validator.api.Declaration;
+import no.difi.asic.AsicVerifier;
+import no.difi.asic.AsicVerifierFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public class AsiceDeclarationTest {
 
-    private Declaration declaration = new AsiceDeclaration();
+    private AsiceDeclaration declaration = new AsiceDeclaration();
 
     @Test
     public void validFile() throws Exception {
@@ -27,4 +29,16 @@ public class AsiceDeclarationTest {
         Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray()));
     }
 
+    @Test
+    public void simpleXmlFile() throws Exception {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ByteStreams.copy(getClass().getResourceAsStream("/documents/asic-xml.xml"), byteArrayOutputStream);
+
+        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
+
+        ByteArrayOutputStream converted = new ByteArrayOutputStream();
+        declaration.convert(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), converted);
+
+        AsicVerifierFactory.newFactory().verify(new ByteArrayInputStream(converted.toByteArray()));
+    }
 }
