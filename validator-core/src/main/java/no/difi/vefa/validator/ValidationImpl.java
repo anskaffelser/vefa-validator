@@ -49,7 +49,6 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      * @param inputStream Document to validate.
      */
     ValidationImpl(ValidatorInstance validatorInstance, InputStream inputStream) {
-        long start = System.currentTimeMillis();
         this.validatorInstance = validatorInstance;
 
         this.report = new Report();
@@ -80,8 +79,6 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             if (section.getFlag().compareTo(getReport().getFlag()) > 0)
                 getReport().setFlag(section.getFlag());
         }
-
-        report.setRuntime((System.currentTimeMillis() - start) + "ms");
     }
 
     private void loadDocument(InputStream inputStream) throws ValidatorException, IOException {
@@ -127,6 +124,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
         if (declaration instanceof DeclarationWithConverter) {
             ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
+            byteArrayInputStream.reset();
             ((DeclarationWithConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
 
             document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(bytes), expectation);
@@ -161,6 +159,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     }
 
     private void validate() {
+        long start = System.currentTimeMillis();
+
         for (FileType fileType : configuration.getFile()) {
             logger.debug("Validate: " + fileType.getPath());
 
@@ -183,6 +183,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         if (document.getExpectation() != null)
             document.getExpectation().verify(section);
 
+        report.setRuntime((System.currentTimeMillis() - start) + "ms");
+
         // Handling nested validation.
         if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting"))
             for (InputStream inputStream : ((DeclarationWithChildren) declaration).children(document.getInputStream()))
@@ -193,8 +195,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         Report childReport = validation.getReport();
         report.getReport().add(childReport);
 
-        if (report.getFlag().compareTo(childReport.getFlag()) < 0)
-            report.setFlag(childReport.getFlag());
+        //if (report.getFlag().compareTo(childReport.getFlag()) < 0)
+        //  report.setFlag(childReport.getFlag());
     }
 
     /**
