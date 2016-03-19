@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Result of a validation.
@@ -52,6 +53,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         this.validatorInstance = validatorInstance;
 
         this.report = new Report();
+        this.report.setUuid(UUID.randomUUID().toString());
         this.report.setFlag(FlagType.OK);
 
         this.section.setTitle("Validator");
