@@ -69,6 +69,9 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             section.add("SYSTEM-001", e.getMessage(), FlagType.FATAL);
         }
 
+        if (report.getTitle() == null)
+            report.setTitle("Unknown document type");
+
         if (section.getAssertion().size() > 0) {
             for (AssertionType assertionType : section.getAssertion()) {
                 if (assertionType.getFlag().compareTo(section.getFlag()) > 0)
@@ -186,17 +189,19 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         report.setRuntime((System.currentTimeMillis() - start) + "ms");
 
         // Handling nested validation.
-        if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting"))
-            for (InputStream inputStream : ((DeclarationWithChildren) declaration).children(document.getInputStream()))
-                addChildValidation(new ValidationImpl(validatorInstance, inputStream));
+        if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting")) {
+            Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
+            for (InputStream inputStream : iterable) {
+                String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
+                addChildValidation(new ValidationImpl(validatorInstance, inputStream), filename);
+            }
+        }
     }
 
-    private void addChildValidation(Validation validation) {
+    private void addChildValidation(Validation validation, String filename) {
         Report childReport = validation.getReport();
+        childReport.setFilename(filename);
         report.getReport().add(childReport);
-
-        //if (report.getFlag().compareTo(childReport.getFlag()) < 0)
-        //  report.setFlag(childReport.getFlag());
     }
 
     /**

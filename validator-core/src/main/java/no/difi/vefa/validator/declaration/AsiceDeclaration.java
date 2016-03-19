@@ -5,10 +5,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
-import no.difi.vefa.validator.api.DeclarationWithChildren;
-import no.difi.vefa.validator.api.DeclarationWithConverter;
-import no.difi.vefa.validator.api.Expectation;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLInputFactory;
@@ -101,9 +98,10 @@ public class AsiceDeclaration implements DeclarationWithChildren, DeclarationWit
         }
     }
 
-    private class AsicIterator implements Iterator<InputStream>, Iterable<InputStream> {
+    private class AsicIterator implements IndexedIterator<InputStream>, Iterable<InputStream> {
 
         private AsicReader asicReader;
+        private String filename;
 
         public AsicIterator(InputStream inputStream) throws IOException {
             asicReader  = AsicReaderFactory.newFactory().open(inputStream);
@@ -117,7 +115,7 @@ public class AsiceDeclaration implements DeclarationWithChildren, DeclarationWit
         @Override
         public boolean hasNext() {
             try {
-                return asicReader.getNextFile() != null;
+                return (filename = asicReader.getNextFile()) != null;
             } catch (Exception e) {
                 return false;
             }
@@ -137,6 +135,11 @@ public class AsiceDeclaration implements DeclarationWithChildren, DeclarationWit
         @Override
         public void remove() {
             // No action.
+        }
+
+        @Override
+        public String currentIndex() {
+            return filename;
         }
     }
 }
