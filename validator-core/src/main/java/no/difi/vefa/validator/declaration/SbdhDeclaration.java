@@ -47,7 +47,8 @@ public class SbdhDeclaration implements DeclarationWithChildren {
 
     private class SbdhIterator implements Iterable<InputStream>, Iterator<InputStream> {
 
-        public InputStream inputStream;
+        private InputStream inputStream;
+        private ByteArrayOutputStream outputStream;
 
         public SbdhIterator(InputStream inputStream) {
             this.inputStream = inputStream;
@@ -60,18 +61,17 @@ public class SbdhDeclaration implements DeclarationWithChildren {
 
         @Override
         public boolean hasNext() {
-            return inputStream != null;
-        }
+            if (inputStream == null)
+                return false;
 
-        @Override
-        public InputStream next() {
             try {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                outputStream = new ByteArrayOutputStream();
 
                 XMLStreamReader source = xmlInputFactory.createXMLStreamReader(inputStream);
                 XMLStreamWriter target = xmlOutputFactory.createXMLStreamWriter(outputStream, source.getEncoding());
 
                 boolean payload = false;
+                boolean written = false;
 
                 do {
                     switch (source.getEventType()) {
@@ -89,6 +89,7 @@ public class SbdhDeclaration implements DeclarationWithChildren {
                             payload = !source.getNamespaceURI().equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
 
                             if (payload) {
+                                written = true;
                                 logger.debug("START_ELEMENT");
                                 target.writeStartElement(source.getPrefix(), source.getLocalName(), source.getNamespaceURI());
 
@@ -103,6 +104,7 @@ public class SbdhDeclaration implements DeclarationWithChildren {
                             payload = !source.getNamespaceURI().equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
 
                             if (payload) {
+                                written = true;
                                 logger.debug("END_ELEMENT");
                                 target.writeEndElement();
                             }
@@ -110,6 +112,7 @@ public class SbdhDeclaration implements DeclarationWithChildren {
 
                         case XMLStreamConstants.CHARACTERS:
                             if (payload) {
+                                written = true;
                                 logger.debug("CHARACTERS");
                                 target.writeCharacters(source.getText());
                             }
@@ -117,6 +120,7 @@ public class SbdhDeclaration implements DeclarationWithChildren {
 
                         case XMLStreamConstants.CDATA:
                             if (payload) {
+                                written = true;
                                 logger.debug("CDATA");
                                 target.writeCData(source.getText());
                             }
@@ -124,19 +128,23 @@ public class SbdhDeclaration implements DeclarationWithChildren {
                     }
 
                     target.flush();
+
+                    if (!written)
+                        outputStream = null;
                 } while (source.hasNext() && source.next() > 0);
 
                 target.close();
                 source.close();
-
-                inputStream = null;
-
-                return new ByteArrayInputStream(outputStream.toByteArray());
             } catch (Exception e) {
                 logger.warn(e.getMessage(), e);
             }
             inputStream = null;
-            return null;
+            return outputStream != null;
+        }
+
+        @Override
+        public InputStream next() {
+            return new ByteArrayInputStream(outputStream.toByteArray());
         }
 
         @Override

@@ -10,7 +10,7 @@ public class XmlUtils {
 
     private static Logger logger = LoggerFactory.getLogger(XmlUtils.class);
 
-    private static final Pattern rootTagPattern = Pattern.compile("<(\\w*:{0,1}[^<?|^<!]*)>", Pattern.MULTILINE);
+    private static final Pattern rootTagPattern = Pattern.compile("<(?!http[s]{0,1}://)(\\w*:{0,1}[^<?|^<!^]*?)>", Pattern.MULTILINE);
     private static final Pattern namespacePattern = Pattern.compile("xmlns:{0,1}([A-Za-z0-9]*)\\w*=\\w*[\"']{1}(.+?)[\"']{1}", Pattern.MULTILINE);
 
     public static String extractRootNamespace(String xmlContent) {

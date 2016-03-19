@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardBusinessDocumentHeader xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                                xmlns="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader">
+    <HeaderVersion>1.0</HeaderVersion>
+    <Sender>
+        <Identifier Authority="iso6523-actorid-upis">0007:5567125082</Identifier>
+    </Sender>
+    <Receiver>
+        <Identifier Authority="iso6523-actorid-upis">0007:4455454480</Identifier>
+    </Receiver>
+    <DocumentIdentification>
+        <Standard>urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</Standard>
+        <TypeVersion>2.0</TypeVersion>
+        <InstanceIdentifier>1070e7f0-3bae-11e3-aa6e-0800200c9a66</InstanceIdentifier>
+        <Type>Invoice</Type>
+        <CreationDateAndTime>2013-02-19T05:10:10</CreationDateAndTime>
+    </DocumentIdentification>
+    <BusinessScope>
+        <Scope>
+            <Type>DOCUMENTID</Type>
+            <InstanceIdentifier>urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:www.cenbii.eu:transaction:biicoretrdm010:ver1.0:#urn:www.peppol.eu:bis:peppol4a:ver1.0::2.0</InstanceIdentifier>
+        </Scope>
+        <Scope>
+            <Type>PROCESSID</Type>
+            <InstanceIdentifier>urn:www.cenbii.eu:profile:bii04:ver1.0</InstanceIdentifier>
+        </Scope>
+    </BusinessScope>
+</StandardBusinessDocumentHeader>

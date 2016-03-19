@@ -4,7 +4,10 @@ import com.google.common.io.ByteStreams;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Iterator;
 
 public class SbdhDeclarationTest {
 
@@ -17,6 +20,18 @@ public class SbdhDeclarationTest {
 
         Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
         Assert.assertEquals(declaration.detect(byteArrayOutputStream.toByteArray()), "SBDH:1.0");
+    }
+
+    @Test
+    public void simpleSbdhOnly() throws Exception {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ByteStreams.copy(getClass().getResourceAsStream("/documents/sbdh-only.xml"), byteArrayOutputStream);
+
+        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
+        Assert.assertEquals(declaration.detect(byteArrayOutputStream.toByteArray()), "SBDH:1.0");
+
+        Iterator<InputStream> iterator = declaration.children(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).iterator();
+        Assert.assertFalse(iterator.hasNext());
     }
 
     @Test
