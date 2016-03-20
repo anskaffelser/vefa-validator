@@ -2,6 +2,7 @@ package no.difi.vefa.validator.controller;
 
 import no.difi.vefa.validator.service.PiwikService;
 import no.difi.vefa.validator.service.WorkspaceService;
+import no.difi.xsd.vefa.validator._1.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/v/{identifier}", method = RequestMethod.GET)
@@ -28,12 +31,36 @@ public class ValidationController {
         if (!workspaceService.exists(identifier))
             throw new Exception("Workspace not found.");
 
+        Report report = workspaceService.getReport(identifier);
+
         modelMap.put("identifier", identifier);
-        modelMap.put("report", workspaceService.getReport(identifier));
-        modelMap.put("viewExists", workspaceService.getView(identifier).exists());
+        modelMap.put("report", report);
 
         piwikService.update(modelMap);
+
+        return report.getReport().isEmpty() ? presentSingle(identifier, report, modelMap) : presentNested(identifier, report, modelMap);
+    }
+
+    private String presentSingle(String identifier, Report report, ModelMap modelMap) throws Exception {
+        modelMap.put("viewExists", workspaceService.getView(identifier).exists());
+
         return "validation";
+    }
+
+    private String presentNested(String identifier, Report report, ModelMap modelMap) throws Exception {
+        modelMap.put("reports", walkReports(report));
+
+        return "nestedvalidation";
+    }
+
+    private Set<Report> walkReports(Report report) {
+        Set<Report> reports = new HashSet<>();
+        reports.add(report);
+
+        for (Report r : report.getReport())
+            reports.addAll(walkReports(r));
+
+        return reports;
     }
 
     @ResponseBody
