@@ -14,6 +14,8 @@ Current version: **[2.0.2](https://github.com/difi/vefa-validator/releases/tag/2
 * **Pooling** of resources.
 * Supports **different lifecycles** of validation artifacts.
 * **[Configurable](https://github.com/difi/vefa-validator/blob/master/doc/configurations.md)** to fit multiple sizes.
+* **Nested** validation *(next version)*
+* **Tailoring individual validation** using properties *(next version)*
 
 
 ## Getting started

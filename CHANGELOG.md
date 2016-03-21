@@ -1,5 +1,9 @@
 # Changelog
 
+## Release after next release
+
+* Remove deprecated methods in ValidatorBuilder.
+
 
 ## Next release
 
