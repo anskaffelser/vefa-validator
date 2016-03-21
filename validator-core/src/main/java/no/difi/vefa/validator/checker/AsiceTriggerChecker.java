@@ -23,9 +23,9 @@ public class AsiceTriggerChecker implements Checker {
         try {
             section.setTitle("ASiC-E Verifier");
             AsicVerifier verifier = factory.verify(document.getInputStream());
-            for (Certificate certificate : verifier.getAsicManifest().getCertificates()) {
+
+            for (Certificate certificate : verifier.getAsicManifest().getCertificates())
                 section.add("ASICE-001", String.format("Certificate: %s", certificate.getSubject()), FlagType.INFO);
-            }
         } catch (Exception e) {
             section.add("ASICE-002", e.getMessage(), FlagType.FATAL);
         }

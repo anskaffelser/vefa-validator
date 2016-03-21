@@ -188,11 +188,13 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         report.setRuntime((System.currentTimeMillis() - start) + "ms");
 
         // Handling nested validation.
-        if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting")) {
-            Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
-            for (InputStream inputStream : iterable) {
-                String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
-                addChildValidation(new ValidationImpl(validatorInstance, inputStream), filename);
+        if (getReport().getFlag().compareTo(FlagType.FATAL) < 0) {
+            if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting")) {
+                Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
+                for (InputStream inputStream : iterable) {
+                    String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
+                    addChildValidation(new ValidationImpl(validatorInstance, inputStream), filename);
+                }
             }
         }
     }
