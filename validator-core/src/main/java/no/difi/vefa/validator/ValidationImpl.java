@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
+import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -25,6 +26,9 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     private static Logger logger = LoggerFactory.getLogger(ValidationImpl.class);
 
     private ValidatorInstance validatorInstance;
+
+    private Properties properties;
+
     private Configuration configuration;
 
     /**
@@ -48,10 +52,11 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      * Constructing new validator using validator instance and #InputStream containing document to validate.
      *
      * @param validatorInstance Instance of validator.
-     * @param inputStream Document to validate.
+     * @param validationSource Source to validate.
      */
-    ValidationImpl(ValidatorInstance validatorInstance, InputStream inputStream) {
+    ValidationImpl(ValidatorInstance validatorInstance, ValidationSource validationSource) {
         this.validatorInstance = validatorInstance;
+        this.properties = new CombinedProperties(validationSource.getProperties(), validatorInstance.getProperties());
 
         this.report = new Report();
         this.report.setUuid(UUID.randomUUID().toString());
@@ -61,7 +66,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         this.section.setFlag(FlagType.OK);
 
         try {
-            loadDocument(inputStream);
+            loadDocument(validationSource.getInputStream());
             loadConfiguration();
 
             if (configuration != null)
@@ -104,7 +109,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         document = new Document(byteArrayInputStream, null, null);
 
         // Read first 10kB for detections
-        byte[] bytes = new byte[10*1024];
+        byte[] bytes = new byte[10 * 1024];
         int length = byteArrayInputStream.read(bytes);
 
         if (length == -1)
@@ -124,7 +129,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
         // Detect expectation
         Expectation expectation = null;
-        if (validatorInstance.getProperties().getBoolean("feature.expectation")) {
+        if (properties.getBoolean("feature.expectation")) {
             expectation = declaration.expectations(bytes);
             if (expectation != null)
                 report.setDescription(expectation.getDescription());
@@ -149,7 +154,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         // Get configuration using declaration
         this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
 
-        if (!validatorInstance.getProperties().getBoolean("feature.suppress_notloaded"))
+        if (!properties.getBoolean("feature.suppress_notloaded"))
             for (String notLoaded : configuration.getNotLoaded())
                 section.add("SYSTEM-007", String.format("Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
 
@@ -189,11 +194,11 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
 
         // Handling nested validation.
         if (getReport().getFlag().compareTo(FlagType.FATAL) < 0) {
-            if (declaration instanceof DeclarationWithChildren && validatorInstance.getProperties().getBoolean("feature.nesting")) {
+            if (declaration instanceof DeclarationWithChildren && properties.getBoolean("feature.nesting")) {
                 Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
                 for (InputStream inputStream : iterable) {
                     String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
-                    addChildValidation(new ValidationImpl(validatorInstance, inputStream), filename);
+                    addChildValidation(new ValidationImpl(validatorInstance, new ValidationSourceImpl(inputStream)), filename);
                 }
             }
         }
@@ -220,7 +225,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
      * Render document to a stream, allows for extra configuration.
      *
      * @param outputStream Stream to use.
-     * @param properties Extra configuration to use for this rendering.
+     * @param properties   Extra configuration to use for this rendering.
      * @throws ValidatorException
      */
     @Override

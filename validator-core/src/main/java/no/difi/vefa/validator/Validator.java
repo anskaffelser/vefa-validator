@@ -81,7 +81,28 @@ public class Validator implements Closeable {
      * @return Validation result.
      */
     public Validation validate(InputStream inputStream) {
-        return new ValidationImpl(this.validatorInstance, inputStream);
+        return validate(new ValidationSourceImpl(inputStream));
+    }
+
+    /**
+     * Validate content of stream.
+     *
+     * @param inputStream Stream containing content.
+     * @param properties Properties used for individual validation.
+     * @return Validation result.
+     */
+    public Validation validate(InputStream inputStream, Properties properties) {
+        return validate(new ValidationSourceImpl(inputStream, properties));
+    }
+
+    /**
+     * Validate content of packaged stream.
+     *
+     * @param validationSource Package containing source.
+     * @return Validation result.
+     */
+    public Validation validate(ValidationSource validationSource) {
+        return new ValidationImpl(this.validatorInstance, validationSource);
     }
 
     /**
