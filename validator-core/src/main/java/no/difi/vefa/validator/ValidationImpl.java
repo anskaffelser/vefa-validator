@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -67,6 +68,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
                 validate();
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
+        } catch (UnknownDocumentTypeException e) {
+            section.add("SYSTEM-003", e.getMessage(), FlagType.UNKNOWN);
         } catch (ValidatorException e) {
             section.add("SYSTEM-001", e.getMessage(), FlagType.FATAL);
         }
@@ -117,7 +120,7 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
             }
         }
         if (declaration == null)
-            throw new ValidatorException("Unable to detect type of content.");
+            throw new UnknownDocumentTypeException("Unable to detect type of content.");
 
         // Detect expectation
         Expectation expectation = null;
@@ -138,19 +141,13 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         }
     }
 
-    private void loadConfiguration() {
+    private void loadConfiguration() throws UnknownDocumentTypeException {
         // Default values for report
         report.setTitle("Unknown document type");
         report.setFlag(FlagType.FATAL);
 
         // Get configuration using declaration
-        try {
-            this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
-        } catch (ValidatorException e) {
-            // Add FATAL to report if validation artifacts for declaration is not found
-            section.add("SYSTEM-003", e.getMessage(), FlagType.FATAL);
-            return;
-        }
+        this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
 
         if (!validatorInstance.getProperties().getBoolean("feature.suppress_notloaded"))
             for (String notLoaded : configuration.getNotLoaded())

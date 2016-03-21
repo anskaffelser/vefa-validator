@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -112,7 +113,7 @@ class ValidatorInstance implements Closeable {
      *
      * @param declaration Fetch configuration using declaration.
      */
-    Configuration getConfiguration(String declaration) throws ValidatorException {
+    Configuration getConfiguration(String declaration) throws UnknownDocumentTypeException {
         // Check cache of configurations is ready to use.
         if (configurationMap.containsKey(declaration))
             return configurationMap.get(declaration);

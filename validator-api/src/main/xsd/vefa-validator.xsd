@@ -144,8 +144,10 @@
             <xs:enumeration value="ok"/>
             <xs:enumeration value="expected"/>
             <xs:enumeration value="warning"/>
+            <xs:enumeration value="future_error"/>
             <xs:enumeration value="error"/>
             <xs:enumeration value="fatal"/>
+            <xs:enumeration value="unknown"/>
         </xs:restriction>
     </xs:simpleType>
 

@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.xsd.vefa.validator._1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,9 +186,9 @@ class ValidatorEngine implements Closeable {
      * @return Configuration
      * @throws ValidatorException Thrown if no configuration is found for the document declaration.
      */
-    public ConfigurationType getConfigurationByDeclaration(String declaration) throws ValidatorException {
+    public ConfigurationType getConfigurationByDeclaration(String declaration) throws UnknownDocumentTypeException {
         if (!declarationMap.containsKey(declaration))
-            throw new ValidatorException(String.format("Configuration for '%s' not found", declaration));
+            throw new UnknownDocumentTypeException(String.format("Configuration for '%s' not found", declaration));
 
         return declarationMap.get(declaration);
     }
