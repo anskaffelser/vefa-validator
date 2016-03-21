@@ -20,6 +20,9 @@ public class SbdhDeclarationTest {
 
         Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
         Assert.assertEquals(declaration.detect(byteArrayOutputStream.toByteArray()), "SBDH:1.0");
+
+        Iterator<InputStream> iterator = declaration.children(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).iterator();
+        Assert.assertTrue(iterator.hasNext());
     }
 
     @Test

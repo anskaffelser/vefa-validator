@@ -129,12 +129,13 @@ public class SbdhDeclaration implements DeclarationWithChildren {
 
                     target.flush();
 
-                    if (!written)
-                        outputStream = null;
                 } while (source.hasNext() && source.next() > 0);
 
                 target.close();
                 source.close();
+
+                if (!written)
+                    outputStream = null;
             } catch (Exception e) {
                 logger.warn(e.getMessage(), e);
             }
