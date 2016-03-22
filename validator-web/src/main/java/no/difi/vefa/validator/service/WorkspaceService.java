@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
@@ -33,31 +31,35 @@ public class WorkspaceService {
     @Value("${workspace.expire}")
     private int workspaceExpire;
 
-    private Marshaller reportMarshaller;
-    private Unmarshaller reportUnmarshaller;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    static final JAXBContext jaxbContext = initContext();
 
-    @PostConstruct
-    public void postContruct() {
+    private static JAXBContext initContext() {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Report.class);
-            reportMarshaller = jaxbContext.createMarshaller();
-            reportUnmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException e) {
+            return JAXBContext.newInstance(Report.class);
+        } catch(Exception e){
             logger.error(e.getMessage(), e);
         }
+        return null;
     }
 
     protected File getFolder(String identifier) {
         return new File(dirWorkspace, identifier);
     }
 
+
     @SuppressWarnings("all")
     public String saveValidation(Validation validation) throws Exception {
         String identifier = UUID.randomUUID().toString();
 
+        Marshaller reportMarshaller=null;
+        File folder=null;
+        ObjectMapper objectMapper=null;
+
         try {
-            File folder = getFolder(identifier);
+            reportMarshaller = jaxbContext.createMarshaller();
+            objectMapper= new ObjectMapper();
+
+            folder = getFolder(identifier);
             folder.mkdirs();
 
             FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, "source.xml.gz"));
@@ -89,6 +91,10 @@ public class WorkspaceService {
             logger.warn(String.format("%s: %s", identifier, e.getMessage()));
         } catch (Exception e) {
             logger.warn(String.format("%s: %s", identifier, e.getMessage()), e);
+        } finally{
+            reportMarshaller=null;
+            folder=null;
+            objectMapper=null;
         }
 
         return identifier;
@@ -99,11 +105,23 @@ public class WorkspaceService {
     }
 
     public Report getReport(String identifier) throws Exception {
-        InputStream inputStream = new FileInputStream(getReportXml(identifier));
-        GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
-        Report report = (Report) reportUnmarshaller.unmarshal(gzipInputStream);
-        gzipInputStream.close();
-        inputStream.close();
+        InputStream inputStream = null;
+        GZIPInputStream gzipInputStream = null;
+        Unmarshaller reportUnmarshaller = null;
+        Report report = null;
+
+        try {
+            reportUnmarshaller = jaxbContext.createUnmarshaller();
+            inputStream = new FileInputStream(getReportXml(identifier));
+            gzipInputStream = new GZIPInputStream(inputStream);
+            report = (Report) reportUnmarshaller.unmarshal(gzipInputStream);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+
+        } finally {
+            inputStream.close();
+            gzipInputStream.close();
+        }
 
         return report;
     }

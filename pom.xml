@@ -5,7 +5,7 @@
     <groupId>no.difi.vefa</groupId>
     <artifactId>validator-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3-SNAPSHOT-BASWARE</version>
 
     <name>VEFA Validator :: Parent</name>
     <description>Parent project for VEFA Validator.</description>
