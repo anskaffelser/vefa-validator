@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -48,7 +50,14 @@ public class ValidationController {
     }
 
     private String presentNested(String identifier, Report report, ModelMap modelMap) throws Exception {
-        modelMap.put("reports", walkReports(report));
+        Set<Report> reports = walkReports(report);
+
+        Map<String, Boolean> views = new HashMap<>();
+        for (Report r : reports)
+            views.put(r.getUuid(), workspaceService.getView(identifier, r.getUuid()).exists());
+
+        modelMap.put("reports", reports);
+        modelMap.put("views", views);
 
         return "nestedvalidation";
     }
@@ -107,5 +116,16 @@ public class ValidationController {
             throw new Exception("Presentation not found.");
 
         return new FileSystemResource(workspaceService.getView(identifier));
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/view/{uuid}", produces = MediaType.TEXT_HTML_VALUE + "; charset=utf-8")
+    public FileSystemResource presentView(@PathVariable String identifier, @PathVariable String uuid) throws Exception {
+        if (!workspaceService.exists(identifier))
+            throw new Exception("Workspace not found.");
+        if (!workspaceService.getView(identifier, uuid).exists())
+            throw new Exception("Presentation not found.");
+
+        return new FileSystemResource(workspaceService.getView(identifier, uuid));
     }
 }

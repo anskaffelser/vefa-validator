@@ -12,13 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Result of a validation.
  */
-class ValidationImpl implements no.difi.vefa.validator.api.Validation {
+class ValidationImpl implements Validation {
 
     /**
      * Logger.
@@ -47,6 +49,8 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     private Document document;
 
     private Declaration declaration = null;
+
+    private List<Validation> children;
 
     /**
      * Constructing new validator using validator instance and #InputStream containing document to validate.
@@ -208,6 +212,10 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
         Report childReport = validation.getReport();
         childReport.setFilename(filename);
         report.getReport().add(childReport);
+
+        if (children == null)
+            children = new ArrayList<>();
+        children.add(validation);
     }
 
     /**
@@ -268,5 +276,10 @@ class ValidationImpl implements no.difi.vefa.validator.api.Validation {
     @Override
     public Report getReport() {
         return report;
+    }
+
+    @Override
+    public List<Validation> getChildren() {
+        return children;
     }
 }

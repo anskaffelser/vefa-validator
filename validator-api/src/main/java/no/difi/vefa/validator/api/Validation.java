@@ -3,6 +3,7 @@ package no.difi.vefa.validator.api;
 import no.difi.xsd.vefa.validator._1.Report;
 
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Result of a validation.
@@ -46,5 +47,7 @@ public interface Validation {
      * @return Report
      */
     Report getReport();
+
+    List<Validation> getChildren();
 
 }

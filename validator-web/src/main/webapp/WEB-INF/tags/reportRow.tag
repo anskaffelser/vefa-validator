@@ -13,6 +13,7 @@
 
     <ul class="meta">
         <c:if test="${value.runtime != null}"><li title="Total runtime"><span class="glyphicon glyphicon-time"></span> <c:out value="${value.runtime}" /></li></c:if>
+        <c:if test="${views[value.uuid]}"><li><a href="<c:url value="/v/${identifier}/view/${value.uuid}" />"><span class="glyphicon glyphicon-paperclip"></span> See document</a></li></c:if>
         <c:if test="${value.filename != null}"><li title="Filename"><span class="glyphicon glyphicon-file"></span> <c:out value="${value.filename}" /></li></c:if>
         <c:if test="${value.configuration != null}"><li title="Configuration"><span class="glyphicon glyphicon-cog"></span> <c:out value="${value.configuration}" /></li></c:if>
         <c:if test="${value.build != null}"><li title="Build identifier"><span class="glyphicon glyphicon-tag"></span> <c:out value="${value.build}" /></li></c:if>

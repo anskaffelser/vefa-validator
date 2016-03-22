@@ -19,7 +19,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -54,10 +53,10 @@ public class WorkspaceService {
 
     @SuppressWarnings("all")
     public String saveValidation(Validation validation) throws Exception {
-        String identifier = UUID.randomUUID().toString();
+        String identifier = validation.getReport().getUuid();
 
         try {
-            File folder = getFolder(identifier);
+            File folder = getFolder(validation.getReport().getUuid());
             folder.mkdirs();
 
             FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, "source.xml.gz"));
@@ -83,6 +82,8 @@ public class WorkspaceService {
                 validation.render(fileOutputStream);
                 fileOutputStream.close();
             }
+
+            walkRendering(folder, validation);
         } catch (NullPointerException e) {
             logger.error(e.getMessage(), e);
         } catch (ValidatorException e) {
@@ -92,6 +93,22 @@ public class WorkspaceService {
         }
 
         return identifier;
+    }
+
+    private void walkRendering(File folder, Validation validation) {
+        try {
+            if (validation.isRenderable()) {
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, String.format("view-%s.html", validation.getReport().getUuid())));
+                validation.render(fileOutputStream);
+                fileOutputStream.close();
+            }
+        } catch (Exception e) {
+            logger.warn(String.format("%s: %s", validation.getReport().getUuid(), e.getMessage()));
+        }
+
+        if (validation.getChildren() != null)
+            for (Validation v : validation.getChildren())
+                walkRendering(folder, v);
     }
 
     public boolean exists(String identifier) {
@@ -122,6 +139,10 @@ public class WorkspaceService {
 
     public File getView(String identifier) {
         return new File(getFolder(identifier), "view.html");
+    }
+
+    public File getView(String identifier, String uuid) {
+        return new File(getFolder(identifier), String.format("view-%s.html", uuid));
     }
 
     @Scheduled(fixedDelay = 60 * 60 * 1000, initialDelay = 1000)
