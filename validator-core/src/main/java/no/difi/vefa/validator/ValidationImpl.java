@@ -72,6 +72,7 @@ class ValidationImpl implements Validation {
         try {
             loadDocument(validationSource.getInputStream());
             loadConfiguration();
+            nestedValidation();
 
             if (configuration != null)
                 validate();
@@ -195,9 +196,13 @@ class ValidationImpl implements Validation {
             document.getExpectation().verify(section);
 
         report.setRuntime((System.currentTimeMillis() - start) + "ms");
+    }
 
-        // Handling nested validation.
-        if (getReport().getFlag().compareTo(FlagType.FATAL) < 0) {
+    /**
+     * Handling nested validation.
+     */
+    private void nestedValidation() {
+        if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
             if (declaration instanceof DeclarationWithChildren && properties.getBoolean("feature.nesting")) {
                 Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
                 for (InputStream inputStream : iterable) {
@@ -278,6 +283,11 @@ class ValidationImpl implements Validation {
         return report;
     }
 
+    /**
+     * Nested validations of validation.
+     *
+     * @return List of validations or null if none available.
+     */
     @Override
     public List<Validation> getChildren() {
         return children;

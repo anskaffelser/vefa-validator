@@ -9,6 +9,9 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Pool of prepared checkers. Size if configured using properties.
+ */
 class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
 
     private static Logger logger = LoggerFactory.getLogger(CheckerPoolFactory.class);

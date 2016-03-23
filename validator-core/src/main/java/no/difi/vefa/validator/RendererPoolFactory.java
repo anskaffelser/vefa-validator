@@ -10,6 +10,9 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Pool of prepared renderers. Size if configured using properties.
+ */
 class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer> {
 
     private static Logger logger = LoggerFactory.getLogger(RendererPoolFactory.class);

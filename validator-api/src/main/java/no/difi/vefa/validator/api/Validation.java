@@ -48,6 +48,11 @@ public interface Validation {
      */
     Report getReport();
 
+    /**
+     * Nested validations of validation.
+     *
+     * @return List of validations or null if none available.
+     */
     List<Validation> getChildren();
 
 }
