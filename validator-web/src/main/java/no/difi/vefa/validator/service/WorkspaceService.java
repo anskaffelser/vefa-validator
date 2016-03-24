@@ -13,11 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -27,25 +25,21 @@ public class WorkspaceService {
 
     private static Logger logger = LoggerFactory.getLogger(WorkspaceService.class);
 
-    @Value("${workspace}")
-    private String dirWorkspace;
-    @Value("${workspace.expire}")
-    private int workspaceExpire;
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JAXBContext jaxbContext;
 
-    private Marshaller reportMarshaller;
-    private Unmarshaller reportUnmarshaller;
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @PostConstruct
-    public void postContruct() {
+    static {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Report.class);
-            reportMarshaller = jaxbContext.createMarshaller();
-            reportUnmarshaller = jaxbContext.createUnmarshaller();
+            jaxbContext = JAXBContext.newInstance(Report.class);
         } catch (JAXBException e) {
             logger.error(e.getMessage(), e);
         }
     }
+
+    @Value("${workspace}")
+    private String dirWorkspace;
+    @Value("${workspace.expire}")
+    private int workspaceExpire;
 
     protected File getFolder(String identifier) {
         return new File(dirWorkspace, identifier);
@@ -67,7 +61,7 @@ public class WorkspaceService {
 
             fileOutputStream = new FileOutputStream(new File(folder, "report.xml.gz"));
             gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            reportMarshaller.marshal(validation.getReport(), gzipOutputStream);
+            jaxbContext.createMarshaller().marshal(validation.getReport(), gzipOutputStream);
             gzipOutputStream.close();
             fileOutputStream.close();
 
@@ -118,7 +112,7 @@ public class WorkspaceService {
     public Report getReport(String identifier) throws Exception {
         InputStream inputStream = new FileInputStream(getReportXml(identifier));
         GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
-        Report report = (Report) reportUnmarshaller.unmarshal(gzipInputStream);
+        Report report = jaxbContext.createUnmarshaller().unmarshal(new StreamSource(gzipInputStream), Report.class).getValue();
         gzipInputStream.close();
         inputStream.close();
 
