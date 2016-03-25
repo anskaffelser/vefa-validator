@@ -15,6 +15,8 @@
 * Introducing flags FUTURE_ERROR (not currently in use) and UNKNOWN.
 * Allow overriding properties used during validation per validation.
 * Adding AsiceDeclaration.
+* Adding EspdDeclaration.
+* Support for namespace in single quotes.
 
 
 ## 2.0.2
