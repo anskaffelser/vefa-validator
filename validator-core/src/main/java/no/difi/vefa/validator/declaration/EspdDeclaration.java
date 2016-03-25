@@ -1,23 +1,19 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
 
-public class EspdDeclaration implements Declaration {
+public class EspdDeclaration extends XmlDeclaration {
 
     private static final String NAMESPACE = "urn:grow:names:specification:ubl:schema:xsd:ESPD";
-
-    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
     @Override
     public boolean verify(byte[] content) throws ValidatorException {

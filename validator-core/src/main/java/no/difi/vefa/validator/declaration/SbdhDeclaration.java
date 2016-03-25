@@ -8,20 +8,19 @@ import no.difi.vefa.validator.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.stream.*;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
-public class SbdhDeclaration implements DeclarationWithChildren {
+public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithChildren {
 
     private static final String NAMESPACE = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
 
     private static Logger logger = LoggerFactory.getLogger(SbdhDeclaration.class);
-
-    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
-    private static XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
 
     @Override
     public boolean verify(byte[] content) throws ValidatorException {

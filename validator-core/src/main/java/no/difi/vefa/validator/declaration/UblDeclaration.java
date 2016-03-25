@@ -1,13 +1,11 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -16,9 +14,7 @@ import java.io.ByteArrayInputStream;
 /**
  * Document declaration for OASIS Universal Business Language (UBL).
  */
-public class UblDeclaration implements Declaration {
-
-    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+public class UblDeclaration extends XmlDeclaration {
 
     public boolean verify(byte[] content) throws ValidatorException {
         String namespace = XmlUtils.extractRootNamespace(new String(content));

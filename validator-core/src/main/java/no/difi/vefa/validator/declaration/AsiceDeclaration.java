@@ -8,7 +8,6 @@ import no.difi.asic.AsicReaderFactory;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.XmlUtils;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -18,13 +17,11 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class AsiceDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
+public class AsiceDeclaration extends XmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1";
 
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
-
-    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
 
     @Override
     public boolean verify(byte[] content) throws ValidatorException {
