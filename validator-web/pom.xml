@@ -61,7 +61,7 @@
     </licenses>
 
     <properties>
-        <jackson.version>2.7.2</jackson.version>
+        <jackson.version>2.7.3</jackson.version>
         <tiles.version>3.0.5</tiles.version>
     </properties>
 
