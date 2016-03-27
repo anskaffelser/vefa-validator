@@ -53,37 +53,36 @@ public class WorkspaceService {
             File folder = getFolder(validation.getReport().getUuid());
             folder.mkdirs();
 
-            FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, "source.xml.gz"));
-            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            IOUtils.copy(validation.getDocument().getInputStream(), gzipOutputStream);
-            gzipOutputStream.close();
-            fileOutputStream.close();
+            try (
+                    OutputStream targetStream = new FileOutputStream(new File(folder, "source.xml.gz"));
+                    OutputStream outputStream = new GZIPOutputStream(targetStream);
+            ) {
+                IOUtils.copy(validation.getDocument().getInputStream(), outputStream);
+            }
 
-            fileOutputStream = new FileOutputStream(new File(folder, "report.xml.gz"));
-            gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            jaxbContext.createMarshaller().marshal(validation.getReport(), gzipOutputStream);
-            gzipOutputStream.close();
-            fileOutputStream.close();
+            try (
+                    OutputStream targetStream = new FileOutputStream(new File(folder, "report.xml.gz"));
+                    OutputStream outputStream = new GZIPOutputStream(targetStream);
+            ) {
+                jaxbContext.createMarshaller().marshal(validation.getReport(), outputStream);
+            }
 
-            fileOutputStream = new FileOutputStream(new File(folder, "report.json.gz"));
-            gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            objectMapper.writeValue(gzipOutputStream, validation.getReport());
-            gzipOutputStream.close();
-            fileOutputStream.close();
+            try (
+                    OutputStream targetStream = new FileOutputStream(new File(folder, "report.json.gz"));
+                    OutputStream outputStream = new GZIPOutputStream(targetStream);
+            ) {
+                objectMapper.writeValue(outputStream, validation.getReport());
+            }
 
             if (validation.isRenderable()) {
-                fileOutputStream = new FileOutputStream(new File(folder, "view.html"));
-                validation.render(fileOutputStream);
-                fileOutputStream.close();
+                try (OutputStream outputStream = new FileOutputStream(new File(folder, "view.html"))) {
+                    validation.render(outputStream);
+                }
             }
 
             walkRendering(folder, validation);
-        } catch (NullPointerException e) {
-            logger.error(e.getMessage(), e);
         } catch (ValidatorException e) {
             logger.warn(String.format("%s: %s", identifier, e.getMessage()));
-        } catch (Exception e) {
-            logger.warn(String.format("%s: %s", identifier, e.getMessage()), e);
         }
 
         return identifier;
@@ -92,9 +91,10 @@ public class WorkspaceService {
     private void walkRendering(File folder, Validation validation) {
         try {
             if (validation.isRenderable()) {
-                FileOutputStream fileOutputStream = new FileOutputStream(new File(folder, String.format("view-%s.html", validation.getReport().getUuid())));
-                validation.render(fileOutputStream);
-                fileOutputStream.close();
+                String filename = String.format("view-%s.html", validation.getReport().getUuid());
+                try (OutputStream outputStream = new FileOutputStream(new File(folder, filename))) {
+                    validation.render(outputStream);
+                }
             }
         } catch (Exception e) {
             logger.warn(String.format("%s: %s", validation.getReport().getUuid(), e.getMessage()));
@@ -110,13 +110,12 @@ public class WorkspaceService {
     }
 
     public Report getReport(String identifier) throws Exception {
-        InputStream inputStream = new FileInputStream(getReportXml(identifier));
-        GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
-        Report report = jaxbContext.createUnmarshaller().unmarshal(new StreamSource(gzipInputStream), Report.class).getValue();
-        gzipInputStream.close();
-        inputStream.close();
-
-        return report;
+        try (
+                InputStream sourceStream = new FileInputStream(getReportXml(identifier));
+                InputStream inputStream = new GZIPInputStream(sourceStream);
+        ) {
+            return jaxbContext.createUnmarshaller().unmarshal(new StreamSource(inputStream), Report.class).getValue();
+        }
     }
 
     public File getReportJson(String identifier) {
