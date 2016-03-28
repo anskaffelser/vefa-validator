@@ -1,7 +1,9 @@
 <%@ page language="java" pageEncoding="utf-8" contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<form action="<c:url value="/" />" method="post" enctype="multipart/form-data" style="margin: 50pt 0;">
+<c:url value="/?${_csrf.parameterName}=${_csrf.token}" var="formAction" />
+<form:form action="${formAction}" method="post" enctype="multipart/form-data" style="margin: 50pt 0;">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="input-group input-group-lg">
@@ -12,7 +14,7 @@
             </div>
         </div>
     </div>
-</form>
+</form:form>
 
 <p style="padding: 0 20pt;">Uploaded files are stored on the server for a limited time. This interface is not intended for automatic validation or testing, and such use will result in blocking of IP(s).</p>
 
