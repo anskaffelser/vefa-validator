@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.api;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * Representation of validation document.
@@ -12,11 +11,23 @@ public class Document {
      * Document as #ByteArrayInputStream.
      */
     private ByteArrayInputStream byteArrayInputStream;
+
+    /**
+     * Declaration identifier used to recognize rules.
+     */
     private String declaration;
+
+    /**
+     * Expectations when performing validation of triggered rules.
+     */
     private Expectation expectation;
 
-    @SuppressWarnings("all")
-    public Document(ByteArrayInputStream inputStream, String declaration, Expectation expectation) throws IOException, ValidatorException {
+    /**
+     * @param inputStream InputStream containing the document used during validation.
+     * @param declaration Declaration identifier used to recognize rules.
+     * @param expectation Expectations when performing validation of triggered rules.
+     */
+    public Document(ByteArrayInputStream inputStream, String declaration, Expectation expectation)  {
         this.byteArrayInputStream = inputStream;
         this.declaration = declaration;
         this.expectation = expectation;

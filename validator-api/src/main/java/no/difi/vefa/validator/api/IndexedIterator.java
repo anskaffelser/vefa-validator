@@ -9,6 +9,9 @@ import java.util.Iterator;
  */
 public interface IndexedIterator<T> extends Iterator<T> {
 
+    /**
+     * @return Current index.
+     */
     String currentIndex();
 
 }
