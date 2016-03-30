@@ -27,7 +27,6 @@
     </#if>
 
     <ul class="meta">
-        <li title="Total runtime"><span class="glyphicon glyphicon-time"></span> ${validation.report.runtime}</li>
         <#if validation.report.configuration??><li title="Configuration"><a href="configuration-${validation.report.configuration}.html"><span class="glyphicon glyphicon-cog"></span> ${validation.report.configuration}</a></li></#if>
     </ul>
 
