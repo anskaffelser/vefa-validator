@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.source;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import com.google.common.jimfs.JimfsFileSystemProvider;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
@@ -21,8 +21,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
 
 abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
@@ -47,19 +46,21 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
     public AbstractSourceInstance(Properties properties) {
         this.properties = properties;
 
-        List<FileSystemProvider> list = JimfsFileSystemProvider.installedProviders();
         try {
-            URI uri = new URI("jimfs", "vefa", null, null);
-            ImmutableMap<String, ?> env = ImmutableMap.of("config", Configuration.unix());
-
-            for (FileSystemProvider provider : list)
+            for (FileSystemProvider provider : FileSystemProvider.installedProviders())
                 if (provider instanceof JimfsFileSystemProvider)
-                    fileSystem = provider.newFileSystem(uri, env);
+                    fileSystem = Jimfs.newFileSystem(Configuration.unix());
 
-            if (fileSystem == null)
-                fileSystem = new JimfsFileSystemProvider().newFileSystem(uri, env);
+            if (fileSystem == null) {
+                fileSystem = new JimfsFileSystemProvider().newFileSystem(
+                        new URI("jimfs", "vefa", null, null),
+                        new HashMap<String, Object>() {{
+                            put("config", Configuration.unix());
+                        }}
+                );
+            }
         } catch (Exception e) {
-            throw new RuntimeException("Unable to create VEFA Validator instance", e);
+            throw new RuntimeException("Unable to create VEFA Validator filesystem.", e);
         }
     }
 
@@ -81,7 +82,7 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
         asicReader.close();
 
         // Listing signatures
-        for (Certificate certificate : asicReader.getAsicManifest().getCertificates())
+        for (Certificate certificate : asicReader.getAsicManifest().getCertificate())
             logger.info(String.format("Signature: %s", certificate.getSubject()));
 
         // TODO Validate certificate?
