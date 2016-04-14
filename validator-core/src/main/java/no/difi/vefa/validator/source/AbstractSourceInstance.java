@@ -2,7 +2,6 @@ package no.difi.vefa.validator.source;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import com.google.common.jimfs.JimfsFileSystemProvider;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.asic.SignatureMethod;
@@ -16,12 +15,9 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.spi.FileSystemProvider;
-import java.util.HashMap;
 
 abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
@@ -47,18 +43,7 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
         this.properties = properties;
 
         try {
-            for (FileSystemProvider provider : FileSystemProvider.installedProviders())
-                if (provider instanceof JimfsFileSystemProvider)
-                    fileSystem = Jimfs.newFileSystem(Configuration.unix());
-
-            if (fileSystem == null) {
-                fileSystem = new JimfsFileSystemProvider().newFileSystem(
-                        new URI("jimfs", "vefa", null, null),
-                        new HashMap<String, Object>() {{
-                            put("config", Configuration.unix());
-                        }}
-                );
-            }
+            fileSystem = Jimfs.newFileSystem(Configuration.unix());
         } catch (Exception e) {
             throw new RuntimeException("Unable to create VEFA Validator filesystem.", e);
         }

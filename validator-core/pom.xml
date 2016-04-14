@@ -100,7 +100,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-        <!-- Google -->
+        <!-- JimFS -->
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
