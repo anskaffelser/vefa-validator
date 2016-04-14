@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.org/difi/vefa-validator.svg?branch=master)](https://travis-ci.org/difi/vefa-validator)
+[![Maven Central](https://img.shields.io/maven-central/v/no.difi.vefa/validator-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22no.difi.vefa%22%20AND%20validator)
+
 
 # VEFA Validator 2.0
-
-Current version: **[2.0.2](https://github.com/difi/vefa-validator/releases/tag/2.0.2)**
-
 
 ## Features
 
