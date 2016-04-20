@@ -33,14 +33,16 @@ public class TestTask {
 
             for (Path testFolder : build.getTestFolders()) {
                 for (File file : FileUtils.listFiles(testFolder.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE)) {
-                    try {
-                        Validation validation = validator.validate(file);
-                        validation.getReport().setFilename(file.toString());
+                    if (!file.getName().equals("buildconfig.xml")) {
+                        try {
+                            Validation validation = validator.validate(file);
+                            validation.getReport().setFilename(file.toString());
 
-                        build.addTestValidation(validation);
-                        logger.info(String.format("%s (%s)", file, validation.getReport().getFlag()));
-                    } catch (Exception e) {
-                        logger.warn(String.format("%s (%s)", file, e.getMessage()));
+                            build.addTestValidation(validation);
+                            logger.info(String.format("%s (%s)", file, validation.getReport().getFlag()));
+                        } catch (Exception e) {
+                            logger.warn(String.format("%s (%s)", file, e.getMessage()));
+                        }
                     }
                 }
             }
