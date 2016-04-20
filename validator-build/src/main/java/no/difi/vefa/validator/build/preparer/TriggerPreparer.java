@@ -13,6 +13,7 @@ import java.io.FileInputStream;
  * Simple class copying file, used for generic files to trigger non-file based checkers.
  */
 @PreparerInfo(".trigger")
+@SuppressWarnings("unused")
 public class TriggerPreparer implements Preparer {
     @Override
     public ByteArrayOutputStream prepare(Build build, File file) throws Exception {

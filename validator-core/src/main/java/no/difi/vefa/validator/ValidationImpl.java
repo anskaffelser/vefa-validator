@@ -174,7 +174,7 @@ class ValidationImpl implements Validation {
         long start = System.currentTimeMillis();
 
         for (FileType fileType : configuration.getFile()) {
-            logger.debug("Validate: " + fileType.getPath());
+            logger.debug("Validate: {}", fileType.getPath());
 
             try {
                 Section section = validatorInstance.check(fileType, document, configuration);

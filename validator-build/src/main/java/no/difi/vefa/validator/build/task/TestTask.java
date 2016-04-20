@@ -39,9 +39,9 @@ public class TestTask {
                             validation.getReport().setFilename(file.toString());
 
                             build.addTestValidation(validation);
-                            logger.info(String.format("%s (%s)", file, validation.getReport().getFlag()));
+                            logger.info("Test '{}' ({})", file, validation.getReport().getFlag());
                         } catch (Exception e) {
-                            logger.warn(String.format("%s (%s)", file, e.getMessage()));
+                            logger.warn("Test '{}' ({})", file, e.getMessage());
                         }
                     }
                 }

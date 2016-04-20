@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 @PreparerInfo(".xsd")
+@SuppressWarnings("unused")
 public class XsdPreparer implements Preparer {
 
     @Override

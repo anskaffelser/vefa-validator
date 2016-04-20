@@ -149,7 +149,7 @@ public class WorkspaceService {
             if (f.isDirectory() && !new File(f, ".keep").exists()) {
                 if (new DateTime(f.lastModified()).isBefore(DateTime.now().minusDays(workspaceExpire))) {
                     try {
-                        logger.info(String.format("Delete validation '%s'.", f.getName()));
+                        logger.info("Delete validation '{}'.", f.getName());
                         FileUtils.deleteDirectory(f);
                     } catch (IOException e) {
                         logger.warn(e.getMessage(), e);

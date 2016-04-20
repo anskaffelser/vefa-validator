@@ -185,7 +185,7 @@ public class SiteTask {
             holder.put("filenames", filenames);
             holder.put("types", types);
 
-            logger.debug("Process: " + filename);
+            logger.debug("Process: {}", filename);
             FileWriter writer = new FileWriter(new File(siteFolder, filename));
             template.process(holder, writer);
             writer.close();

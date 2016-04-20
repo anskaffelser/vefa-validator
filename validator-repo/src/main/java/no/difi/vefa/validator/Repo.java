@@ -143,7 +143,7 @@ public class Repo {
 
         // Simply list configurations detected as not loaded by validator.
         for (String notLoaded : unavailable)
-            logger.warn(String.format("Not found: %s", notLoaded));
+            logger.warn("Not found: {}", notLoaded);
 
         // Save result to disk.
         if (writeToDisk)

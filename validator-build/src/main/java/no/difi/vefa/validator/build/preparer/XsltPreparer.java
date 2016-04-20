@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 @PreparerInfo({".xsl", ".xslt"})
+@SuppressWarnings("unused")
 public class XsltPreparer implements Preparer {
 
     @Override

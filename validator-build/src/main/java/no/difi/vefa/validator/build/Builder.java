@@ -58,7 +58,7 @@ public class Builder {
 
         File workFolder = build.getProjectPath().toFile();
 
-        logger.info(String.format("Using folder: %s", workFolder.getAbsolutePath()));
+        logger.info("Folder '{}'", workFolder.getAbsolutePath());
 
         clean(build.getTargetFolder());
         prepareTargetFolder(build.getTargetFolder());
@@ -126,9 +126,9 @@ public class Builder {
                 for (String testFolder : config.getTestfolder())
                     build.addTestFolder(new File(configFolder, testFolder));
 
-                logger.info(String.format("Loading: %s", file.toString()));
+                logger.info("Loading '{}'", file.toString());
             } catch (JAXBException e) {
-                logger.warn(String.format("Failed: %s", file.toString()));
+                logger.warn("Loading failed for '{}'", file.toString());
                 e.printStackTrace();
             }
         }

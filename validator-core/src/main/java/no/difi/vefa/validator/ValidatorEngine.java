@@ -133,7 +133,7 @@ class ValidatorEngine implements Closeable {
 
         // Write to log when loading new packages.
         for (PackageType pkg : configurations.getPackage())
-            logger.info(String.format("Loaded: %s", pkg.getValue()));
+            logger.info("Loaded '{}'", pkg.getValue());
 
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {

@@ -25,9 +25,9 @@ class PreparerPoolFactory extends BaseKeyedPooledObjectFactory<String, Preparer>
             for (ClassPath.ClassInfo info : classPath.getTopLevelClasses("no.difi.vefa.validator.build.preparer")) {
                 try {
                     preparers.add((Class<? extends Preparer>) info.load());
-                    logger.info("Preparer found: {}", info.getName());
+                    logger.info("Preparer '{}'", info.getName());
                 } catch (Exception e) {
-                    logger.info("Unable to load: {}", info.getName());
+                    logger.info("Unable to load '{}'", info.getName());
                 }
             }
         } catch (Exception e) {

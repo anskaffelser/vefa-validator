@@ -32,7 +32,7 @@ class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
                 try {
                     for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value()) {
                         if (key.toLowerCase().endsWith(extension)) {
-                            logger.debug(String.format("Creating checker '%s'", key));
+                            logger.debug("Checker '{}'", key);
                             Checker checker = (Checker) cls.getConstructor().newInstance();
                             checker.prepare(validatorEngine.getResource(key));
                             return checker;

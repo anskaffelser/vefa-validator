@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 @PreparerInfo({".sch", ".scmt"})
+@SuppressWarnings("unused")
 public class SchematronPreparer implements Preparer {
 
     protected SchematronTransformer schematronTransformer;

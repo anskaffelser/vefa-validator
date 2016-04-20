@@ -35,7 +35,7 @@ class RendererPoolFactory extends BaseKeyedPooledObjectFactory<String, Renderer>
                 try {
                     for (String extension : ((RendererInfo) cls.getAnnotation(RendererInfo.class)).value()) {
                         if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
-                            logger.debug(String.format("Creating checker '%s'", key));
+                            logger.debug("Renderer '{}'", key);
                             Renderer renderer = (Renderer) cls.getConstructor().newInstance();
                             renderer.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
                             return renderer;
