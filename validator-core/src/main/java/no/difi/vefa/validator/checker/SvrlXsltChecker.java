@@ -1,7 +1,9 @@
 package no.difi.vefa.validator.checker;
 
 import net.sf.saxon.TransformerFactoryImpl;
+import net.sf.saxon.lib.FeatureKeys;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -11,7 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBResult;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.nio.file.Files;
@@ -29,7 +33,10 @@ public class SvrlXsltChecker implements Checker {
 
     public void prepare(Path path) throws ValidatorException {
         try {
+            // transformerFactory.setAttribute(FeatureKeys.VALIDATION_WARNINGS, Boolean.FALSE);
+            transformerFactory.setAttribute(FeatureKeys.ERROR_LISTENER_CLASS, SaxonErrorListener.class.getCanonicalName());
             transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
+
             jaxbResult = new JAXBResult(JAXBContext.newInstance(SchematronOutput.class));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
