@@ -1,9 +1,11 @@
 package no.difi.vefa.validator.build;
 
 import no.difi.asic.SignatureHelper;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.build.task.SiteTask;
 import no.difi.vefa.validator.build.task.TestTask;
+import no.difi.xsd.vefa.validator._1.FlagType;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,15 @@ public class Cli {
         options.addOption("b", "build", true, "Build identifier");
         options.addOption("n", "name", true, "Name");
         options.addOption("w", "weight", true, "Weight");
+        options.addOption("x", "exitcode", false, "Status in exit code");
         options.addOption(Option.builder("ksf").desc("Keystore file").hasArg(true).build());
         options.addOption(Option.builder("ksp").desc("Keystore password").hasArg(true).build());
         options.addOption(Option.builder("pkp").desc("Private key password").hasArg(true).build());
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
+
+        int result = 0;
 
         for (String arg : cmd.getArgs()) {
             SignatureHelper signatureHelper = null;
@@ -52,6 +57,13 @@ public class Cli {
 
             if (cmd.hasOption("site"))
                 new SiteTask().build(build);
+
+            if (cmd.hasOption("x"))
+                for (Validation validation : build.getTestValidations())
+                    if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0)
+                        result = Math.max(result, validation.getReport().getFlag().compareTo(FlagType.EXPECTED));
         }
+
+        System.exit(result);
     }
 }
