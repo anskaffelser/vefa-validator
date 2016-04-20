@@ -68,7 +68,7 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
         // Listing signatures
         for (Certificate certificate : asicReader.getAsicManifest().getCertificate())
-            logger.info(String.format("Signature: %s", certificate.getSubject()));
+            logger.info("Signed by '{}'", certificate.getSubject());
 
         // TODO Validate certificate?
     }

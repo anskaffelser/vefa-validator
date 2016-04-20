@@ -6,6 +6,7 @@ import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
+import no.difi.xsd.vefa.validator._1.FlagType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -31,6 +32,9 @@ public class TestTask {
                     .setSource(new DirectorySource(build.getTargetFolder()))
                     .build();
 
+            int tests = 0;
+            int failed = 0;
+
             for (Path testFolder : build.getTestFolders()) {
                 for (File file : FileUtils.listFiles(testFolder.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE)) {
                     if (!file.getName().equals("buildconfig.xml")) {
@@ -39,13 +43,21 @@ public class TestTask {
                             validation.getReport().setFilename(file.toString());
 
                             build.addTestValidation(validation);
-                            logger.info("Test '{}' ({})", file, validation.getReport().getFlag());
+                            tests++;
+
+                            if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
+                                logger.warn("Test '{}' ({})", file, validation.getReport().getFlag());
+                                failed++;
+                            } else
+                                logger.info("Test '{}'", file);
                         } catch (Exception e) {
                             logger.warn("Test '{}' ({})", file, e.getMessage());
                         }
                     }
                 }
             }
+
+            logger.info("{} tests performed, {} tests failed", tests, failed);
         } finally {
             if (validator != null)
                 validator.close();

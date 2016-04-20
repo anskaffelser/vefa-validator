@@ -101,7 +101,7 @@ class ValidatorEngine implements Closeable {
         Collections.sort(packages, new Comparator<PackageType>() {
             @Override
             public int compare(PackageType o1, PackageType o2) {
-                return o1.getValue().compareTo(o2.getValue());
+                return o1.getValue().compareToIgnoreCase(o2.getValue());
             }
         });
     }

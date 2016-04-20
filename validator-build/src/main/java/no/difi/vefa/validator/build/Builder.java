@@ -58,7 +58,7 @@ public class Builder {
 
         File workFolder = build.getProjectPath().toFile();
 
-        logger.info("Folder '{}'", workFolder.getAbsolutePath());
+        logger.info("Source '{}'", workFolder.getAbsolutePath());
 
         clean(build.getTargetFolder());
         prepareTargetFolder(build.getTargetFolder());
@@ -124,7 +124,10 @@ public class Builder {
                     configurations.getPackage().add(pkg);
 
                 for (String testFolder : config.getTestfolder())
-                    build.addTestFolder(new File(configFolder, testFolder));
+                    if (testFolder.equals("."))
+                        build.addTestFolder(configFolder);
+                    else
+                        build.addTestFolder(new File(configFolder, testFolder));
 
                 logger.info("Loading '{}'", file.toString());
             } catch (JAXBException e) {
