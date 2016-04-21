@@ -26,15 +26,20 @@ public class SvrlXsltChecker implements Checker {
 
     private static Logger logger = LoggerFactory.getLogger(SvrlXsltChecker.class);
 
-    private static TransformerFactory transformerFactory = new TransformerFactoryImpl();
+    private static TransformerFactory transformerFactory;
+
+    static {
+        transformerFactory = new TransformerFactoryImpl();
+        transformerFactory.setAttribute(FeatureKeys.ERROR_LISTENER_CLASS, SaxonErrorListener.class.getCanonicalName());
+        transformerFactory.setAttribute(FeatureKeys.DEFAULT_COUNTRY, "US");
+        transformerFactory.setAttribute(FeatureKeys.DEFAULT_LANGUAGE, "en");
+    }
 
     private Transformer transformer;
     private JAXBResult jaxbResult;
 
     public void prepare(Path path) throws ValidatorException {
         try {
-            // transformerFactory.setAttribute(FeatureKeys.VALIDATION_WARNINGS, Boolean.FALSE);
-            transformerFactory.setAttribute(FeatureKeys.ERROR_LISTENER_CLASS, SaxonErrorListener.class.getCanonicalName());
             transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
 
             jaxbResult = new JAXBResult(JAXBContext.newInstance(SchematronOutput.class));
