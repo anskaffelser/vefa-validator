@@ -67,7 +67,7 @@ public class SvrlXsltChecker implements Checker {
     public void add(Section section, FailedAssert failedAssert) {
         AssertionType assertionType = new AssertionType();
 
-        String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "");
+        String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll("     ", " ").replaceAll("   ", " ").replaceAll("  ", " ");
         if (text.startsWith("[") && text.contains("]-")) {
             assertionType.setIdentifier(text.substring(1, text.indexOf("]-")).trim());
             text = text.substring(text.indexOf("]-") + 2).trim();

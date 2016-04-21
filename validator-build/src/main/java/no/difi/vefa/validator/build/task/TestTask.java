@@ -6,7 +6,9 @@ import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
+import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
+import no.difi.xsd.vefa.validator._1.SectionType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -48,6 +50,11 @@ public class TestTask {
                             if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
                                 logger.warn("Test '{}' ({})", file, validation.getReport().getFlag());
                                 failed++;
+
+                                for (SectionType sectionType : validation.getReport().getSection())
+                                    for (AssertionType assertionType : sectionType.getAssertion())
+                                        if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
+                                            logger.debug("  * {} {} ({})", assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
                             } else
                                 logger.info("Test '{}'", file);
                         } catch (Exception e) {
