@@ -7,7 +7,9 @@ import no.difi.xsd.vefa.validator._1.FlagType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class XmlExpectation implements Expectation {
@@ -18,6 +20,7 @@ public class XmlExpectation implements Expectation {
     private static Logger logger = LoggerFactory.getLogger(XmlExpectation.class);
 
     private String description;
+    private List<String> scopes = new ArrayList<>();
     private Map<String, Integer> successes = new HashMap<>();
     private Map<String, Integer> warnings = new HashMap<>();
     private Map<String, Integer> errors = new HashMap<>();
@@ -57,6 +60,10 @@ public class XmlExpectation implements Expectation {
                 case "fatals":
                     extractRules(parts, fatals);
                     break;
+
+                case "scope":
+                    extractList(parts, scopes);
+                    break;
             }
         }
     }
@@ -76,6 +83,12 @@ public class XmlExpectation implements Expectation {
         }
     }
 
+    private void extractList(String[] parts, List<String> target) {
+        for (String part : parts[1].split("\\n"))
+            if (!part.trim().isEmpty())
+                target.add(part.trim());
+    }
+
     @Override
     public String getDescription() {
         return description;
@@ -84,7 +97,9 @@ public class XmlExpectation implements Expectation {
     @Override
     public void filterFlag(AssertionType assertionType) {
         if (assertionType.getFlag() != null) {
-            if (successes.containsKey(assertionType.getIdentifier())) {
+            if (!scopes.isEmpty() && !scopes.contains(assertionType.getIdentifier())) {
+                assertionType.setFlag(FlagType.INFO);
+            } else if (successes.containsKey(assertionType.getIdentifier())) {
                 assertionType.setFlag(FlagType.ERROR);
                 successes.put(assertionType.getIdentifier(), successes.get(assertionType.getIdentifier()) + 1);
             } else {
