@@ -96,27 +96,28 @@ public class XmlExpectation implements Expectation {
 
     @Override
     public void filterFlag(AssertionType assertionType) {
-        if (assertionType.getFlag() != null) {
-            if (!scopes.isEmpty() && !scopes.contains(assertionType.getIdentifier())) {
-                assertionType.setFlag(FlagType.INFO);
-            } else if (successes.containsKey(assertionType.getIdentifier())) {
-                assertionType.setFlag(FlagType.ERROR);
-                successes.put(assertionType.getIdentifier(), successes.get(assertionType.getIdentifier()) + 1);
-            } else {
-                switch (assertionType.getFlag()) {
-                    case FATAL:
-                        if (isExpected(assertionType.getIdentifier(), fatals))
-                            assertionType.setFlag(FlagType.EXPECTED);
-                        break;
-                    case ERROR:
-                        if (isExpected(assertionType.getIdentifier(), errors))
-                            assertionType.setFlag(FlagType.EXPECTED);
-                        break;
-                    case WARNING:
-                        if (isExpected(assertionType.getIdentifier(), warnings))
-                            assertionType.setFlag(FlagType.EXPECTED);
-                        break;
-                }
+        if (assertionType.getFlag() == null)
+            return;
+
+        if (!scopes.isEmpty() && !scopes.contains(assertionType.getIdentifier())) {
+            assertionType.setFlag(null);
+        } else if (successes.containsKey(assertionType.getIdentifier())) {
+            assertionType.setFlag(FlagType.ERROR);
+            successes.put(assertionType.getIdentifier(), successes.get(assertionType.getIdentifier()) + 1);
+        } else {
+            switch (assertionType.getFlag()) {
+                case FATAL:
+                    if (isExpected(assertionType.getIdentifier(), fatals))
+                        assertionType.setFlag(FlagType.EXPECTED);
+                    break;
+                case ERROR:
+                    if (isExpected(assertionType.getIdentifier(), errors))
+                        assertionType.setFlag(FlagType.EXPECTED);
+                    break;
+                case WARNING:
+                    if (isExpected(assertionType.getIdentifier(), warnings))
+                        assertionType.setFlag(FlagType.EXPECTED);
+                    break;
             }
         }
     }
