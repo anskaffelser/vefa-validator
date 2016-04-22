@@ -166,6 +166,8 @@ class ValidatorEngine implements Closeable {
                 if (!declarationMap.containsKey(configuration.getStandardId()) || declarationMap.get(configuration.getStandardId()).getWeight() < configuration.getWeight())
                     declarationMap.put(configuration.getStandardId(), configuration);
             }
+
+            declarationMap.put(String.format("configuration::%s", configuration.getIdentifier()), configuration);
         }
     }
 
@@ -184,7 +186,7 @@ class ValidatorEngine implements Closeable {
      *
      * @param declaration Document declaration.
      * @return Configuration
-     * @throws ValidatorException Thrown if no configuration is found for the document declaration.
+     * @throws UnknownDocumentTypeException Thrown if no configuration is found for the document declaration.
      */
     public ConfigurationType getConfigurationByDeclaration(String declaration) throws UnknownDocumentTypeException {
         if (!declarationMap.containsKey(declaration))
