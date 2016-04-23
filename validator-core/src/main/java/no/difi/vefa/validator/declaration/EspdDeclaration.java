@@ -13,61 +13,40 @@ import java.io.ByteArrayInputStream;
 
 public class EspdDeclaration extends XmlDeclaration {
 
-    private static final String NAMESPACE = "urn:grow:names:specification:ubl:schema:xsd:ESPD";
+    private String namespace;
+    private String localName;
+
+    public EspdDeclaration(String namespace, String localName) {
+        this.namespace = namespace;
+        this.localName = localName;
+    }
 
     @Override
     public boolean verify(byte[] content) throws ValidatorException {
-        String namespace = XmlUtils.extractRootNamespace(new String(content));
-        return namespace != null && namespace.startsWith(NAMESPACE);
+        String c = new String(content);
+        return namespace.equals(XmlUtils.extractRootNamespace(c)) && localName.equals(XmlUtils.extractLocalName(c));
     }
 
     @Override
     public String detect(byte[] content) throws ValidatorException {
-        String rootName = null;
-        String customizationId = null;
-        String profileId = null;
-        String versionId = null;
-
         try {
             XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
                 if (xmlEvent.isStartElement()) {
-                    StartElement startElement = (StartElement) xmlEvent;
-                    String localName = startElement.getName().getLocalPart();
-
-                    if ("ESPDResponse".equals(localName) || "ESPDRequest".equals(localName))
-                        rootName = localName;
-                    else if ("CustomizationID".equals(localName)) {
+                    if ("VersionID".equals(((StartElement) xmlEvent).getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)
-                            customizationId = ((Characters) xmlEvent).getData();
-                    } else if ("ProfileID".equals(localName)) {
-                        xmlEvent = xmlEventReader.nextEvent();
-                        if (xmlEvent instanceof Characters)
-                            profileId = ((Characters) xmlEvent).getData();
-
-                        // ProfileID is the last in sequence.
-                        return String.format("%s#%s", profileId, customizationId);
-                    } else if ("VersionID".equals(localName)) {
-                        xmlEvent = xmlEventReader.nextEvent();
-                        if (xmlEvent instanceof Characters)
-                            versionId = ((Characters) xmlEvent).getData();
-
-                        return String.format("ESPD::%s::%s", rootName, versionId);
+                            return String.format("%s::%s::%s", namespace, localName, ((Characters) xmlEvent).getData());
                     }
-
                 }
             }
         } catch (Exception e) {
             // No action.
         }
 
-        if (rootName != null)
-            return String.format("ESPD::%s", rootName);
-
-        throw new ValidatorException("ESPD not recognized.");
+        return String.format("%s::%s", namespace, localName);
     }
 
     @Override

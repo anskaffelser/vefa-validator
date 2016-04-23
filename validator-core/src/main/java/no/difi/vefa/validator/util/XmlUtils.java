@@ -12,6 +12,7 @@ public class XmlUtils {
 
     private static final Pattern rootTagPattern = Pattern.compile("<(?!http[s]{0,1}://)(\\w*:{0,1}[^<?|^<!^]*?)>", Pattern.MULTILINE);
     private static final Pattern namespacePattern = Pattern.compile("xmlns:{0,1}([A-Za-z0-9]*)\\w*=\\w*[\"']{1}(.+?)[\"']{1}", Pattern.MULTILINE);
+    private static final Pattern localNamePattern = Pattern.compile("([A-Za-z0-9]*:)([A-Za-z0-9\\-]+).*", Pattern.MULTILINE);
 
     public static String extractRootNamespace(String xmlContent) {
         Matcher matcher = rootTagPattern.matcher(xmlContent);
@@ -36,9 +37,11 @@ public class XmlUtils {
 
     public static String extractLocalName(String xmlContent) {
         Matcher matcher = rootTagPattern.matcher(xmlContent);
-        if (matcher.find())
-            return matcher.group(1).trim();
-
+        if (matcher.find()) {
+            Matcher lnMatcher = localNamePattern.matcher(matcher.group(1).trim());
+            if (lnMatcher.find())
+                return lnMatcher.group(2);
+        }
         return null;
     }
 

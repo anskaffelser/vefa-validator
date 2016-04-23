@@ -25,9 +25,7 @@ public class SimpleXmlDeclaration implements Declaration {
         String c = new String(content);
         if (!namespace.equals(XmlUtils.extractRootNamespace(c)))
             return false;
-        if (localName != null && !localName.equals(XmlUtils.extractLocalName(c)))
-            return false;
-        return true;
+        return localName == null || localName.equals(XmlUtils.extractLocalName(c));
     }
 
     @Override

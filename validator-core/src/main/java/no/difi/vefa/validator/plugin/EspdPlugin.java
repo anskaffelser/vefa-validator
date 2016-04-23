@@ -35,7 +35,8 @@ public class EspdPlugin implements ValidatorPlugin {
     @Override
     public List<Declaration> declarations() {
         return new ArrayList<Declaration>() {{
-            add(new EspdDeclaration());
+            add(new EspdDeclaration("urn:grow:names:specification:ubl:schema:xsd:ESPDRequest-1", "ESPDRequest"));
+            add(new EspdDeclaration("urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1", "ESPDResponse"));
         }};
     }
 

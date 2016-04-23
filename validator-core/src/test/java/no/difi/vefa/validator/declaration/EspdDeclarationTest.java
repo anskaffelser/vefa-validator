@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 
 public class EspdDeclarationTest {
 
-    private Declaration declaration = new EspdDeclaration();
+    private Declaration declaration = new EspdDeclaration("urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1", "ESPDResponse");
 
     @Test
     public void simple() throws Exception {
@@ -17,7 +17,7 @@ public class EspdDeclarationTest {
         ByteStreams.copy(getClass().getResourceAsStream("/documents/ESPDResponse.xml"), byteArrayOutputStream);
 
         Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
-        Assert.assertEquals("ESPD::ESPDResponse::1", declaration.detect(byteArrayOutputStream.toByteArray()));
+        Assert.assertEquals("urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::1", declaration.detect(byteArrayOutputStream.toByteArray()));
 
     }
 
