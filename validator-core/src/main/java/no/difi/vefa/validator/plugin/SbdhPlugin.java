@@ -7,6 +7,7 @@ import no.difi.vefa.validator.declaration.SbdhDeclaration;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SbdhPlugin implements ValidatorPlugin {
@@ -28,7 +29,7 @@ public class SbdhPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Trigger>> triggers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -40,11 +41,11 @@ public class SbdhPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Renderer>> renderers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
     public List<Configurations> configurations() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

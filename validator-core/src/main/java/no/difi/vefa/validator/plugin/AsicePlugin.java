@@ -8,9 +8,11 @@ import no.difi.vefa.validator.trigger.AsiceTrigger;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AsicePlugin implements ValidatorPlugin {
+
     @Override
     public List<String> capabilities() {
         return new ArrayList<String>() {{
@@ -20,7 +22,7 @@ public class AsicePlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Checker>> checkers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -39,7 +41,7 @@ public class AsicePlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Renderer>> renderers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -51,7 +53,7 @@ public class AsicePlugin implements ValidatorPlugin {
                             .configuration(ConfigurationBuilder
                                     .identifier("asice-archive")
                                     .title("ASiC-E")
-                                    .standardId("ASiC-E")
+                                    .standardId("application/vnd.etsi.asic-e+zip")
                                     .trigger("asice")
                                     .weight(Long.MIN_VALUE)
                                     .build())

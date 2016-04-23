@@ -7,9 +7,11 @@ import no.difi.vefa.validator.declaration.EspdDeclaration;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EspdPlugin implements ValidatorPlugin {
+
     @Override
     public List<String> capabilities() {
         return new ArrayList<String>() {{
@@ -27,7 +29,7 @@ public class EspdPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Trigger>> triggers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -39,11 +41,11 @@ public class EspdPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Renderer>> renderers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
     public List<Configurations> configurations() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

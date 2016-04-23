@@ -23,8 +23,6 @@ public class EspdDeclaration extends XmlDeclaration {
 
     @Override
     public String detect(byte[] content) throws ValidatorException {
-        // return "ESPD:1";
-
         String rootName = null;
         String customizationId = null;
         String profileId = null;

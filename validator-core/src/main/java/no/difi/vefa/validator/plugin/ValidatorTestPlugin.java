@@ -5,6 +5,7 @@ import no.difi.vefa.validator.declaration.ValidatorTestDeclaration;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ValidatorTestPlugin implements ValidatorPlugin {
@@ -18,12 +19,12 @@ public class ValidatorTestPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Checker>> checkers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
     public List<Class<? extends Trigger>> triggers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -35,11 +36,11 @@ public class ValidatorTestPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Renderer>> renderers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
     public List<Configurations> configurations() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

@@ -8,6 +8,7 @@ import no.difi.vefa.validator.renderer.XsltRenderer;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UblPlugin implements ValidatorPlugin {
@@ -29,7 +30,7 @@ public class UblPlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Trigger>> triggers() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -48,6 +49,6 @@ public class UblPlugin implements ValidatorPlugin {
 
     @Override
     public List<Configurations> configurations() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }
