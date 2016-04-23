@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.source.RepositorySource;
+import no.difi.xsd.vefa.validator._1.Configurations;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 /**
  * Validator containing an instance of validation configuration and validation artifacts.
- *
+ * <p/>
  * Validator is thread safe and should normally be created only once in a program.
  */
 public class Validator implements Closeable {
@@ -88,7 +89,7 @@ public class Validator implements Closeable {
      * Validate content of stream.
      *
      * @param inputStream Stream containing content.
-     * @param properties Properties used for individual validation.
+     * @param properties  Properties used for individual validation.
      * @return Validation result.
      */
     public Validation validate(InputStream inputStream, Properties properties) {
@@ -137,7 +138,7 @@ public class Validator implements Closeable {
      *
      * @throws ValidatorException
      */
-    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarationImpls, Set<String> capabilities) throws ValidatorException {
+    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarationImpls, Configurations[] configurations, Set<String> capabilities) throws ValidatorException {
         try {
             logger.info("Loading validator with capabilities '{}'", capabilities);
 
@@ -146,7 +147,7 @@ public class Validator implements Closeable {
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, rendererImpls, declarationImpls, capabilities);
+            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationImpls, configurations, capabilities);
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
 

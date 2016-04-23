@@ -2,6 +2,8 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.plugin.*;
+import no.difi.xsd.vefa.validator._1.ConfigurationType;
+import no.difi.xsd.vefa.validator._1.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +59,19 @@ public class ValidatorBuilder {
     private Set<Class<? extends Checker>> checkers = new HashSet<>();
 
     /**
+     * Implementations of trigger to use.
+     */
+    private Set<Class<? extends Trigger>> triggers = new HashSet<>();
+
+    /**
      * Implementations of renderer to use.
      */
     private Set<Class<? extends Renderer>> renderers = new HashSet<>();
+
+    /**
+     * Additional configurations.
+     */
+    private Set<Configurations> configurations = new HashSet<>();
 
     /**
      * Internal constructor, no action needed.
@@ -127,12 +139,19 @@ public class ValidatorBuilder {
         return this;
     }
 
+    public final ValidatorBuilder configuration(Configurations configurations) {
+        this.configurations.add(configurations);
+        return this;
+    }
+
     public ValidatorBuilder plugin(ValidatorPlugin... plugins) {
         for (ValidatorPlugin plugin : plugins) {
             this.capabilities.addAll(plugin.capabilities());
             this.checkers.addAll(plugin.checkers());
+            this.triggers.addAll(plugin.triggers());
             this.declarations.addAll(plugin.declarations());
             this.renderers.addAll(plugin.renderers());
+            this.configurations.addAll(plugin.configurations());
         }
         return this;
     }
@@ -169,8 +188,10 @@ public class ValidatorBuilder {
     public Validator build() throws ValidatorException {
         validator.load(
                 checkers.toArray(new Class[checkers.size()]),
+                triggers.toArray(new Class[triggers.size()]),
                 renderers.toArray(new Class[renderers.size()]),
                 declarations.toArray(new Declaration[declarations.size()]),
+                configurations.toArray(new Configurations[configurations.size()]),
                 capabilities
         );
 

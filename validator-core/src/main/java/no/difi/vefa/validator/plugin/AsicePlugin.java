@@ -1,11 +1,11 @@
 package no.difi.vefa.validator.plugin;
 
-import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.Renderer;
-import no.difi.vefa.validator.api.ValidatorPlugin;
-import no.difi.vefa.validator.checker.AsiceTriggerChecker;
+import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.builder.ConfigurationBuilder;
+import no.difi.vefa.validator.builder.ConfigurationsBuilder;
 import no.difi.vefa.validator.declaration.AsiceDeclaration;
+import no.difi.vefa.validator.trigger.AsiceTrigger;
+import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,13 @@ public class AsicePlugin implements ValidatorPlugin {
 
     @Override
     public List<Class<? extends Checker>> checkers() {
-        return new ArrayList<Class<? extends Checker>>() {{
-            add(AsiceTriggerChecker.class);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Class<? extends Trigger>> triggers() {
+        return new ArrayList<Class<? extends Trigger>>() {{
+            add(AsiceTrigger.class);
         }};
     }
 
@@ -35,5 +40,23 @@ public class AsicePlugin implements ValidatorPlugin {
     @Override
     public List<Class<? extends Renderer>> renderers() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<Configurations> configurations() {
+        return new ArrayList<Configurations>() {{
+            add(ConfigurationsBuilder
+                            .instance()
+                            // .pkg("ASiC-E")
+                            .configuration(ConfigurationBuilder
+                                    .identifier("asice-archive")
+                                    .title("ASiC-E")
+                                    .standardId("ASiC-E")
+                                    .trigger("asice")
+                                    .weight(Long.MIN_VALUE)
+                                    .build())
+                            .build()
+            );
+        }};
     }
 }

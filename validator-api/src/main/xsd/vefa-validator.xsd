@@ -23,7 +23,7 @@
 
     <xs:complexType name="artifactType">
         <xs:attribute name="filename" type="xs:string"/>
-        <xs:attribute name="capabilities" type="xs:string" use="optional" />
+        <xs:attribute name="capabilities" type="xs:string" use="optional"/>
         <xs:attribute name="timestamp" type="xs:long" default="0"/>
     </xs:complexType>
 
@@ -35,7 +35,7 @@
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="include" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="capabilities" type="xs:string" use="optional" />
+            <xs:attribute name="capabilities" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
 
@@ -47,7 +47,7 @@
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
             <xs:attribute name="timestamp" type="xs:long"/>
-            <xs:attribute name="capabilities" type="xs:string" use="optional" />
+            <xs:attribute name="capabilities" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
 
@@ -61,6 +61,7 @@
             <xs:element name="inherit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="stylesheet" type="stylesheetType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="file" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="trigger" type="triggerType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="rule" type="ruleType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="message" type="messageType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
@@ -79,6 +80,12 @@
     <xs:complexType name="fileType">
         <xs:attribute name="path" type="xs:string"/>
         <xs:attribute name="source" type="xs:string"/>
+        <xs:attribute name="configuration" type="xs:string"/>
+        <xs:attribute name="build" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="triggerType">
+        <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
         <xs:attribute name="build" type="xs:string"/>
     </xs:complexType>
@@ -122,7 +129,7 @@
             <xs:attribute name="runtime" type="xs:string"/>
             <xs:attribute name="configuration" type="xs:string"/>
             <xs:attribute name="build" type="xs:string"/>
-            <xs:attribute name="uuid" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 

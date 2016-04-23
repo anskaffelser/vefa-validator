@@ -3,10 +3,7 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.xsd.vefa.validator._1.FileType;
-import no.difi.xsd.vefa.validator._1.FlagType;
-import no.difi.xsd.vefa.validator._1.PackageType;
-import no.difi.xsd.vefa.validator._1.StylesheetType;
+import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,17 +57,22 @@ class ValidatorInstance implements Closeable {
     private GenericKeyedObjectPool<String, Renderer> rendererPool;
 
     /**
+     * Trigger factory.
+     */
+    private TriggerFactory triggerFactory;
+
+    /**
      * Constructor loading artifacts and pools for validations.
      *
      * @param source Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations, Set<String> capabilities) throws ValidatorException {
+    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations, Configurations[] configurations, Set<String> capabilities) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
-        validatorEngine = new ValidatorEngine(source.createInstance(this.properties, capabilities));
+        validatorEngine = new ValidatorEngine(source.createInstance(this.properties, capabilities), configurations);
 
         // Declarations
         this.declarations = declarations;
@@ -88,6 +90,9 @@ class ValidatorInstance implements Closeable {
         rendererPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
         rendererPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
         rendererPool.setMaxTotalPerKey(this.properties.getInteger("pools.presenter.maxTotalPerKey"));
+
+        // Initiate trigger factory
+        triggerFactory = new TriggerFactory(triggerImpls);
     }
 
     /**
@@ -136,8 +141,8 @@ class ValidatorInstance implements Closeable {
     /**
      * Render document using stylesheet
      *
-     * @param stylesheet Stylesheet identifier from configuration.
-     * @param document Document used for styling.
+     * @param stylesheet   Stylesheet identifier from configuration.
+     * @param document     Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
     void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
@@ -160,8 +165,8 @@ class ValidatorInstance implements Closeable {
     /**
      * Validate document using a file definition.
      *
-     * @param fileType File definition from configuration.
-     * @param document Document to validate.
+     * @param fileType      File definition from configuration.
+     * @param document      Document to validate.
      * @param configuration Complete configuration
      * @return Result of validation.
      */
@@ -184,6 +189,21 @@ class ValidatorInstance implements Closeable {
             checkerPool.returnObject(fileType.getPath(), checker);
         }
 
+        return section;
+    }
+
+    /**
+     * Validate document using a trigger definition.
+     *
+     * @param triggerType   Trigger definition from configuration.
+     * @param document      Document to validate.
+     * @param configuration Complete configuration
+     * @return Result of validation.
+     */
+    Section trigger(TriggerType triggerType, Document document, Configuration configuration) throws ValidatorException {
+        Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
+        section.setFlag(FlagType.OK);
+        triggerFactory.get(triggerType.getIdentifier()).check(document, section);
         return section;
     }
 

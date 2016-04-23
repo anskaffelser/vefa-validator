@@ -4,10 +4,7 @@ import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.xsd.vefa.validator._1.AssertionType;
-import no.difi.xsd.vefa.validator._1.FileType;
-import no.difi.xsd.vefa.validator._1.FlagType;
-import no.difi.xsd.vefa.validator._1.Report;
+import no.difi.xsd.vefa.validator._1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,6 +187,20 @@ class ValidationImpl implements Validation {
 
             if (getReport().getFlag().equals(FlagType.FATAL) || this.section.getFlag().equals(FlagType.FATAL))
                 break;
+        }
+
+        for (TriggerType triggerType : configuration.getTrigger()) {
+            try {
+                Section section = validatorInstance.trigger(triggerType, document, configuration);
+                section.setConfiguration(triggerType.getConfiguration());
+                section.setBuild(triggerType.getBuild());
+                report.getSection().add(section);
+
+                if (section.getFlag().compareTo(getReport().getFlag()) > 0)
+                    getReport().setFlag(section.getFlag());
+            } catch (ValidatorException e) {
+                this.section.add("SYSTEM-010", e.getMessage(), FlagType.ERROR);
+            }
         }
 
         if (document.getExpectation() != null)

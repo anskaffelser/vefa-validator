@@ -1,4 +1,4 @@
-package no.difi.vefa.validator.checker;
+package no.difi.vefa.validator.trigger;
 
 import no.difi.asic.AsicVerifier;
 import no.difi.asic.AsicVerifierFactory;
@@ -6,17 +6,10 @@ import no.difi.vefa.validator.api.*;
 import no.difi.xsd.asic.model._1.Certificate;
 import no.difi.xsd.vefa.validator._1.FlagType;
 
-import java.nio.file.Path;
+@TriggerInfo("asice")
+public class AsiceTrigger implements Trigger {
 
-@CheckerInfo({".asice.trigger"})
-public class AsiceTriggerChecker implements Checker {
-
-    private AsicVerifierFactory factory = AsicVerifierFactory.newFactory();
-
-    @Override
-    public void prepare(Path path) throws ValidatorException {
-        // No action
-    }
+    private static AsicVerifierFactory factory = AsicVerifierFactory.newFactory();
 
     @Override
     public void check(Document document, Section section) throws ValidatorException {

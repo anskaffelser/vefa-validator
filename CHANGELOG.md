@@ -14,9 +14,12 @@
 * Nested validation for document types supporting embedded content (currently SBDH and ASiC-E).
 * Introducing flags FUTURE_ERROR (not currently in use) and UNKNOWN.
 * Allow overriding properties used during validation per validation.
-* Adding AsiceDeclaration.
 * Adding EspdDeclaration.
+* Support for ASiC-E.
+* Support for triggers.
 * Support for namespace in single quotes.
+* Support for test scope.
+* Support for unit tests.
 
 
 ## 2.0.2

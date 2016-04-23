@@ -1,5 +1,7 @@
 package no.difi.vefa.validator.api;
 
+import no.difi.xsd.vefa.validator._1.Configurations;
+
 import java.util.List;
 
 /**
@@ -22,6 +24,13 @@ public interface ValidatorPlugin {
     List<Class<? extends Checker>> checkers();
 
     /**
+     * Triggers needed to validate the given kind of document type(s).
+     *
+     * @return Triggers implementing functionality.
+     */
+    List<Class<? extends Trigger>> triggers();
+
+    /**
      * Defined declarations used to recognize and handle supported a kind of document type.
      *
      * @return Instances of declarations.
@@ -34,4 +43,6 @@ public interface ValidatorPlugin {
      * @return Renderers implementing functionality.
      */
     List<Class<? extends Renderer>> renderers();
+
+    List<Configurations> configurations();
 }

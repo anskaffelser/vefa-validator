@@ -67,13 +67,17 @@ class ValidatorEngine implements Closeable {
     private List<PackageType> packages = new ArrayList<>();
 
     private SourceInstance sourceInstance;
-    
+
     /**
      * Loading a new validator engine loading configurations from current source.
      */
-    ValidatorEngine(SourceInstance sourceInstance) throws ValidatorException {
+    ValidatorEngine(SourceInstance sourceInstance, Configurations... configurations) throws ValidatorException {
         this.sourceInstance = sourceInstance;
-        
+
+        // Load configurations from ValidatorBuilder.
+        for (Configurations c : configurations)
+            loadConfigurations("", c);
+
         // Matcher to find configuration files.
         final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
 
@@ -110,9 +114,9 @@ class ValidatorEngine implements Closeable {
      * Load configuration from stream of config.xml.
      *
      * @param configurationSource Identifier for resource.
-     * @param inputStream Stream of config.xml.
+     * @param inputStream         Stream of config.xml.
      */
-    private void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException{
+    private void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException {
         try {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             loadConfigurations(configurationSource, (Configurations) unmarshaller.unmarshal(inputStream));
@@ -125,7 +129,7 @@ class ValidatorEngine implements Closeable {
      * Load configuration from content of config.xml.
      *
      * @param configurationSource Identifier for resource.
-     * @param configurations Configurations found in config.xml
+     * @param configurations      Configurations found in config.xml
      */
     private void loadConfigurations(String configurationSource, Configurations configurations) {
         // Add all declared packages to list of detected packages.
@@ -140,6 +144,11 @@ class ValidatorEngine implements Closeable {
                 fileType.setPath(String.format("%s#%s", configurationSource, fileType.getPath()));
                 fileType.setConfiguration(configuration.getIdentifier());
                 fileType.setBuild(configuration.getBuild());
+            }
+
+            for (TriggerType triggerType : configuration.getTrigger()) {
+                triggerType.setConfiguration(configuration.getIdentifier());
+                triggerType.setBuild(configuration.getBuild());
             }
 
             if (configuration.getStylesheet() != null) {

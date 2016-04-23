@@ -37,6 +37,7 @@ class Configuration extends ConfigurationType implements FlagFilterer {
         this.inherit = configurationType.getInherit();
         this.rule = configurationType.getRule();
         this.file = configurationType.getFile();
+        this.trigger = configurationType.getTrigger();
     }
 
     /**
@@ -49,6 +50,7 @@ class Configuration extends ConfigurationType implements FlagFilterer {
         while (getInherit().size() > 0) {
             List<RuleType> rules = new ArrayList<>();
             List<FileType> files = new ArrayList<>();
+            List<TriggerType> triggers = new ArrayList<>();
             List<String> inherits = new ArrayList<>();
             StylesheetType stylesheet = null;
 
@@ -57,6 +59,7 @@ class Configuration extends ConfigurationType implements FlagFilterer {
                 if (inherited != null) {
                     rules.addAll(inherited.getRule());
                     files.addAll(inherited.getFile());
+                    triggers.addAll(inherited.getTrigger());
                     inherits.addAll(inherited.getInherit());
                     if (inherited.getStylesheet() != null)
                         stylesheet = inherited.getStylesheet();
@@ -67,9 +70,11 @@ class Configuration extends ConfigurationType implements FlagFilterer {
 
             rules.addAll(this.getRule());
             files.addAll(this.getFile());
+            triggers.addAll(this.getTrigger());
 
             this.rule = rules;
             this.file = files;
+            this.trigger = triggers;
             this.inherit = inherits;
 
             if (getStylesheet() == null)

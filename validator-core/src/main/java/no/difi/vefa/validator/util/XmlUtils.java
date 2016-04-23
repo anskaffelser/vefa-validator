@@ -34,6 +34,14 @@ public class XmlUtils {
         return null;
     }
 
+    public static String extractLocalName(String xmlContent) {
+        Matcher matcher = rootTagPattern.matcher(xmlContent);
+        if (matcher.find())
+            return matcher.group(1).trim();
+
+        return null;
+    }
+
     XmlUtils() {
 
     }
