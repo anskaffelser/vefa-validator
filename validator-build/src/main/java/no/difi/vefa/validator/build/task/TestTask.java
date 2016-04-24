@@ -26,8 +26,9 @@ public class TestTask {
 
         try {
             validator = ValidatorBuilder
-                    .newValidator()
+                    .newValidatorWithTest()
                     .setProperties(new SimpleProperties()
+                                    .set("feature.nesting", true)
                                     .set("feature.expectation", true)
                                     .set("feature.suppress_notloaded", true)
                     )
@@ -45,20 +46,41 @@ public class TestTask {
                             validation.getReport().setFilename(file.toString());
 
                             build.addTestValidation(validation);
-                            tests++;
 
-                            if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
+                            if (validation.getDocument().getDeclaration().equals("http://difi.no/xsd/vefa/validator/1.0::testSet")) {
+                                logger.info("TestSet '{}'", file);
+
+                                for (int i = 0; i < validation.getChildren().size(); i++) {
+                                    Validation v = validation.getChildren().get(i);
+
+                                    if (v.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
+                                        logger.warn("  Test '{}) {}' ({})", i + 1, v.getDocument().getExpectation().getDescription(), v.getReport().getFlag());
+                                        failed++;
+                                        tests++;
+
+                                        for (SectionType sectionType : v.getReport().getSection())
+                                            for (AssertionType assertionType : sectionType.getAssertion())
+                                                if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
+                                                    logger.debug("    * {} {} ({})", assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
+                                    }
+
+                                    tests++;
+                                }
+                            } else if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
                                 logger.warn("Test '{}' ({})", file, validation.getReport().getFlag());
                                 failed++;
+                                tests++;
 
                                 for (SectionType sectionType : validation.getReport().getSection())
                                     for (AssertionType assertionType : sectionType.getAssertion())
                                         if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
                                             logger.debug("  * {} {} ({})", assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
-                            } else
+                            } else {
                                 logger.info("Test '{}'", file);
+                                tests++;
+                            }
                         } catch (Exception e) {
-                            logger.warn("Test '{}' ({})", file, e.getMessage());
+                            logger.warn("Test '{}' ({})", file, e.getMessage(), e);
                         }
                     }
                 }

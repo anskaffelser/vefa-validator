@@ -5,12 +5,41 @@
     <xs:element name="test">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="assert" type="assertType"/>
                 <xs:any processContents="lax"/>
             </xs:sequence>
-            <xs:attribute name="configuration" type="xs:string" use="required"/>
+            <xs:attribute name="configuration" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="testSet">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="assert" type="assertType" minOccurs="0"/>
+                <xs:element ref="test" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="configuration" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="assertType">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="scope" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="fatal" type="assertElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="error" type="assertElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="warning" type="assertElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="success" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="assertElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="number" type="xs:int"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
 
     <xs:element name="artifacts">
         <xs:complexType>

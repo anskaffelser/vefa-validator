@@ -1,7 +1,9 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.api.DeclarationWithConverter;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.xsd.vefa.validator._1.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,11 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
             throw new ValidatorException(e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public Expectation expectations(byte[] content) throws ValidatorException {
+        return new ValidatorTestExpectation(content);
     }
 
     @Override

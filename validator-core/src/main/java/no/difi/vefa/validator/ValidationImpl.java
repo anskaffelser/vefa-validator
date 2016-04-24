@@ -212,7 +212,7 @@ class ValidationImpl implements Validation {
     /**
      * Handling nested validation.
      */
-    private void nestedValidation() {
+    private void nestedValidation() throws ValidatorException{
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
             if (declaration instanceof DeclarationWithChildren && properties.getBoolean("feature.nesting")) {
                 Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());

@@ -1,13 +1,9 @@
 package no.difi.vefa.validator;
 
 import com.google.common.jimfs.Jimfs;
-import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.Source;
-import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.xsd.vefa.validator._1.FlagType;
-import no.difi.xsd.vefa.validator._1.Report;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -37,7 +33,8 @@ public class AsiceCaseTest {
                 )
                 .build();
 
-        Report report = validator.validate(getClass().getResourceAsStream("/documents/asic-xml.xml")).getReport();
-        Assert.assertEquals(report.getFlag(), FlagType.OK);
+        Validation validation = validator.validate(getClass().getResourceAsStream("/documents/asic-xml.xml"));
+        Assert.assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        Assert.assertEquals(validation.getChildren().size(), 3);
     }
 }

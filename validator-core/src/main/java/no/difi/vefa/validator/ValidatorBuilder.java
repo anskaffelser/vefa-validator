@@ -28,7 +28,16 @@ public class ValidatorBuilder {
                 .plugin(UblPlugin.class)
                 .plugin(SbdhPlugin.class)
                 .plugin(AsicePlugin.class)
-                .plugin(EspdPlugin.class)
+                .plugin(EspdPlugin.class);
+    }
+
+    /**
+     * Initiate creation of a new validator. Loads default plugins.
+     *
+     * @return Builder
+     */
+    public static ValidatorBuilder newValidatorWithTest() {
+        return newValidator()
                 .plugin(ValidatorTestPlugin.class);
     }
 
