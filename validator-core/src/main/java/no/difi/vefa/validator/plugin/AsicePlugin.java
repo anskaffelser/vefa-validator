@@ -48,17 +48,16 @@ public class AsicePlugin implements ValidatorPlugin {
     public List<Configurations> configurations() {
         return new ArrayList<Configurations>() {{
             add(ConfigurationsBuilder
-                            .instance()
-                            // .pkg("ASiC-E")
-                            .configuration(ConfigurationBuilder
-                                    .identifier("asice-archive")
-                                    .title("ASiC-E")
-                                    .standardId("application/vnd.etsi.asic-e+zip")
-                                    .trigger("asice")
-                                    .weight(Long.MIN_VALUE)
-                                    .build())
-                            .build()
-            );
+                    .instance()
+                    // .pkg("ASiC-E")
+                    .configuration(ConfigurationBuilder
+                            .identifier("asice-archive")
+                            .title("ASiC-E")
+                            .standardId("application/vnd.etsi.asic-e+zip")
+                            .trigger("asice")
+                            .weight(Long.MIN_VALUE)
+                            .build())
+                    .build());
         }};
     }
 }

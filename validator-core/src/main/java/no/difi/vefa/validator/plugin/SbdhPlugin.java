@@ -1,6 +1,8 @@
 package no.difi.vefa.validator.plugin;
 
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.builder.ConfigurationBuilder;
+import no.difi.vefa.validator.builder.ConfigurationsBuilder;
 import no.difi.vefa.validator.checker.SvrlXsltChecker;
 import no.difi.vefa.validator.checker.XsdChecker;
 import no.difi.vefa.validator.declaration.SbdhDeclaration;
@@ -46,6 +48,16 @@ public class SbdhPlugin implements ValidatorPlugin {
 
     @Override
     public List<Configurations> configurations() {
-        return Collections.emptyList();
+        return new ArrayList<Configurations>() {{
+            add(ConfigurationsBuilder
+                    .instance()
+                    .configuration(ConfigurationBuilder
+                            .identifier("sbdh")
+                            .title("Standard Business Document Header")
+                            .standardId("SBDH:1.0")
+                            .weight(Long.MIN_VALUE)
+                            .build())
+                    .build());
+        }};
     }
 }

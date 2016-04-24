@@ -1,31 +1,25 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 
-public class SimpleXmlDeclaration implements Declaration {
+public class SimpleXmlDeclaration extends XmlDeclaration {
 
-    private String namespace;
-    private String localName;
+    protected String namespace;
+    protected String localName;
 
     public SimpleXmlDeclaration(String namespace, String localName) {
         this.namespace = namespace;
         this.localName = localName;
     }
 
-    public SimpleXmlDeclaration(String namespace) {
-        this(namespace, null);
-    }
-
     @Override
     public boolean verify(byte[] content) throws ValidatorException {
         String c = new String(content);
-        if (!namespace.equals(XmlUtils.extractRootNamespace(c)))
-            return false;
-        return localName == null || localName.equals(XmlUtils.extractLocalName(c));
+        return namespace.equals(XmlUtils.extractRootNamespace(c)) &&
+                (localName == null || localName.equals(XmlUtils.extractLocalName(c)));
     }
 
     @Override

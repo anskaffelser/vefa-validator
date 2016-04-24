@@ -12,15 +12,14 @@ public class XmlUtils {
 
     private static final Pattern rootTagPattern = Pattern.compile("<(?!http[s]{0,1}://)(\\w*:{0,1}[^<?|^<!^]*?)>", Pattern.MULTILINE);
     private static final Pattern namespacePattern = Pattern.compile("xmlns:{0,1}([A-Za-z0-9]*)\\w*=\\w*[\"']{1}(.+?)[\"']{1}", Pattern.MULTILINE);
-    private static final Pattern localNamePattern = Pattern.compile("([A-Za-z0-9]*:)([A-Za-z0-9\\-]+).*", Pattern.MULTILINE);
 
     public static String extractRootNamespace(String xmlContent) {
         Matcher matcher = rootTagPattern.matcher(xmlContent);
         if (matcher.find()) {
-            String rootElement = matcher.group(1).trim();
+            String rootElement = matcher.group(1).trim().replace("\n", " ").replace("\r", "").replace("\t", " ");
             logger.debug("Root element: {}", rootElement);
             String rootNs = rootElement.split(" ", 2)[0].contains(":") ? rootElement.substring(0, rootElement.indexOf(":")) : "";
-            logger.debug("Namespace: {}", rootNs);
+            logger.debug("Root ns: {}", rootNs);
 
             Matcher nsMatcher = namespacePattern.matcher(rootElement);
             while (nsMatcher.find()) {
@@ -38,9 +37,9 @@ public class XmlUtils {
     public static String extractLocalName(String xmlContent) {
         Matcher matcher = rootTagPattern.matcher(xmlContent);
         if (matcher.find()) {
-            Matcher lnMatcher = localNamePattern.matcher(matcher.group(1).trim());
-            if (lnMatcher.find())
-                return lnMatcher.group(2);
+            String rootElement = matcher.group(1).trim().replace("\n", " ").replace("\r", "").replace("\t", " ");
+            logger.debug("Root element: {}", rootElement);
+            return rootElement.split(" ", 2)[0].contains(":") ? rootElement.substring(rootElement.indexOf(":") + 1, rootElement.indexOf(" ")) : rootElement.split(" ", 2)[0];
         }
         return null;
     }

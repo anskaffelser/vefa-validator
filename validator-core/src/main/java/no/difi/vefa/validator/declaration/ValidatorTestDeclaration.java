@@ -4,7 +4,6 @@ import no.difi.vefa.validator.api.DeclarationWithConverter;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.XmlExpectation;
-import no.difi.vefa.validator.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,17 +15,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ValidatorTestDeclaration extends XmlDeclaration implements DeclarationWithConverter {
-
-    private static final String NAMESPACE = "http://difi.no/xsd/vefa/validator/1.0";
+public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
 
     private static Logger logger = LoggerFactory.getLogger(ValidatorTestDeclaration.class);
 
-    @Override
-    public boolean verify(byte[] content) throws ValidatorException {
-        String c = new String(content);
-        String namespace = XmlUtils.extractRootNamespace(c);
-        return NAMESPACE.equals(namespace) && c.contains("<test ");
+    public ValidatorTestDeclaration() {
+        super("http://difi.no/xsd/vefa/validator/1.0", "test");
     }
 
     @Override
@@ -35,7 +29,7 @@ public class ValidatorTestDeclaration extends XmlDeclaration implements Declarat
             XMLStreamReader source = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(content));
 
             do {
-                if (source.getEventType() == XMLStreamConstants.START_ELEMENT && source.getNamespaceURI().equals(NAMESPACE))
+                if (source.getEventType() == XMLStreamConstants.START_ELEMENT && source.getNamespaceURI().equals(namespace))
                     for (int i = 0; i < source.getAttributeCount(); i++)
                         if (source.getAttributeName(i).toString().equals("configuration"))
                             return String.format("configuration::%s", source.getAttributeValue(i));
@@ -44,11 +38,6 @@ public class ValidatorTestDeclaration extends XmlDeclaration implements Declarat
         } catch (XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
-        return new XmlExpectation(content);
     }
 
     @Override
@@ -72,7 +61,7 @@ public class ValidatorTestDeclaration extends XmlDeclaration implements Declarat
                         break;
 
                     case XMLStreamConstants.START_ELEMENT:
-                        payload = !source.getNamespaceURI().equals(NAMESPACE);
+                        payload = !source.getNamespaceURI().equals(namespace);
 
                         if (payload) {
                             logger.debug("START_ELEMENT");
@@ -86,7 +75,7 @@ public class ValidatorTestDeclaration extends XmlDeclaration implements Declarat
                         break;
 
                     case XMLStreamConstants.END_ELEMENT:
-                        payload = !source.getNamespaceURI().equals(NAMESPACE);
+                        payload = !source.getNamespaceURI().equals(namespace);
 
                         if (payload) {
                             logger.debug("END_ELEMENT");
