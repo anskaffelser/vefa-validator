@@ -60,7 +60,6 @@ public class AsiceDeclaration extends XmlDeclaration implements DeclarationWithC
         return null;
     }
 
-
     @Override
     public void convert(InputStream inputStream, OutputStream outputStream) throws ValidatorException {
         try {
