@@ -16,11 +16,6 @@ public class ConfigurationsBuilder {
         configurations.setTimestamp(0L);
     }
 
-    public ConfigurationsBuilder name(String name) {
-        configurations.setName(name);
-        return this;
-    }
-
     public ConfigurationsBuilder pkg(String title) {
         return pkg(title, null);
     }

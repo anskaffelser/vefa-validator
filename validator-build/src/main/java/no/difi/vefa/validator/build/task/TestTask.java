@@ -47,7 +47,7 @@ public class TestTask {
 
                             build.addTestValidation(validation);
 
-                            if (validation.getDocument().getDeclaration().equals("http://difi.no/xsd/vefa/validator/1.0::testSet")) {
+                            if ("http://difi.no/xsd/vefa/validator/1.0::testSet".equals(validation.getDocument().getDeclaration())) {
                                 logger.info("TestSet '{}'", file);
 
                                 for (int i = 0; i < validation.getChildren().size(); i++) {
