@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import no.difi.asic.*;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -25,16 +26,8 @@ public class Builder {
 
     private static Logger logger = LoggerFactory.getLogger(Builder.class);
 
-    private static JAXBContext jaxbContext;
+    private static JAXBContext jaxbContext = JAXBHelper.context(Configurations.class, BuildConfigurations.class);
     private static AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(SignatureMethod.CAdES);
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Configurations.class, BuildConfigurations.class);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
 
     private GenericKeyedObjectPool<String, Preparer> preparerPool = new GenericKeyedObjectPool<>(new PreparerPoolFactory());
 

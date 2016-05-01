@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/difi/vefa-validator.svg?branch=master)](https://travis-ci.org/difi/vefa-validator)
+[![CodeCov](https://codecov.io/gh/difi/vefa-validator/branch/master/graph/badge.svg)](https://codecov.io/gh/difi/vefa-validator)
 [![Maven Central](https://img.shields.io/maven-central/v/no.difi.vefa/validator-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22no.difi.vefa%22%20AND%20validator)
 
 

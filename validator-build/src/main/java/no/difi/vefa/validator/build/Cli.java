@@ -19,6 +19,10 @@ public class Cli {
     private static Logger logger = LoggerFactory.getLogger(Cli.class);
 
     public static void main(String... args) throws Exception {
+        System.exit(perform(args));
+    }
+
+    public static int perform(String... args) throws Exception {
         Options options = new Options();
         options.addOption("t", "test", false, "Run tests");
         options.addOption("s", "site", false, "Create site");
@@ -64,6 +68,6 @@ public class Cli {
                         result = Math.max(result, validation.getReport().getFlag().compareTo(FlagType.EXPECTED));
         }
 
-        System.exit(result);
+        return result;
     }
 }

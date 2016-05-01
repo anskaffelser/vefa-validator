@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 public class TestTask {
+
     private static Logger logger = LoggerFactory.getLogger(TestTask.class);
 
     public void test(Build build) throws Exception {

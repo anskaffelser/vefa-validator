@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildConfigurations xmlns="http://difi.no/xsd/vefa/validator/1.0" capabilities="test">
+
+    <package>Test project</package>
+
+    <testfolder>unit</testfolder>
+
+    <configuration>
+        <identifier>test-s01-tt-1.0</identifier>
+        <title>Test document type</title>
+        <standardId>test#test</standardId>
+        <!-- <inherit>ubl-catalogue-2.1</inherit>
+        <file path="xsl/NOGOV-UBL-T19.xsl" />
+        <file path="xsl/BIIRULES-UBL-T19.xsl" />
+        <file path="xsl/OPENPEPPOL-UBL-T19.xsl" /> -->
+    </configuration>
+
+</buildConfigurations>
