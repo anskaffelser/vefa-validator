@@ -23,7 +23,7 @@ public class Build {
     private List<Validation> testValidations = new ArrayList<>();
 
     public Build(Path projectPath) {
-        this(projectPath, new File(projectPath.toFile(), "target").toPath());
+        this(projectPath, projectPath.resolve("target"));
     }
 
     public Build(Path projectPath, Path targetFolder) {
