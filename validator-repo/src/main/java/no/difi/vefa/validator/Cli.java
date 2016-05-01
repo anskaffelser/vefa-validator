@@ -15,7 +15,7 @@ public class Cli {
             logger.info("Usage:");
             logger.info("  Generate artifacts.xml in repo-folder:");
             logger.info("    validator-repo --target repo-folder");
-            System.exit(0);
+            return;
         }
 
         Options options = new Options();

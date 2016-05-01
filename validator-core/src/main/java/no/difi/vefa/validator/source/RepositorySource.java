@@ -1,11 +1,10 @@
 package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.SourceInstance;
+import no.difi.vefa.validator.api.ValidatorException;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Set;
 
 /**
@@ -22,17 +21,18 @@ public class RepositorySource extends AbstractSource {
     }
 
     static RepositorySource create(String uri) {
-        try {
-            return new RepositorySource(uri);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return new RepositorySource(uri);
     }
 
     private URI rootUri;
 
-    public RepositorySource(String uri) throws URISyntaxException {
-        this(new URI(uri));
+    /**
+     * Helper method to allow using string when initiating the new source.
+     *
+     * @param uri Uri used to fetch validation artifacts.
+     */
+    public RepositorySource(String uri) {
+        this(URI.create(uri));
     }
 
     /**
@@ -45,7 +45,7 @@ public class RepositorySource extends AbstractSource {
     }
 
     @Override
-    public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException{
+    public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException {
         return new RepositorySourceInstance(properties, capabilities, rootUri);
     }
 }

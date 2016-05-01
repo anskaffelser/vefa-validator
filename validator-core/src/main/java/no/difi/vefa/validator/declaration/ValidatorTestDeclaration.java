@@ -4,6 +4,7 @@ import no.difi.vefa.validator.api.DeclarationWithConverter;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +31,7 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     private static Logger logger = LoggerFactory.getLogger(ValidatorTestDeclaration.class);
 
     private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private static JAXBContext jaxbContext;
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Test.class);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
+    private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
 
     public ValidatorTestDeclaration() {
         super("http://difi.no/xsd/vefa/validator/1.0", "test");

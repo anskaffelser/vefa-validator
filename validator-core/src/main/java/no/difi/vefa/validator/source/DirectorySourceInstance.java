@@ -36,10 +36,10 @@ class DirectorySourceInstance extends AbstractSourceInstance {
         // Call #AbstractSourceInstance().
         super(properties);
 
-        for (Path directory : directories) {
-            logger.info("Directory: {}", directory);
+        try {
+            for (Path directory : directories) {
+                logger.info("Directory: {}", directory);
 
-            try {
                 // Directories containing artifacts.xml results in lower memory footprint.
                 if (Files.exists(directory.resolve("artifacts.xml"))) {
                     // Create unmarshaller (XML => Java)
@@ -74,11 +74,11 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         unpackContainer(asicReaderFactory.open(file), file.getName());
                     }
                 }
-            } catch (Exception e) {
-                // Log and throw ValidatorException.
-                logger.warn(e.getMessage());
-                throw new ValidatorException(e.getMessage(), e);
             }
+        } catch (Exception e) {
+            // Log and throw ValidatorException.
+            logger.warn(e.getMessage());
+            throw new ValidatorException(e.getMessage(), e);
         }
     }
 }

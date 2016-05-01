@@ -3,6 +3,7 @@ package no.difi.vefa.validator.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.zip.GZIPInputStream;
@@ -26,15 +26,7 @@ public class WorkspaceService {
     private static Logger logger = LoggerFactory.getLogger(WorkspaceService.class);
 
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private static JAXBContext jaxbContext;
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Report.class);
-        } catch (JAXBException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+    private static JAXBContext jaxbContext = JAXBHelper.context(Report.class);
 
     @Value("${workspace}")
     private String dirWorkspace;

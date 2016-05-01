@@ -124,4 +124,22 @@ public class UblDeclarationTest {
 
         assertFalse(declaration.verify(byteArrayOutputStream.toByteArray()));
     }
+
+    @Test
+    public void emptyElements() throws Exception {
+        String xml = "<test><CustomizationID></CustomizationID><ProfileID></ProfileID></test>";
+        assertEquals(declaration.detect(xml.getBytes()), "null#null");
+    }
+
+    @Test(expectedExceptions = ValidatorException.class)
+    public void incompleteDeclaration() throws Exception {
+        String xml = "<test>";
+        declaration.detect(xml.getBytes());
+    }
+
+    @Test(expectedExceptions = ValidatorException.class)
+    public void withoutDeclaration() throws Exception {
+        String xml = "<test></test>";
+        declaration.detect(xml.getBytes());
+    }
 }

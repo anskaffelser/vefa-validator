@@ -3,6 +3,7 @@ package no.difi.vefa.validator.checker;
 import net.sf.saxon.TransformerFactoryImpl;
 import net.sf.saxon.lib.FeatureKeys;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -12,7 +13,6 @@ import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBResult;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -41,7 +41,7 @@ public class SvrlXsltChecker implements Checker {
         try {
             transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
 
-            jaxbResult = new JAXBResult(JAXBContext.newInstance(SchematronOutput.class));
+            jaxbResult = new JAXBResult(JAXBHelper.context(SchematronOutput.class));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }

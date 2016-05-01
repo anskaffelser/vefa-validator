@@ -25,6 +25,6 @@ public class SimpleDirectorySource extends AbstractSource {
 
     @Override
     public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException {
-        return new SimpleDirectorySourceInstance(properties, capabilities, directories);
+        return new SimpleDirectorySourceInstance(properties, directories);
     }
 }
