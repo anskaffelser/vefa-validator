@@ -1,0 +1,46 @@
+package no.difi.vefa.validator.source;
+
+import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.xsd.vefa.validator._1.ArtifactType;
+import no.difi.xsd.vefa.validator._1.Artifacts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.util.Set;
+
+class ClasspathSourceInstance extends AbstractSourceInstance {
+
+    private static Logger logger = LoggerFactory.getLogger(ClasspathSourceInstance.class);
+
+    public ClasspathSourceInstance(Properties properties, Set<String> capabilities, String location) throws ValidatorException {
+        super(properties);
+
+        try {
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            String artifactsUri = location + "artifacts.xml";
+            logger.info(String.format("Fetching %s", artifactsUri));
+            Artifacts artifactsType = unmarshaller.unmarshal(new StreamSource(getClass().getResourceAsStream(artifactsUri)), Artifacts.class).getValue();
+
+            for (ArtifactType artifact : artifactsType.getArtifact()) {
+                boolean loadArtifact = true;
+
+                if (artifact.getCapabilities() != null)
+                    for (String capability : artifact.getCapabilities().split(","))
+                        if (capabilities.contains(capability))
+                            loadArtifact = false;
+
+                if (loadArtifact) {
+                    String artifactUri = location + artifact.getFilename();
+                    logger.info(String.format("Fetching %s", artifactUri));
+                    unpackContainer(asicReaderFactory.open(getClass().getResourceAsStream(artifactUri)), artifact.getFilename());
+                }
+            }
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+            throw new ValidatorException(e.getMessage(), e);
+        }
+    }
+}

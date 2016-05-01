@@ -7,6 +7,7 @@ import no.difi.asic.AsicReaderFactory;
 import no.difi.asic.SignatureMethod;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.asic.model._1.Certificate;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;
@@ -24,19 +25,9 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
     private static Logger logger = LoggerFactory.getLogger(AbstractSourceInstance.class);
 
     protected static AsicReaderFactory asicReaderFactory = AsicReaderFactory.newFactory(SignatureMethod.CAdES);
-
-    protected static JAXBContext jaxbContext;
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Artifacts.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
+    protected static JAXBContext jaxbContext = JAXBHelper.context(Artifacts.class);
 
     protected FileSystem fileSystem;
-
     protected Properties properties;
 
     public AbstractSourceInstance(Properties properties) {

@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.expectation;
 
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.AssertElementType;
 import no.difi.xsd.vefa.validator._1.AssertType;
 import no.difi.xsd.vefa.validator._1.Test;
@@ -17,16 +18,7 @@ public class ValidatorTestExpectation extends AbstractExpectation {
      * Logger
      */
     private static Logger logger = LoggerFactory.getLogger(ValidatorTestExpectation.class);
-
-    private static JAXBContext jaxbContext;
-
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Test.class);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
+    private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
 
     public ValidatorTestExpectation(byte[] bytes) {
         try {

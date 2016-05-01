@@ -8,6 +8,7 @@ import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,8 @@ public class SvrlXsltChecker implements Checker {
             for (Object o : output.getActivePatternAndFiredRuleAndFailedAssert())
                 if (o instanceof FailedAssert)
                     add(section, (FailedAssert) o);
+                else if (o instanceof SuccessfulReport)
+                    add(section, (SuccessfulReport) o);
         } catch (Exception e) {
             throw new ValidatorException(
                     String.format("Unable to perform check: %s", e.getMessage()), e);
@@ -94,6 +97,36 @@ public class SvrlXsltChecker implements Checker {
                 break;
             default:
                 logger.warn("Unknown: " + failedAssert.getFlag());
+                break;
+        }
+
+        section.add(assertionType);
+    }
+
+    public void add(Section section, SuccessfulReport failedAssert) {
+        AssertionType assertionType = new AssertionType();
+
+        String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll("     ", " ").replaceAll("   ", " ").replaceAll("  ", " ");
+        if (text.startsWith("[") && text.contains("]-")) {
+            assertionType.setIdentifier(text.substring(1, text.indexOf("]-")).trim());
+            text = text.substring(text.indexOf("]-") + 2).trim();
+        } else {
+            assertionType.setIdentifier("UNKNOWN");
+        }
+
+        if (failedAssert.getId() != null)
+            assertionType.setIdentifier(failedAssert.getId());
+
+        assertionType.setText(text);
+        assertionType.setLocation(failedAssert.getLocation());
+        assertionType.setTest(failedAssert.getTest());
+
+        switch (failedAssert.getFlag()) {
+            case "info":
+                assertionType.setFlag(FlagType.INFO);
+                break;
+            default:
+                assertionType.setFlag(FlagType.SUCCESS);
                 break;
         }
 

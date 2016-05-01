@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +32,7 @@ class ValidatorEngine implements Closeable {
     /**
      * JAXBContext
      */
-    private static JAXBContext jaxbContext;
-
-    /**
-     * Loads the JAXBContext to be used.
-     */
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(Configurations.class);
-        } catch (JAXBException e) {
-            throw new RuntimeException("Unable to initiate configuration loader.", e);
-        }
-    }
+    private static JAXBContext jaxbContext = JAXBHelper.context(Configurations.class);
 
     private Map<String, Path> configurationSourceMap = new HashMap<>();
 

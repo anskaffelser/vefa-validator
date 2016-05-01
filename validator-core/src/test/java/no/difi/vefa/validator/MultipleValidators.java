@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import no.difi.vefa.validator.source.ClasspathSource;
 import no.difi.vefa.validator.source.RepositorySource;
 
 import org.junit.After;
@@ -12,7 +13,7 @@ public class MultipleValidators {
     @Before
     public void setup() throws Exception {
         validator = ValidatorBuilder.newValidator()
-                .setSource(RepositorySource.forTest())
+                .setSource(new ClasspathSource("/rules/"))
                 .build();
     }
     

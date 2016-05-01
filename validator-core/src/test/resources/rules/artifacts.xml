@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<artifacts xmlns="http://difi.no/xsd/vefa/validator/1.0" timestamp="1461934273385">
+    <artifact filename="ehf-79b2def888aba2a33ccc7606c4b39f5448c3585e.asice" timestamp="1461934273385"/>
+    <artifact filename="ehf-stylesheet-1c573960978491dff855ae35ec28b582de2405e2.asice" timestamp="1456308020548"/>
+    <artifact filename="ubl21-d6122e53220eb8e2732ef0d0c7474b21.asice" timestamp="1440675269967"/>
+</artifacts>
