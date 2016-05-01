@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.source.SimpleDirectorySource;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 import no.difi.xsd.vefa.validator._1.Configurations;
@@ -13,6 +14,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -31,38 +33,14 @@ public class Repo {
     private static Logger logger = LoggerFactory.getLogger(Repo.class);
 
     /**
-     * Unmarshaller (XML => Java)
+     * Context for JAXB
      */
-    private static Unmarshaller unmarshaller;
-
-    /**
-     * Marshaller (Java => XML)
-     */
-    private static Marshaller marshaller;
-
-    /**
-     * Load JAXBContext used.
-     */
-    static {
-        try {
-            // Context
-            JAXBContext jaxbContext = JAXBContext.newInstance(Configurations.class, Artifacts.class);
-
-            // Unmarshaller
-            unmarshaller = jaxbContext.createUnmarshaller();
-
-            // Marshaller
-            marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        } catch (JAXBException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+    private static JAXBContext jaxbContext = JAXBHelper.context(Configurations.class, Artifacts.class);
 
     /**
      * Generates list of artifacts for a given directory.
      *
-     * @param directory Directory for repository.
+     * @param directory   Directory for repository.
      * @param writeToDisk Set to true if list of artifacts is to be written do disk.
      * @return List of current artifacts.
      * @throws Exception
@@ -110,10 +88,13 @@ public class Repo {
                 if (matcher.matches(file)) {
                     try {
                         String parentString = file.getParent().toString();
+
+                        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
                         // If inspected configuration file is part of the set of detected files.
                         if (fileFound.contains(parentString)) {
                             // Read configuration file.
-                            Configurations configurations = ((Configurations) unmarshaller.unmarshal(Files.newInputStream(file)));
+                            Configurations configurations = unmarshaller.unmarshal(new StreamSource(Files.newInputStream(file)), Configurations.class).getValue();
 
                             // New artifact
                             ArtifactType artifactType = new ArtifactType();
@@ -146,8 +127,11 @@ public class Repo {
             logger.warn("Not found: {}", notLoaded);
 
         // Save result to disk.
-        if (writeToDisk)
+        if (writeToDisk) {
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(artifacts, Files.newOutputStream(directory.resolve("artifacts.xml")));
+        }
 
         // Return list of artifacts.
         return artifacts;

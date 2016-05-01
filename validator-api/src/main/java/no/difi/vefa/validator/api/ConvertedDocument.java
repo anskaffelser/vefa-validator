@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.api;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * Representation of validation document where the document is converted before performing validation.
