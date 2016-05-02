@@ -56,8 +56,11 @@ public class Cli {
 
             new Builder().build(build, signatureHelper);
 
-            if (cmd.hasOption("test"))
-                new TestTask().test(build);
+            if (cmd.hasOption("test")) {
+                TestTask testTask = new TestTask(build);
+                testTask.perform();
+                testTask.close();
+            }
 
             if (cmd.hasOption("site"))
                 new SiteTask().build(build);
