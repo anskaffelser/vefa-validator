@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.nio.file.FileSystem;
+import java.util.List;
 import java.util.Set;
 
 public class AsiceCaseTest {
@@ -23,6 +24,11 @@ public class AsiceCaseTest {
                             @Override
                             public FileSystem getFileSystem() {
                                 return Jimfs.newFileSystem(com.google.common.jimfs.Configuration.unix());
+                            }
+
+                            @Override
+                            public List<String> getConfigs() {
+                                return null;
                             }
                         };
                     }

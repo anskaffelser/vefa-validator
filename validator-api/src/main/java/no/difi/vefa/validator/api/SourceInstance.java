@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.api;
 
 import java.nio.file.FileSystem;
+import java.util.List;
 
 /**
  * An instance representing a source.
@@ -15,5 +16,7 @@ public interface SourceInstance {
      * @return Filesystem instance.
      */
     FileSystem getFileSystem();
+
+    List<String> getConfigs();
 
 }

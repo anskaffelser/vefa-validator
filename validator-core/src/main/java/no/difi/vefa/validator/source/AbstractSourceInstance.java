@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
@@ -68,7 +69,12 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
     public FileSystem getFileSystem() {
         return fileSystem;
     }
-    
+
+    @Override
+    public List<String> getConfigs() {
+        return null;
+    }
+
     @Override
     public void close() throws IOException {
         if (fileSystem != null) {

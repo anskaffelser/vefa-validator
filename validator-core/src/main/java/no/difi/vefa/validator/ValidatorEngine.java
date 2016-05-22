@@ -68,24 +68,33 @@ class ValidatorEngine implements Closeable {
         for (Configurations c : configurations)
             loadConfigurations("", c);
 
-        // Matcher to find configuration files.
-        final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
-
         try {
-            Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (matcher.matches(file)) {
-                        String configurationSource = addResource(file.getParent());
-                        try {
-                            loadConfigurations(configurationSource, Files.newInputStream(file));
-                        } catch (ValidatorException e) {
-                            throw new IOException(e.getMessage(), e);
+            List<String> configs = sourceInstance.getConfigs();
+            if (configs == null) {
+
+                // Matcher to find configuration files.
+                final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
+
+                Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        if (matcher.matches(file)) {
+                            String configurationSource = addResource(file.getParent());
+                            try {
+                                loadConfigurations(configurationSource, Files.newInputStream(file));
+                            } catch (ValidatorException e) {
+                                throw new IOException(e.getMessage(), e);
+                            }
                         }
+                        return FileVisitResult.CONTINUE;
                     }
-                    return FileVisitResult.CONTINUE;
+                });
+            } else {
+                for (String config : configs) {
+                    Path path = sourceInstance.getFileSystem().getPath(config);
+                    loadConfigurations(addResource(path.getParent()), Files.newInputStream(path));
                 }
-            });
+            }
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
             throw new ValidatorException("Unable to read all configurations from virtual disk.", e);
