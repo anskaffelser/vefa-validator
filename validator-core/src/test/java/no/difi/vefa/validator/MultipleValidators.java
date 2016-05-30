@@ -7,6 +7,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Testing opening and closing two validators in row.
+ */
 public class MultipleValidators {
     private Validator validator;
     
