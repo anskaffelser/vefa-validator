@@ -67,19 +67,12 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                     // Detect all ASiC-E-files in the directory.
                     try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
                         for (Path path : directoryStream) {
-                            if (path.endsWith(".asice")) {
+                            if (path.toString().endsWith(".asice")) {
                                 logger.info("Loading: {}", path);
                                 unpackContainer(asicReaderFactory.open(path), path.getFileName().toString());
                             }
                         }
                     }
-                    /*
-                    for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
-                        // Load validation artifact to memory.
-                        logger.info("Loading: {}", file);
-                        unpackContainer(asicReaderFactory.open(file), file.getName());
-                    }
-                    */
                 }
             }
         } catch (Exception e) {
