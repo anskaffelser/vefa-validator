@@ -24,6 +24,9 @@ public class Cli {
             case "repo":
                 no.difi.vefa.validator.Cli.main(realArgs);
                 break;
+            case "tester":
+                no.difi.vefa.validator.tester.Cli.main(realArgs);
+                break;
             default:
                 logger.error(String.format("Unknown command: '%s'", args[0]));
                 System.exit(1);

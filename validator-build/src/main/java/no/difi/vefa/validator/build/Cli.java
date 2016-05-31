@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -58,8 +57,7 @@ public class Cli {
             new Builder().build(build, signatureHelper);
 
             if (cmd.hasOption("test"))
-                for (Validation validation : Tester.perform(build.getTargetFolder(), build.getTestFolders().toArray(new Path[] {})))
-                    build.addTestValidation(validation);
+                Tester.perform(build);
 
             if (cmd.hasOption("site"))
                 new SiteTask().build(build);

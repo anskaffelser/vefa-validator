@@ -4,8 +4,10 @@ import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
+import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +29,23 @@ public class Tester implements Closeable {
 
     private static Logger logger = LoggerFactory.getLogger(Tester.class);
 
-    public static List<Validation> perform(Path artifactsPath, Path... testPaths) throws ValidatorException {
+    public static void perform(Build build) throws ValidatorException {
+        for (Validation validation : perform(build.getTargetFolder(), build.getTestFolders()))
+            build.addTestValidation(validation);
+    }
+
+    public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) throws ValidatorException {
         try (Tester tester = new Tester(artifactsPath)) {
+            for (Path path : testPaths)
+                tester.perform(path);
+            return tester.finish();
+        } catch (IOException e) {
+            throw new ValidatorException(e.getMessage(), e);
+        }
+    }
+
+    public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) throws ValidatorException {
+        try (Tester tester = new Tester(artifactsUri)) {
             for (Path path : testPaths)
                 tester.perform(path);
             return tester.finish();
@@ -51,6 +69,18 @@ public class Tester implements Closeable {
                                 .set("feature.suppress_notloaded", true)
                 )
                 .setSource(new DirectorySource(artifactsPath))
+                .build();
+    }
+
+    private Tester(URI artifactsUri) throws ValidatorException {
+        validator = ValidatorBuilder
+                .newValidatorWithTest()
+                .setProperties(new SimpleProperties()
+                                .set("feature.nesting", true)
+                                .set("feature.expectation", true)
+                                .set("feature.suppress_notloaded", true)
+                )
+                .setSource(new RepositorySource(artifactsUri))
                 .build();
     }
 
