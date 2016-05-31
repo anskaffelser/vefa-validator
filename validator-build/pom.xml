@@ -65,6 +65,10 @@
             <groupId>no.difi.vefa</groupId>
             <artifactId>validator-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.difi.vefa</groupId>
+            <artifactId>validator-tester</artifactId>
+        </dependency>
 
         <!-- Difi Commons -->
         <dependency>

@@ -1,10 +1,9 @@
-package no.difi.vefa.validator.build.task;
+package no.difi.vefa.validator.tester;
 
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
@@ -20,23 +19,30 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TestTask implements Closeable {
+public class Tester implements Closeable {
 
-    private static Logger logger = LoggerFactory.getLogger(TestTask.class);
+    private static Logger logger = LoggerFactory.getLogger(Tester.class);
+
+    public static List<Validation> perform(Path artifactsPath, Path... testPaths) throws ValidatorException {
+        try (Tester tester = new Tester(artifactsPath)) {
+            for (Path path : testPaths)
+                tester.perform(path);
+            return tester.finish();
+        } catch (IOException e) {
+            throw new ValidatorException(e.getMessage(), e);
+        }
+    }
+
+    private Validator validator;
+    private List<Validation> validations = new ArrayList<>();
 
     private int tests = 0;
     private int failed = 0;
 
-    private Validator validator;
-
-    private Build build;
-
-    public TestTask(Build build) {
-        this.build = build;
-    }
-
-    private void initiateValidator() throws ValidatorException{
+    private Tester(Path artifactsPath) throws ValidatorException {
         validator = ValidatorBuilder
                 .newValidatorWithTest()
                 .setProperties(new SimpleProperties()
@@ -44,19 +50,20 @@ public class TestTask implements Closeable {
                                 .set("feature.expectation", true)
                                 .set("feature.suppress_notloaded", true)
                 )
-                .setSource(new DirectorySource(build.getTargetFolder()))
+                .setSource(new DirectorySource(artifactsPath))
                 .build();
     }
 
-    public void perform() throws Exception {
-        initiateValidator();
+    private void perform(Path path) {
+        for (File file : FileUtils.listFiles(path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE))
+            if (!file.getName().equals("buildconfig.xml"))
+                validate(file);
+    }
 
-        for (Path testFolder : build.getTestFolders())
-            for (File file : FileUtils.listFiles(testFolder.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE))
-                if (!file.getName().equals("buildconfig.xml"))
-                    validate(file);
-
+    private List<Validation> finish() {
         logger.info("{} tests performed, {} tests failed", tests, failed);
+
+        return validations;
     }
 
     private void validate(File file) {
@@ -81,7 +88,7 @@ public class TestTask implements Closeable {
     }
 
     public void append(String description, Validation validation, Integer numberInSet) {
-        build.addTestValidation(validation);
+        validations.add(validation);
         tests++;
 
         String prefix = numberInSet == null ? "" : "  ";

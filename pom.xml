@@ -64,6 +64,7 @@
         <module>validator-repo</module>
         <module>validator-web</module>
         <module>validator-dist</module>
+        <module>validator-tester</module>
     </modules>
 
     <properties>
@@ -109,6 +110,11 @@
             <dependency>
                 <groupId>no.difi.vefa</groupId>
                 <artifactId>validator-repo</artifactId>
+                <version>2.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.vefa</groupId>
+                <artifactId>validator-tester</artifactId>
                 <version>2.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
