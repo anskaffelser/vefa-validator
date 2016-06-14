@@ -88,16 +88,20 @@ public class SvrlXsltChecker implements Checker {
         assertionType.setLocation(failedAssert.getLocation());
         assertionType.setTest(failedAssert.getTest());
 
-        switch (failedAssert.getFlag()) {
-            case "fatal":
-                assertionType.setFlag(FlagType.ERROR);
-                break;
-            case "warning":
-                assertionType.setFlag(FlagType.WARNING);
-                break;
-            default:
-                logger.warn("Unknown: " + failedAssert.getFlag());
-                break;
+        if (failedAssert.getFlag() == null) {
+            assertionType.setFlag(FlagType.ERROR);
+        } else {
+            switch (failedAssert.getFlag()) {
+                case "fatal":
+                    assertionType.setFlag(FlagType.ERROR);
+                    break;
+                case "warning":
+                    assertionType.setFlag(FlagType.WARNING);
+                    break;
+                default:
+                    logger.warn("Unknown: " + failedAssert.getFlag());
+                    break;
+            }
         }
 
         section.add(assertionType);
