@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -105,7 +106,16 @@ public class Validator implements Closeable {
     public Validation validate(ValidationSource validationSource) {
         return new ValidationImpl(this.validatorInstance, validationSource);
     }
-
+    /**
+     * Validate file from filePath string
+     *
+     * @param filePath string representing filePath
+     * @return Validation result
+     * @throws IOException
+     */
+    public Validation validate(String filePath) throws IOException{
+        return validate(Paths.get(filePath));
+    }
     /**
      * List of packages supported by validator.
      *
