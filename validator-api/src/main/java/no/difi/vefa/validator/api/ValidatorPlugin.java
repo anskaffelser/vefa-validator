@@ -10,13 +10,6 @@ import java.util.List;
 public interface ValidatorPlugin {
 
     /**
-     * Keywords representing the given kind of document type(s) supported.
-     *
-     * @return Keywords.
-     */
-    List<String> capabilities();
-
-    /**
      * Checkers needed to validate the given kind of document type(s).
      *
      * @return Checkers implementing functionality.

@@ -14,13 +14,6 @@ import java.util.List;
 public class ValidatorTestPlugin implements ValidatorPlugin {
 
     @Override
-    public List<String> capabilities() {
-        return new ArrayList<String>() {{
-            add("test");
-        }};
-    }
-
-    @Override
     public List<Class<? extends Checker>> checkers() {
         return Collections.emptyList();
     }

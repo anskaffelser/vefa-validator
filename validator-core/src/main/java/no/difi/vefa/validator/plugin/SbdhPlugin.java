@@ -15,13 +15,6 @@ import java.util.List;
 public class SbdhPlugin implements ValidatorPlugin {
 
     @Override
-    public List<String> capabilities() {
-        return new ArrayList<String>() {{
-            add("sbdh");
-        }};
-    }
-
-    @Override
     public List<Class<? extends Checker>> checkers() {
         return new ArrayList<Class<? extends Checker>>() {{
             add(XsdChecker.class);

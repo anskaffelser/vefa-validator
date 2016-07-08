@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 
 import java.nio.file.FileSystem;
 import java.util.List;
-import java.util.Set;
 
 public class AsiceCaseTest {
 
@@ -19,7 +18,7 @@ public class AsiceCaseTest {
                 .newValidator()
                 .setSource(new Source() {
                     @Override
-                    public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException {
+                    public SourceInstance createInstance(Properties properties) throws ValidatorException {
                         return new SourceInstance() {
                             @Override
                             public FileSystem getFileSystem() {

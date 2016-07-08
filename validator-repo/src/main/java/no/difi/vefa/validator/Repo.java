@@ -6,9 +6,6 @@ import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 import no.difi.xsd.vefa.validator._1.Configurations;
-import no.difi.xsd.vefa.validator._1.FileType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -18,19 +15,12 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * This class is a Cli for generation of artifacts.xml in a repo of validation artifacts.
  */
 public class Repo {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(Repo.class);
 
     /**
      * Context for JAXB
@@ -47,35 +37,10 @@ public class Repo {
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.
-        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance(ValidatorDefaults.PROPERTIES, new HashSet<String>());
-        ValidatorEngine validatorEngine = new ValidatorEngine(sourceInstance);
+        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance(ValidatorDefaults.PROPERTIES);
 
-        // Holds files associated with current configuration.
-        final Set<String> fileFound = new TreeSet<>();
-        // Holds configurations referenced but not found.
-        Set<String> unavailable = new TreeSet<>();
-
-        // Run through all valid declarations in the validator engine.
-        for (String declaration : validatorEngine.getDeclarations()) {
-            // Fetch configuration
-            Configuration configuration = new Configuration(validatorEngine.getConfigurationByDeclaration(declaration));
-            // Normalize it to detect resources used and referenced.
-            configuration.normalize(validatorEngine);
-
-            // Fetch source file from filename in files used for validation.
-            for (FileType fileType : configuration.getFile())
-                fileFound.add(fileType.getPath().split("#")[0]);
-            // Fetch source file for filename in stylesheet.
-            if (configuration.getStylesheet() != null)
-                fileFound.add(configuration.getStylesheet().getPath().split("#")[0]);
-
-            // Collect referenced configurations not detected in repository.
-            for (String notLoaded : configuration.getNotLoaded())
-                unavailable.add(notLoaded);
-        }
-
-        // Holds the final list of artifacts.
-        final Artifacts artifacts = new Artifacts();
+        // Holds the list of detected artifacts.
+        final List<ArtifactType> artifactsTypes = new ArrayList<>();
 
         // Matcher used to find configuration files.
         final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
@@ -92,21 +57,21 @@ public class Repo {
                         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
                         // If inspected configuration file is part of the set of detected files.
-                        if (fileFound.contains(parentString)) {
+                        // if (fileFound.contains(parentString)) {
                             // Read configuration file.
                             Configurations configurations = unmarshaller.unmarshal(new StreamSource(Files.newInputStream(file)), Configurations.class).getValue();
 
                             // New artifact
                             ArtifactType artifactType = new ArtifactType();
+                            // Name of artifact
+                            artifactType.setName(configurations.getName());
                             // Detect filename from recorded name as metadata may not correlate with internal name.
                             artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
                             // Fetch timestamp of creation.
                             artifactType.setTimestamp(configurations.getTimestamp());
-                            // Fetch capabilities.
-                            artifactType.setCapabilities(configurations.getCapabilities());
                             // Add artifact to list of artifacts.
-                            artifacts.getArtifact().add(artifactType);
-                        }
+                            artifactsTypes.add(artifactType);
+                        // }
                     } catch (JAXBException e) {
                         // We are only allowed to return IOException.
                         throw new IOException(e.getMessage(), e);
@@ -117,14 +82,31 @@ public class Repo {
             }
         });
 
+        // Order by name and timestamp
+        Collections.sort(artifactsTypes, new Comparator<ArtifactType>() {
+            @Override
+            public int compare(ArtifactType o1, ArtifactType o2) {
+                int n = o1.getName().compareTo(o2.getName());
+                return n != 0 ? n : Long.compare(o2.getTimestamp(), o1.getTimestamp());
+            }
+        });
+
+        // Holds the final list of artifacts.
+        Artifacts artifacts = new Artifacts();
+
+        // Copy to artifact manifest only the newest instance based on timestamp for a given named artifact.
+        List<String> names = new ArrayList<>();
+        for (ArtifactType artifactType : artifactsTypes) {
+            if (!names.contains(artifactType.getName())) {
+                artifacts.getArtifact().add(artifactType);
+                names.add(artifactType.getName());
+            }
+        }
+
         // Set newest (highest) timestamp on artifacts-element.
         for (ArtifactType artifactType : artifacts.getArtifact())
             if (artifactType.getTimestamp() > artifacts.getTimestamp())
                 artifacts.setTimestamp(artifactType.getTimestamp());
-
-        // Simply list configurations detected as not loaded by validator.
-        for (String notLoaded : unavailable)
-            logger.warn("Not found: {}", notLoaded);
 
         // Save result to disk.
         if (writeToDisk) {

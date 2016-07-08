@@ -2,7 +2,6 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.plugin.*;
-import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +53,6 @@ public class ValidatorBuilder {
      * Validator to be delivered.
      */
     private Validator validator = new Validator();
-
-    private Set<String> capabilities = new HashSet<>();
 
     /**
      * Implementations of declarations to use.
@@ -155,7 +152,6 @@ public class ValidatorBuilder {
 
     public ValidatorBuilder plugin(ValidatorPlugin... plugins) {
         for (ValidatorPlugin plugin : plugins) {
-            this.capabilities.addAll(plugin.capabilities());
             this.checkers.addAll(plugin.checkers());
             this.triggers.addAll(plugin.triggers());
             this.declarations.addAll(plugin.declarations());
@@ -200,8 +196,7 @@ public class ValidatorBuilder {
                 triggers.toArray(new Class[triggers.size()]),
                 renderers.toArray(new Class[renderers.size()]),
                 declarations.toArray(new Declaration[declarations.size()]),
-                configurations.toArray(new Configurations[configurations.size()]),
-                capabilities
+                configurations.toArray(new Configurations[configurations.size()])
         );
 
         return validator;

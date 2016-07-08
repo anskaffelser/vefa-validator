@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
@@ -67,12 +66,12 @@ class ValidatorInstance implements Closeable {
      * @param source Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations, Configurations[] configurations, Set<String> capabilities) throws ValidatorException {
+    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations, Configurations[] configurations) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
-        validatorEngine = new ValidatorEngine(source.createInstance(this.properties, capabilities), configurations);
+        validatorEngine = new ValidatorEngine(source.createInstance(this.properties), configurations);
 
         // Declarations
         this.declarations = declarations;

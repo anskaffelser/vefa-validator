@@ -21,6 +21,6 @@ public class RepositorySourceTest {
     @Test(expectedExceptions = ValidatorException.class)
     public void triggerException() throws ValidatorException{
         RepositorySource source = new RepositorySource((URI) null);
-        source.createInstance(Mockito.mock(Properties.class), new TreeSet<String>());
+        source.createInstance(Mockito.mock(Properties.class));
     }
 }

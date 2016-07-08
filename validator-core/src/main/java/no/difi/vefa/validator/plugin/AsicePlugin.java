@@ -14,13 +14,6 @@ import java.util.List;
 public class AsicePlugin implements ValidatorPlugin {
 
     @Override
-    public List<String> capabilities() {
-        return new ArrayList<String>() {{
-            add("asice");
-        }};
-    }
-
-    @Override
     public List<Class<? extends Checker>> checkers() {
         return Collections.emptyList();
     }

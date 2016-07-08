@@ -12,6 +12,6 @@ public class DirectorySourceTest {
     @Test(expectedExceptions = ValidatorException.class)
     public void triggerException() throws ValidatorException{
         DirectorySource source = new DirectorySource(null);
-        source.createInstance(Mockito.mock(Properties.class), new TreeSet<String>());
+        source.createInstance(Mockito.mock(Properties.class));
     }
 }

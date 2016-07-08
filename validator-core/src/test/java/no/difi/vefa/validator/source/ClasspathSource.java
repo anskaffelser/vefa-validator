@@ -15,7 +15,7 @@ public class ClasspathSource extends AbstractSource {
     }
 
     @Override
-    public SourceInstance createInstance(Properties properties, Set<String> capabilities) throws ValidatorException {
-        return new ClasspathSourceInstance(properties, capabilities, location);
+    public SourceInstance createInstance(Properties properties) throws ValidatorException {
+        return new ClasspathSourceInstance(properties, location);
     }
 }

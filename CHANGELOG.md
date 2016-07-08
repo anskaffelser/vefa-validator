@@ -10,7 +10,6 @@
 * Changed visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
 * Allow multiple directories when using DirectorySource and SimpleDirectorySource.
 * Refactored ValidatorBuilder to use ValidatorPlugin to declare functionality.
-* Support for capabilities when loading artificats.
 * Nested validation for document types supporting embedded content (currently SBDH and ASiC-E).
 * Introducing flags FUTURE_ERROR (not currently in use) and UNKNOWN.
 * Allow overriding properties used during validation per validation.

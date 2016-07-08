@@ -14,13 +14,6 @@ import java.util.List;
 public class UblPlugin implements ValidatorPlugin {
 
     @Override
-    public List<String> capabilities() {
-        return new ArrayList<String>() {{
-            add("ubl");
-        }};
-    }
-
-    @Override
     public List<Class<? extends Checker>> checkers() {
         return new ArrayList<Class<? extends Checker>>() {{
             add(XsdChecker.class);

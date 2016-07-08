@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Validator containing an instance of validation configuration and validation artifacts.
@@ -148,16 +147,14 @@ public class Validator implements Closeable {
      *
      * @throws ValidatorException
      */
-    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarationImpls, Configurations[] configurations, Set<String> capabilities) throws ValidatorException {
+    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarationImpls, Configurations[] configurations) throws ValidatorException {
         try {
-            logger.info("Loading validator with capabilities '{}'", capabilities);
-
             // Make sure to default to repository source if no source is set.
             if (source == null)
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationImpls, configurations, capabilities);
+            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationImpls, configurations);
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
 

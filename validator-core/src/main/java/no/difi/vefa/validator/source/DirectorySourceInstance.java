@@ -11,7 +11,6 @@ import javax.xml.bind.Unmarshaller;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Set;
 
 /**
  * Defines a directory as source for validation artifacts.
@@ -29,7 +28,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
      * @param directories Directories containing validation artifacts.
      * @throws ValidatorException
      */
-    public DirectorySourceInstance(Properties properties, Set<String> capabilities, Path... directories) throws ValidatorException {
+    public DirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
         super(properties);
 
@@ -49,19 +48,10 @@ class DirectorySourceInstance extends AbstractSourceInstance {
 
                     // Loop through artifacts.
                     for (ArtifactType artifact : artifactsType.getArtifact()) {
-                        boolean loadArtifact = true;
-
-                        if (artifact.getCapabilities() != null)
-                            for (String capability : artifact.getCapabilities().split(","))
-                                if (capabilities.contains(capability))
-                                    loadArtifact = false;
-
-                        if (loadArtifact) {
-                            // Load validation artifact to memory.
-                            Path artifactPath = directory.resolve(artifact.getFilename());
-                            logger.info("Loading {}", artifactPath);
-                            unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
-                        }
+                        // Load validation artifact to memory.
+                        Path artifactPath = directory.resolve(artifact.getFilename());
+                        logger.info("Loading {}", artifactPath);
+                        unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
                     }
                 } else {
                     // Detect all ASiC-E-files in the directory.
