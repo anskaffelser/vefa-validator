@@ -41,11 +41,6 @@
 
     <licenses>
         <license>
-            <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
-            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
             <name>European Union Public Licence (EUPL v.1.1)</name>
             <url>https://joinup.ec.europa.eu/community/eupl/og_page/european-union-public-licence-eupl-v11</url>
             <distribution>repo</distribution>
