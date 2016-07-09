@@ -56,10 +56,10 @@
         <module>validator-api</module>
         <module>validator-build</module>
         <module>validator-core</module>
-        <module>validator-repo</module>
-        <module>validator-web</module>
         <module>validator-dist</module>
+        <module>validator-repo</module>
         <module>validator-tester</module>
+        <module>validator-web</module>
     </modules>
 
     <properties>
@@ -135,7 +135,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>9.7.0-5</version>
+                <version>9.7.0-6</version>
             </dependency>
 
             <!-- Logging -->
@@ -232,24 +232,7 @@
                         <path>/</path>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                    <version>2.7</version>
-                    <configuration>
-                        <formats>
-                            <format>html</format>
-                            <format>xml</format>
-                        </formats>
-                        <instrumentation>
-                            <excludes>
-                                <exclude>org/oclc/**/*.class</exclude>
-                                <exclude>no/difi/xsd/**/*.class</exclude>
-                            </excludes>
-                        </instrumentation>
-                    </configuration>
-                </plugin>
-                <plugin>
+                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.3</version>

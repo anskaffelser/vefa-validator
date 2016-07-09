@@ -45,7 +45,7 @@ class ValidationImpl implements Validation {
      */
     private Document document;
 
-    private Declaration declaration = null;
+    private Declaration declaration;
 
     private List<Validation> children;
 
@@ -162,7 +162,7 @@ class ValidationImpl implements Validation {
 
         // Update report using configuration for declaration
         report.setTitle(configuration.getTitle());
-        report.setConfiguration(configuration.getIdentifier());
+        report.setConfiguration(configuration.getIdentifier().getValue());
         report.setBuild(configuration.getBuild());
         report.setFlag(FlagType.OK);
     }

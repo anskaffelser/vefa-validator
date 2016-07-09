@@ -141,12 +141,12 @@ class ValidatorEngine implements Closeable {
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {
                 fileType.setPath(String.format("%s#%s", configurationSource, fileType.getPath()));
-                fileType.setConfiguration(configuration.getIdentifier());
+                fileType.setConfiguration(configuration.getIdentifier().getValue());
                 fileType.setBuild(configuration.getBuild());
             }
 
             for (TriggerType triggerType : configuration.getTrigger()) {
-                triggerType.setConfiguration(configuration.getIdentifier());
+                triggerType.setConfiguration(configuration.getIdentifier().getValue());
                 triggerType.setBuild(configuration.getBuild());
             }
 
@@ -156,8 +156,8 @@ class ValidatorEngine implements Closeable {
             }
 
             // Add by identifier if not registered or weight is higher
-            if (!identifierMap.containsKey(configuration.getIdentifier()) || identifierMap.get(configuration.getIdentifier()).getWeight() < configuration.getWeight())
-                identifierMap.put(configuration.getIdentifier(), configuration);
+            if (!identifierMap.containsKey(configuration.getIdentifier().getValue()) || identifierMap.get(configuration.getIdentifier().getValue()).getWeight() < configuration.getWeight())
+                identifierMap.put(configuration.getIdentifier().getValue(), configuration);
 
             if (configuration.getBuild() != null) {
                 String identifierBuild = String.format("%s#%s", configuration.getIdentifier(), configuration.getBuild());

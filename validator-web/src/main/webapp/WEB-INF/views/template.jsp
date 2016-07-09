@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="<c:url value="/webjars/bootstrap/3.3.6/css/bootstrap.min.css" />" />
     <link rel="stylesheet" href="<c:url value="/style.css" />" />
 
-    <script src="<c:url value="/webjars/jquery/2.1.4/jquery.min.js" />"></script>
+    <script src="<c:url value="/webjars/jquery/2.2.4/jquery.min.js" />"></script>
 
 </head>
 <body<c:if test="${ngController != null}"> ng-controller="<c:out value="${ngController}" />"</c:if>>

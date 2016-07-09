@@ -55,10 +55,12 @@ public class Tester implements Closeable {
     }
 
     private Validator validator;
+
     private List<Validation> validations = new ArrayList<>();
 
-    private int tests = 0;
-    private int failed = 0;
+    private int tests;
+
+    private int failed;
 
     private Tester(Path artifactsPath) throws ValidatorException {
         validator = ValidatorBuilder

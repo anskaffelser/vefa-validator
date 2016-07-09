@@ -1,37 +1,37 @@
-div.status { float: right; text-align: center; width: 80pt; padding: 0.7pt 0; }
-div.status.status-SUCCESS { background-color: #dff0d8; color: #3c763d; }
-div.status.status-INFO { background-color: #dff0d8; color: #3c763d; }
-div.status.status-OK { background-color: #dff0d8; color: #3c763d; }
-div.status.status-EXPECTED { background-color: #d9edf7; color: #31708f; }
-div.status.status-UNKNOWN { background-color: #d9edf7; color: #31708f; }
-div.status.status-WARNING { background-color: #fcf8e3; color: #8a6d3b; }
-div.status.status-ERROR { background-color: #f2dede; color: #a94442; }
-div.status.status-FATAL { background-color: #f2dede; color: #a94442; font-weight: bold; }
-div.report > div.status { font-size: 20pt; width: 180pt; padding: 10pt 0; }
-div.jumbotron { margin: 20pt 0; }
-div.report.details div.jumbotron { display: none; }
-div.section { border-top: 1px solid #ccc; margin: 5pt 0; padding: 5pt 0;}
-div.section.status-OK, div.section.status-EXPECTED { display: none; }
-div.report.details div.section { display: block; }
-div.section > .title { font-size: 15pt; margin: 8pt 0 5pt; }
-div.section > div.status { font-size: 15pt; width: 125pt; padding: 5pt 0; }
-span.identifier { font-weight: bold; }
-div.assertion { border-top: 1px solid #eee; margin: 2pt 0; padding: 2pt 0; display: none; }
-div.assertion:nth-child(2) { background-color: #eee; }
-div.section.details div.assertion { display: block; }
-div.assertion > div.location { display: none; margin-top: 5pt; }
-div.assertion > div.test { display: none; margin-top: 5pt; }
-div.assertion.details > div { display: block; }
+.status { float: right; text-align: center; width: 80pt; padding: 0.7pt 0; }
+.status.status-SUCCESS { background-color: #dff0d8; color: #3c763d; }
+.status.status-INFO { background-color: #dff0d8; color: #3c763d; }
+.status.status-OK { background-color: #dff0d8; color: #3c763d; }
+.status.status-EXPECTED { background-color: #d9edf7; color: #31708f; }
+.status.status-UNKNOWN { background-color: #d9edf7; color: #31708f; }
+.status.status-WARNING { background-color: #fcf8e3; color: #8a6d3b; }
+.status.status-ERROR { background-color: #f2dede; color: #a94442; }
+.status.status-FATAL { background-color: #f2dede; color: #a94442; font-weight: bold; }
+.report > .status { font-size: 20pt; width: 180pt; padding: 10pt 0; }
+.jumbotron { margin: 20pt 0; }
+.report.details .jumbotron { display: none; }
+.section { border-top: 1px solid #ccc; margin: 5pt 0; padding: 5pt 0;}
+.section.status-OK, .section.status-EXPECTED { display: none; }
+.report.details .section { display: block; }
+.section > .title { font-size: 15pt; margin: 8pt 0 5pt; }
+.section > .status { font-size: 15pt; width: 125pt; padding: 5pt 0; }
+.identifier { font-weight: bold; }
+.assertion { border-top: 1px solid #eee; margin: 2pt 0; padding: 2pt 0; display: none; }
+.assertion:nth-child(2) { background-color: #eee; }
+.section.details .assertion { display: block; }
+.assertion > .location { display: none; margin-top: 5pt; }
+.assertion > .test { display: none; margin-top: 5pt; }
+.assertion.details > div { display: block; }
 .collapsable { cursor: pointer; }
 ul.meta { margin: 0; padding: 0; }
 ul.meta li { list-style-type: none; display: inline; margin-right: 10pt; color: #999; }
-span.glyphicon-collapse-down { display: none; }
-.details > .title > span.glyphicon-collapse-down { display: inline; }
-.details > .title > span.glyphicon-expand { display: none; }
+.glyphicon-collapse-down { display: none; }
+.details > .title > .glyphicon-collapse-down { display: inline; }
+.details > .title > .glyphicon-expand { display: none; }
 
-div.report-row > div.report-row { margin-left: 40pt; margin-top: 20pt; }
-div.report-row > div.status { font-size: 15pt; width: 125pt; padding: 5pt 0; }
-div.report-row > .title { font-size: 15pt; margin: 8pt 0 5pt; cursor: pointer; }
-div.report-row > .selected > span.glyphicon-collapse-down { display: inline; }
-div.report-row > .selected > span.glyphicon-expand { display: none; }
-div.reports div.report { display: none; }
+.report-row > .report-row { margin-left: 40pt; margin-top: 20pt; }
+.report-row > .status { font-size: 15pt; width: 125pt; padding: 5pt 0; }
+.report-row > .title { font-size: 15pt; margin: 8pt 0 5pt; cursor: pointer; }
+.report-row > .selected > .glyphicon-collapse-down { display: inline; }
+.report-row > .selected > .glyphicon-expand { display: none; }
+.reports .report { display: none; }

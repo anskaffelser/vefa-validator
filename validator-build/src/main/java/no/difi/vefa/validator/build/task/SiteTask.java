@@ -46,8 +46,8 @@ public class SiteTask {
         });
 
         for (ConfigurationType configurationType : configurations.getConfiguration())
-            if (!types.contains(getType(configurationType.getIdentifier())))
-                types.add(getType(configurationType.getIdentifier()));
+            if (!types.contains(getType(configurationType.getIdentifier().getValue())))
+                types.add(getType(configurationType.getIdentifier().getValue()));
         Collections.sort(types);
     }
 
@@ -94,7 +94,7 @@ public class SiteTask {
         for (ConfigurationType configurationType : configurations.getConfiguration()) {
             holder = new Holder();
             holder.put("configuration", configurationType);
-            holder.put("type", getType(configurationType.getIdentifier()));
+            holder.put("type", getType(configurationType.getIdentifier().getValue()));
 
             List<Validation> validations = new ArrayList<>();
             for (Validation validation : this.validations)
@@ -128,7 +128,7 @@ public class SiteTask {
 
             List<ConfigurationType> confs = new ArrayList<>();
             for (ConfigurationType configurationType : configurations.getConfiguration())
-                if (type.equals(configurationType.getIdentifier().split("\\-")[1].toUpperCase()))
+                if (type.equals(configurationType.getIdentifier().getValue().split("\\-")[1].toUpperCase()))
                     confs.add(configurationType);
             holder.put("confs", confs);
 

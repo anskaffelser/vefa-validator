@@ -17,7 +17,7 @@ public class ConfigurationBuilderTest {
                 .build("unit-test")
                 .build();
 
-        Assert.assertEquals(cfg.getIdentifier(), "test");
+        Assert.assertEquals(cfg.getIdentifier().getValue(), "test");
         Assert.assertEquals(cfg.getTitle(), "Test");
         Assert.assertEquals(cfg.getStandardId(), "test#test");
         Assert.assertEquals(cfg.getWeight(), -10L);

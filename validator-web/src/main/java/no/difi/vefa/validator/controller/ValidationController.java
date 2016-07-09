@@ -40,10 +40,10 @@ public class ValidationController {
 
         piwikService.update(modelMap);
 
-        return report.getReport().isEmpty() ? presentSingle(identifier, report, modelMap) : presentNested(identifier, report, modelMap);
+        return report.getReport().isEmpty() ? presentSingle(identifier, modelMap) : presentNested(identifier, report, modelMap);
     }
 
-    private String presentSingle(String identifier, Report report, ModelMap modelMap) throws Exception {
+    private String presentSingle(String identifier, ModelMap modelMap) throws Exception {
         modelMap.put("viewExists", workspaceService.getView(identifier).exists());
 
         return "validation";
