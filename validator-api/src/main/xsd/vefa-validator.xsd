@@ -82,11 +82,12 @@
 
     <xs:complexType name="configurationType">
         <xs:sequence>
-            <xs:element name="identifier" type="xs:string" minOccurs="1"/>
+            <xs:element name="identifier" type="identifierType" minOccurs="1"/>
             <xs:element name="title" type="xs:string" minOccurs="1"/>
             <xs:element name="profileId" type="xs:string" minOccurs="0"/>
             <xs:element name="customizationId" type="xs:string" minOccurs="0"/>
             <xs:element name="standardId" type="xs:string" minOccurs="0"/>
+            <xs:element name="declaration" type="declarationType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="inherit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="stylesheet" type="stylesheetType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="file" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
@@ -98,6 +99,14 @@
         <xs:attribute name="build" type="xs:string"/>
     </xs:complexType>
 
+    <xs:complexType name="identifierType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="alias" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
     <xs:complexType name="packageType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -107,6 +116,7 @@
     </xs:complexType>
 
     <xs:complexType name="fileType">
+        <xs:attribute name="type" type="xs:string"/>
         <xs:attribute name="path" type="xs:string"/>
         <xs:attribute name="source" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
@@ -122,6 +132,14 @@
     <xs:complexType name="ruleType">
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="action" type="ruleActionType"/>
+    </xs:complexType>
+
+    <xs:complexType name="declarationType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:attribute name="flag" type="flagType"/>

@@ -23,9 +23,9 @@ for xsd in maindoc/*.xsd; do
 	filename=$(basename $xsd | sed "s:\.xsd::")
 
 	echo "\t<configuration>" >> buildconfig.xml
-	echo "\t\t<identifier>$(echo $filename | tr '[:upper:]' '[:lower:]')</identifier>" >> buildconfig.xml
+	echo "\t\t<identifier alias=\"$(echo $filename | tr '[:upper:]' '[:lower:]' | cut -d '-' -f 2)\">$(echo $filename | tr '[:upper:]' '[:lower:]')</identifier>" >> buildconfig.xml
 	echo "\t\t<title>$(echo $filename | sed 's:\-: :g')</title>" >> buildconfig.xml
-	echo "\t\t<file path=\"maindoc/$filename.xsd\" />" >> buildconfig.xml
+	echo "\t\t<file type=\"xml.xsd\" path=\"maindoc/$filename.xsd\" />" >> buildconfig.xml
 	echo "\t</configuration>" >> buildconfig.xml
 done
 
