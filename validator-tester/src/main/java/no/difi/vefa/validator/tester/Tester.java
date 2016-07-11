@@ -123,6 +123,8 @@ public class Tester implements Closeable {
         validations.add(validation);
         tests++;
 
+        description = description.replaceAll("[ \\t\\r\\n]+", " ");
+
         String prefix = numberInSet == null ? "" : "  ";
 
         if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
