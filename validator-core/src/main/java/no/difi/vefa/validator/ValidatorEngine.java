@@ -175,7 +175,7 @@ class ValidatorEngine implements Closeable {
                     declarationMap.put(configuration.getStandardId(), configuration);
             }
 
-            declarationMap.put(String.format("configuration::%s", configuration.getIdentifier()), configuration);
+            declarationMap.put(String.format("configuration::%s", configuration.getIdentifier().getValue()), configuration);
         }
     }
 
