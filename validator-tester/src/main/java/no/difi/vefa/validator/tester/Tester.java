@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Tester implements Closeable {
@@ -87,7 +88,10 @@ public class Tester implements Closeable {
     }
 
     private void perform(Path path) {
-        for (File file : FileUtils.listFiles(path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE))
+        List<File> files = new ArrayList<>(FileUtils.listFiles(path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE));
+        Collections.sort(files);
+
+        for (File file : files)
             if (!file.getName().equals("buildconfig.xml"))
                 validate(file);
     }

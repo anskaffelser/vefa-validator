@@ -2,4 +2,4 @@
 
 cd $(dirname $(readlink -f $0))/..
 
-java -classpath .:conf:lib/* no.difi.vefa.validator.dist.Cli $@
+java -classpath .:conf:extension/*:lib/* no.difi.vefa.validator.dist.Cli $@
