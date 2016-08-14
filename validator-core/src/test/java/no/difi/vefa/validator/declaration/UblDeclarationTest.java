@@ -131,6 +131,12 @@ public class UblDeclarationTest {
         assertEquals(declaration.detect(xml.getBytes()), "null#null");
     }
 
+    @Test
+    public void customizationOnly() throws Exception {
+        String xml = "<test><CustomizationID>Test</CustomizationID></test>";
+        assertEquals(declaration.detect(xml.getBytes()), "Test");
+    }
+
     @Test(expectedExceptions = ValidatorException.class)
     public void incompleteDeclaration() throws Exception {
         String xml = "<test>";

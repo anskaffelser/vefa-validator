@@ -53,6 +53,9 @@ public class UblDeclaration extends XmlDeclaration {
             // No action.
         }
 
+        if (customizationId != null)
+            return customizationId;
+
         throw new ValidatorException("Unable to find CustomizationID and ProfileID.");
     }
 
