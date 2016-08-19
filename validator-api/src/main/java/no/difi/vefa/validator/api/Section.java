@@ -41,6 +41,9 @@ public class Section extends SectionType {
     public void add(AssertionType assertionType) {
         flagFilterer.filterFlag(assertionType);
 
+        if (getInfoUrl() != null)
+            assertionType.setInfoUrl(getInfoUrl().replace("{}", assertionType.getIdentifier()));
+
         if (assertionType.getFlag() != null) {
 
             if (assertionType.getFlag().compareTo(getFlag()) > 0)

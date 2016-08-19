@@ -19,6 +19,7 @@
 * Support for namespace in single quotes.
 * Support for test scope.
 * Support for unit tests.
+* Support for infourl.
 
 
 ## 2.0.2

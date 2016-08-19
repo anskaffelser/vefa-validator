@@ -121,6 +121,7 @@
         <xs:attribute name="source" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
         <xs:attribute name="build" type="xs:string"/>
+        <xs:attribute name="infoUrl" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="triggerType">
@@ -189,6 +190,7 @@
         <xs:attribute name="runtime" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
         <xs:attribute name="build" type="xs:string"/>
+        <xs:attribute name="infoUrl" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="assertionType">
@@ -199,6 +201,7 @@
         </xs:sequence>
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="flag" type="flagType"/>
+        <xs:attribute name="infoUrl" type="xs:string"/>
     </xs:complexType>
 
     <xs:simpleType name="flagType">

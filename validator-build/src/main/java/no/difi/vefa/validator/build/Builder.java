@@ -106,7 +106,7 @@ public class Builder {
                     if (fileType.getSource() == null)
                         fileType.setSource(fileType.getPath());
 
-                    asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("something"));
+                    asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("application/xml"));
                 }
 
                 if (config.getCapabilities() != null)

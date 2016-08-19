@@ -182,12 +182,16 @@ class ValidatorInstance implements Closeable {
         Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
         section.setFlag(FlagType.OK);
 
+        if (properties.getBoolean("feature.infourl"))
+            section.setInfoUrl(fileType.getInfoUrl());
+
         try {
             checker.check(document, section);
         } finally {
             checkerPool.returnObject(fileType.getPath(), checker);
         }
 
+        section.setInfoUrl(null);
         return section;
     }
 
