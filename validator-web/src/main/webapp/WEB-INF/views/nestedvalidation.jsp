@@ -61,7 +61,12 @@
                     <c:if test="${test.location == null and test.test == null}">
                         <span class="glyphicon glyphicon-unchecked"></span>
                     </c:if>
-                    <span class="identifier"><c:out value="${test.identifier}" /></span>
+                    <c:if test="${test.infoUrl != null}">
+                        <a href="${test.infoUrl}"><span class="identifier"><c:out value="${test.identifier}" /></span></a>
+                    </c:if>
+                    <c:if test="${test.infoUrl == null}">
+                        <span class="identifier"><c:out value="${test.identifier}" /></span>
+                    </c:if>
                     <c:out value="${test.text}" />
                 </div>
                 <c:if test="${test.location != null}"><div class="location"><v:location value="${test.location}" /></div></c:if>
