@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.source.RepositorySource;
+import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import no.difi.xsd.vefa.validator._1.PackageType;
 import org.slf4j.Logger;
@@ -147,14 +148,14 @@ public class Validator implements Closeable {
      *
      * @throws ValidatorException
      */
-    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarationImpls, Configurations[] configurations) throws ValidatorException {
+    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, DeclarationDetector declarationDetector, Configurations[] configurations) throws ValidatorException {
         try {
             // Make sure to default to repository source if no source is set.
             if (source == null)
                 source = RepositorySource.forProduction();
 
             // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationImpls, configurations);
+            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationDetector, configurations);
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
 

@@ -38,7 +38,7 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     }
 
     @Override
-    public String detect(byte[] content) throws ValidatorException {
+    public String detect(byte[] content, String parent) throws ValidatorException {
         try {
             XMLStreamReader source = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(content));
 

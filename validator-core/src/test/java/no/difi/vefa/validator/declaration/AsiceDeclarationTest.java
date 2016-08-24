@@ -18,7 +18,7 @@ public class AsiceDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/asic-cades-test-valid.asice"), byteArrayOutputStream);
 
-        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
+        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray(), null));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class AsiceDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.zip"), byteArrayOutputStream);
 
-        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray()));
+        Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray(), null));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class AsiceDeclarationTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(getClass().getResourceAsStream("/documents/asic-xml.xml"), byteArrayOutputStream);
 
-        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray()));
+        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray(), null));
 
         ByteArrayOutputStream converted = new ByteArrayOutputStream();
         declaration.convert(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), converted);

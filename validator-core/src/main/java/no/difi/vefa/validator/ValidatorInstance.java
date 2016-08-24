@@ -3,6 +3,8 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
+import no.difi.vefa.validator.util.DeclarationDetector;
+import no.difi.vefa.validator.util.DeclarationIdentifier;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.slf4j.Logger;
@@ -43,7 +45,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Declarations to use.
      */
-    private Declaration[] declarations;
+    private DeclarationDetector declarationDetector;
 
     /**
      * Pool of checkers.
@@ -66,7 +68,7 @@ class ValidatorInstance implements Closeable {
      * @param source Source for validation artifacts
      * @throws ValidatorException
      */
-    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, Declaration[] declarations, Configurations[] configurations) throws ValidatorException {
+    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, DeclarationDetector declarationDetector, Configurations[] configurations) throws ValidatorException {
         // Create config combined with default values.
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
@@ -74,7 +76,7 @@ class ValidatorInstance implements Closeable {
         validatorEngine = new ValidatorEngine(source.createInstance(this.properties), configurations);
 
         // Declarations
-        this.declarations = declarations;
+        this.declarationDetector = declarationDetector;
 
         // New pool for checkers
         checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine, checkerImpls));
@@ -133,8 +135,8 @@ class ValidatorInstance implements Closeable {
         return configuration;
     }
 
-    Declaration[] getDeclarations() {
-        return declarations;
+    DeclarationIdentifier detect(byte[] content) {
+        return declarationDetector.detect(content);
     }
 
     /**

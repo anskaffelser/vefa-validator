@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class AsiceDeclaration extends XmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
+public class AsiceDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1";
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
@@ -25,7 +25,7 @@ public class AsiceDeclaration extends XmlDeclaration implements DeclarationWithC
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
-    public boolean verify(byte[] content) throws ValidatorException {
+    public boolean verify(byte[] content, String parent) throws ValidatorException {
         if (Arrays.equals(startsWith, Arrays.copyOfRange(content, 0, 4))) {
             if (content[28] != 0)
                 return false;
@@ -51,7 +51,7 @@ public class AsiceDeclaration extends XmlDeclaration implements DeclarationWithC
     }
 
     @Override
-    public String detect(byte[] content) throws ValidatorException {
+    public String detect(byte[] content, String parent) throws ValidatorException {
         return MIME;
     }
 

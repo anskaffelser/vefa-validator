@@ -1,14 +1,20 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Expectation;
+import com.typesafe.config.Config;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 
-public class SimpleXmlDeclaration extends XmlDeclaration {
+public class SimpleXmlDeclaration extends AbstractXmlDeclaration {
 
     protected String namespace;
     protected String localName;
+
+    public SimpleXmlDeclaration(Config config) {
+        this.namespace = config.getString("namespace");
+
+        if (config.hasPath("localName"))
+            this.localName = config.getString("localName");
+    }
 
     public SimpleXmlDeclaration(String namespace, String localName) {
         this.namespace = namespace;
@@ -16,19 +22,14 @@ public class SimpleXmlDeclaration extends XmlDeclaration {
     }
 
     @Override
-    public boolean verify(byte[] content) throws ValidatorException {
+    public boolean verify(byte[] content, String parent) throws ValidatorException {
         String c = new String(content);
         return namespace.equals(XmlUtils.extractRootNamespace(c)) &&
                 (localName == null || localName.equals(XmlUtils.extractLocalName(c)));
     }
 
     @Override
-    public String detect(byte[] content) throws ValidatorException {
+    public String detect(byte[] content, String parent) throws ValidatorException {
         return String.format("%s::%s", namespace, localName == null ? XmlUtils.extractLocalName(new String(content)) : localName);
-    }
-
-    @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
-        return new XmlExpectation(content);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AsiceCaseTest {
 
-    @Test
+    @Test(enabled = false)
     public void simple() throws Exception {
         Validator validator = ValidatorBuilder
                 .newValidator()

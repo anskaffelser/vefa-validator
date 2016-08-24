@@ -24,13 +24,6 @@ public interface ValidatorPlugin {
     List<Class<? extends Trigger>> triggers();
 
     /**
-     * Defined declarations used to recognize and handle supported a kind of document type.
-     *
-     * @return Instances of declarations.
-     */
-    List<Declaration> declarations();
-
-    /**
      * Renderers needed to render the given kind of document type(s).
      *
      * @return Renderers implementing functionality.

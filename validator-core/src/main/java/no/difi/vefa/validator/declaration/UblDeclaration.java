@@ -1,8 +1,6 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLEventReader;
@@ -10,18 +8,20 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.util.regex.Pattern;
 
 /**
  * Document declaration for OASIS Universal Business Language (UBL).
  */
-public class UblDeclaration extends XmlDeclaration {
+public class UblDeclaration extends AbstractXmlDeclaration {
 
-    public boolean verify(byte[] content) throws ValidatorException {
-        String namespace = XmlUtils.extractRootNamespace(new String(content));
-        return namespace != null && namespace.startsWith("urn:oasis:names:specification:ubl:schema:xsd:");
+    private static Pattern pattern = Pattern.compile("urn:oasis:names:specification:ubl:schema:xsd:(.+)-2::(.+)");
+
+    public boolean verify(byte[] content, String parent) throws ValidatorException {
+        return pattern.matcher(parent).matches();
     }
 
-    public String detect(byte[] content) throws ValidatorException {
+    public String detect(byte[] content, String parent) throws ValidatorException {
         String customizationId = null;
         String profileId = null;
 
@@ -57,10 +57,5 @@ public class UblDeclaration extends XmlDeclaration {
             return customizationId;
 
         throw new ValidatorException("Unable to find CustomizationID and ProfileID.");
-    }
-
-    @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
-        return new XmlExpectation(content);
     }
 }

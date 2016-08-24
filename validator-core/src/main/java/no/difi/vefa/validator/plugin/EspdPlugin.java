@@ -1,9 +1,11 @@
 package no.difi.vefa.validator.plugin;
 
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.Trigger;
+import no.difi.vefa.validator.api.ValidatorPlugin;
 import no.difi.vefa.validator.checker.SvrlXsltChecker;
 import no.difi.vefa.validator.checker.XsdChecker;
-import no.difi.vefa.validator.declaration.EspdDeclaration;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
@@ -23,14 +25,6 @@ public class EspdPlugin implements ValidatorPlugin {
     @Override
     public List<Class<? extends Trigger>> triggers() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public List<Declaration> declarations() {
-        return new ArrayList<Declaration>() {{
-            add(new EspdDeclaration("urn:grow:names:specification:ubl:schema:xsd:ESPDRequest-1", "ESPDRequest"));
-            add(new EspdDeclaration("urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1", "ESPDResponse"));
-        }};
     }
 
     @Override

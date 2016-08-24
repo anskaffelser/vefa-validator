@@ -1,9 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.api.DeclarationWithChildren;
-import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,27 +14,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
-public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithChildren {
+public class SbdhDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren {
 
     private static final String NAMESPACE = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
 
     private static Logger logger = LoggerFactory.getLogger(SbdhDeclaration.class);
 
     @Override
-    public boolean verify(byte[] content) throws ValidatorException {
-        String namespace = XmlUtils.extractRootNamespace(new String(content));
-        return NAMESPACE.equals(namespace);
+    public boolean verify(byte[] content, String parent) throws ValidatorException {
+        return parent.startsWith(NAMESPACE);
     }
 
     @Override
-    public String detect(byte[] content) throws ValidatorException {
+    public String detect(byte[] content, String parent) throws ValidatorException {
         // Simple stupid
         return "SBDH:1.0";
-    }
-
-    @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
-        return new XmlExpectation(content);
     }
 
     @Override
@@ -75,12 +67,10 @@ public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithC
                 do {
                     switch (source.getEventType()) {
                         case XMLStreamReader.START_DOCUMENT:
-                            logger.debug("START_DOCUMENT");
                             target.writeStartDocument(source.getEncoding(), source.getVersion());
                             break;
 
                         case XMLStreamConstants.END_DOCUMENT:
-                            logger.debug("END_DOCUMENT");
                             target.writeEndDocument();
                             break;
 
@@ -89,7 +79,6 @@ public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithC
 
                             if (payload) {
                                 written = true;
-                                logger.debug("START_ELEMENT");
                                 target.writeStartElement(source.getPrefix(), source.getLocalName(), source.getNamespaceURI());
 
                                 for (int i = 0; i < source.getAttributeCount(); i++)
@@ -104,7 +93,6 @@ public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithC
 
                             if (payload) {
                                 written = true;
-                                logger.debug("END_ELEMENT");
                                 target.writeEndElement();
                             }
                             break;
@@ -112,7 +100,6 @@ public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithC
                         case XMLStreamConstants.CHARACTERS:
                             if (payload) {
                                 written = true;
-                                logger.debug("CHARACTERS");
                                 target.writeCharacters(source.getText());
                             }
                             break;
@@ -120,7 +107,6 @@ public class SbdhDeclaration extends  XmlDeclaration implements DeclarationWithC
                         case XMLStreamConstants.CDATA:
                             if (payload) {
                                 written = true;
-                                logger.debug("CDATA");
                                 target.writeCData(source.getText());
                             }
                             break;
