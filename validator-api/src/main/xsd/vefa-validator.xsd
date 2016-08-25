@@ -154,6 +154,7 @@
         <xs:sequence>
             <xs:element name="setting" type="settingType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="type" type="xs:string"/>
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="source" type="xs:string"/>
         <xs:attribute name="path" type="xs:string"/>

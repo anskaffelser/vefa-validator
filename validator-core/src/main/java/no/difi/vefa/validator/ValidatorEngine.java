@@ -140,6 +140,7 @@ class ValidatorEngine implements Closeable {
 
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {
+                fileType.setType(fileType.getPath().endsWith(".xsd") ? "xml.xsd" : "xml.schematron.svrl");
                 fileType.setPath(String.format("%s#%s", configurationSource, fileType.getPath()));
                 fileType.setConfiguration(configuration.getIdentifier().getValue());
                 fileType.setBuild(configuration.getBuild());
@@ -151,8 +152,12 @@ class ValidatorEngine implements Closeable {
             }
 
             if (configuration.getStylesheet() != null) {
-                configuration.getStylesheet().setPath(String.format("%s#%s", configurationSource, configuration.getStylesheet().getPath()));
-                stylesheetMap.put(configuration.getStylesheet().getIdentifier(), configuration.getStylesheet());
+                StylesheetType stylesheet = configuration.getStylesheet();
+                stylesheet.setPath(String.format("%s#%s", configurationSource, configuration.getStylesheet().getPath()));
+                if (stylesheet.getType() == null)
+                    stylesheet.setType("xml.xslt");
+
+                stylesheetMap.put(stylesheet.getIdentifier(), stylesheet);
             }
 
             // Add by identifier if not registered or weight is higher
