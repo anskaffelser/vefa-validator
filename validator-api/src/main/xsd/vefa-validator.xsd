@@ -197,7 +197,9 @@
     <xs:complexType name="assertionType">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
+            <xs:element name="textFriendly" type="xs:string"/>
             <xs:element name="location" type="xs:string"/>
+            <xs:element name="locationFriendly" type="xs:string"/>
             <xs:element name="test" type="xs:string"/>
         </xs:sequence>
         <xs:attribute name="identifier" type="xs:string"/>

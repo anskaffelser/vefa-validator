@@ -43,7 +43,7 @@ public class XmlUtils {
 
     public static String removeComments(String xmlContent) {
         while (xmlContent.contains("<!--"))
-            xmlContent = xmlContent.substring(0, xmlContent.indexOf("<!--")) + xmlContent.substring(xmlContent.indexOf("-->") + 3);
+                xmlContent = xmlContent.substring(0, xmlContent.indexOf("<!--")) + xmlContent.substring(xmlContent.indexOf("-->") + 3);
 
         return xmlContent;
     }

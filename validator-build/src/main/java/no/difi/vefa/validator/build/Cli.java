@@ -24,6 +24,7 @@ public class Cli {
 
     public static int perform(String... args) throws Exception {
         Options options = new Options();
+        options.addOption("c", "config", false, "Config file");
         options.addOption("t", "test", false, "Run tests");
         options.addOption("s", "site", false, "Create site");
         options.addOption("b", "build", true, "Build identifier");
@@ -50,6 +51,7 @@ public class Cli {
             }
 
             Build build = new Build(Paths.get(arg));
+            build.setSetting("config", cmd.getOptionValue("config", "buildconfig.xml"));
             build.setSetting("name", cmd.getOptionValue("name", "rules"));
             build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
             build.setSetting("weight", cmd.getOptionValue("weight", "0"));

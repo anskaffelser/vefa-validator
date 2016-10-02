@@ -46,7 +46,7 @@ public class DeclarationDetector {
             try {
                 if (wrapper.verify(content, parent == null ? null : parent.getIdentifier())) {
                     String identifier = wrapper.detect(content, parent == null ? null : parent.getIdentifier());
-                    logger.info("Found: {} - {}", wrapper.getType(), identifier);
+                    logger.debug("Found: {} - {}", wrapper.getType(), identifier);
 
                     return detect(wrapper.getChildren(), content, new DeclarationIdentifier(parent, wrapper, identifier));
                 }

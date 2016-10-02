@@ -67,7 +67,7 @@
                     <c:if test="${test.infoUrl == null}">
                         <span class="identifier"><c:out value="${test.identifier}" /></span>
                     </c:if>
-                    <c:out value="${test.text}" />
+                    <c:out value="${test.textFriendly}" />
                 </div>
                 <c:if test="${test.location != null}"><div class="location"><v:location value="${test.location}" /></div></c:if>
                 <c:if test="${test.test != null}"><div class="test"><strong>Test:</strong> <c:out value="${test.test}" /></div></c:if>

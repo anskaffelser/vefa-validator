@@ -118,7 +118,7 @@ public class Tester implements Closeable {
             } else {
                 append(file.toString(), validation, null);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             logger.warn("Test '{}' ({})", file, e.getMessage(), e);
         }
     }
