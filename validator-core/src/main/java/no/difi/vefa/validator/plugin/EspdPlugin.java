@@ -4,7 +4,7 @@ import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.Trigger;
 import no.difi.vefa.validator.api.ValidatorPlugin;
-import no.difi.vefa.validator.checker.SvrlXsltChecker;
+import no.difi.vefa.validator.checker.SchematronXsltChecker;
 import no.difi.vefa.validator.checker.XsdChecker;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
@@ -18,7 +18,7 @@ public class EspdPlugin implements ValidatorPlugin {
     public List<Class<? extends Checker>> checkers() {
         return new ArrayList<Class<? extends Checker>>() {{
             add(XsdChecker.class);
-            add(SvrlXsltChecker.class);
+            add(SchematronXsltChecker.class);
         }};
     }
 

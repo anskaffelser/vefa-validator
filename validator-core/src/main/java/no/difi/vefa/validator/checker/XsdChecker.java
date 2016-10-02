@@ -61,6 +61,8 @@ public class XsdChecker implements Checker {
                         else
                             humanMessage = humanMessage.replace(String.format("\"%s\"", xmlStreamReader.getNamespaceURI(i)), xmlStreamReader.getNamespacePrefix(i));
                     }
+
+                    xmlStreamReader.close();
                 } catch (XMLStreamException ex) {
                     // No action.
                 }

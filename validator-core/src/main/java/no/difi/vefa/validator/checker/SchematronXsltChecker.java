@@ -21,9 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt"})
-public class SvrlXsltChecker implements Checker {
+public class SchematronXsltChecker implements Checker {
 
-    private static Logger logger = LoggerFactory.getLogger(SvrlXsltChecker.class);
+    private static Logger logger = LoggerFactory.getLogger(SchematronXsltChecker.class);
 
     private static TransformerFactory transformerFactory;
 
