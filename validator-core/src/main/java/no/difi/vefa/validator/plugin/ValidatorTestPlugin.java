@@ -37,7 +37,7 @@ public class ValidatorTestPlugin implements ValidatorPlugin {
                     .configuration(ConfigurationBuilder
                             .identifier("vefa-testset")
                             .title("VEFA Validator Test Set")
-                            .standardId("http://difi.no/xsd/vefa/validator/1.0::testSet")
+                            .declaration("xml.testset", "http://difi.no/xsd/vefa/validator/1.0::testSet")
                             .weight(Long.MIN_VALUE)
                             .build())
                     .build());

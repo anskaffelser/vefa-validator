@@ -140,7 +140,8 @@ class ValidatorEngine implements Closeable {
 
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {
-                fileType.setType(fileType.getPath().endsWith(".xsd") ? "xml.xsd" : "xml.schematron.svrl");
+                if (fileType.getType() == null)
+                    fileType.setType(fileType.getPath().endsWith(".xsd") ? "xml.xsd" : "xml.schematron.xslt");
                 fileType.setPath(String.format("%s#%s", configurationSource, fileType.getPath()));
                 fileType.setConfiguration(configuration.getIdentifier().getValue());
                 fileType.setBuild(configuration.getBuild());
@@ -170,14 +171,33 @@ class ValidatorEngine implements Closeable {
                     identifierMap.put(identifierBuild, configuration);
             }
 
-            if (configuration.getStandardId() == null) {
-                if (configuration.getProfileId() != null && configuration.getCustomizationId() != null)
-                    configuration.setStandardId(configuration.getProfileId() + "#" + configuration.getCustomizationId());
+            if (configuration.getDeclaration().size() == 0) {
+                if (configuration.getStandardId() == null) {
+                    if (configuration.getProfileId() != null && configuration.getCustomizationId() != null) {
+                        DeclarationType declaration = new DeclarationType();
+                        declaration.setType("xml.ubl");
+                        declaration.setValue(configuration.getProfileId() + "#" + configuration.getCustomizationId());
+                        configuration.getDeclaration().add(declaration);
+                    }
+                }
+
+                if (configuration.getStandardId() != null) {
+                    DeclarationType declarationType = new DeclarationType();
+                    if (configuration.getStandardId().startsWith("SBDH:")) {
+                        declarationType.setType("xml.sbdh");
+                        declarationType.setValue(configuration.getStandardId());
+                    } else {
+                        declarationType.setType("xml");
+                        declarationType.setValue(configuration.getStandardId());
+                    }
+                    configuration.getDeclaration().add(declarationType);
+                }
             }
 
-            if (configuration.getStandardId() != null) {
-                if (!declarationMap.containsKey(configuration.getStandardId()) || declarationMap.get(configuration.getStandardId()).getWeight() < configuration.getWeight())
-                    declarationMap.put(configuration.getStandardId(), configuration);
+            for (DeclarationType declaration : configuration.getDeclaration()) {
+                String identifier = String.format("%s::%s", declaration.getType(), declaration.getValue());
+                if (!declarationMap.containsKey(identifier) || declarationMap.get(identifier).getWeight() < configuration.getWeight())
+                    declarationMap.put(identifier, configuration);
             }
 
             declarationMap.put(String.format("configuration::%s", configuration.getIdentifier().getValue()), configuration);

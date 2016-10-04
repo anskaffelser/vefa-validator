@@ -41,14 +41,14 @@ public class AsicePlugin implements ValidatorPlugin {
                     .configuration(ConfigurationBuilder
                             .identifier("asice-archive")
                             .title("ASiC-E")
-                            .standardId("application/vnd.etsi.asic-e+zip")
+                            .declaration("zip.asice", "application/vnd.etsi.asic-e+zip")
                             .trigger("asice")
                             .weight(Long.MIN_VALUE)
                             .build())
                     .configuration(ConfigurationBuilder
                             .identifier("asice-archive-xml")
                             .title("ASiC-E")
-                            .standardId("application/vnd.etsi.asic-e+zip")
+                            .declaration("xml.asice", "application/vnd.etsi.asic-e+zip")
                             .weight(Long.MIN_VALUE)
                             .build())
                     .build());

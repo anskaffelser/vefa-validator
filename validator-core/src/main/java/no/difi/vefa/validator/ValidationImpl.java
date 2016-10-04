@@ -144,9 +144,9 @@ class ValidationImpl implements Validation {
             byteArrayInputStream.reset();
             declaration.convert(byteArrayInputStream, convertedOutputStream);
 
-            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(bytes, null), expectation);
+            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declarationIdentifier.toString(), expectation);
         } else {
-            document = new Document(byteArrayInputStream, declarationIdentifier.getIdentifier(), expectation);
+            document = new Document(byteArrayInputStream, declarationIdentifier.toString(), expectation);
         }
     }
 

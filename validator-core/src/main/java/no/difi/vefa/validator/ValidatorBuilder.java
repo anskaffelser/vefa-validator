@@ -28,9 +28,7 @@ public class ValidatorBuilder {
     public static ValidatorBuilder newValidator() {
         return emptyValidator()
                 .plugin(UblPlugin.class)
-                .plugin(SbdhPlugin.class)
-                .plugin(AsicePlugin.class)
-                .plugin(EspdPlugin.class);
+                .plugin(AsicePlugin.class);
     }
 
     /**

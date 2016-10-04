@@ -26,6 +26,8 @@ public class DeclarationIdentifier {
 
     @Override
     public String toString() {
-        return (declaration == null ? "NA" : declaration.getType()) + "(" + identifier + ")";
+        if (identifier.startsWith("configuration::"))
+            return identifier;
+        return declaration == null ? "NA" : String.format("%s::%s", declaration.getType(), identifier);
     }
 }
