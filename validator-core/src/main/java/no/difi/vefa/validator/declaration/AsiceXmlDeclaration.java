@@ -6,7 +6,6 @@ import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -14,10 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements DeclarationWithConverter {
+public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements DeclarationWithConverter, DeclarationWithChildren {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1::asic";
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
@@ -62,6 +59,60 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements Decla
             }
         } catch (IOException | XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Iterable<InputStream> children(InputStream inputStream) {
+        try {
+            return new AsicIterator(inputStream);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private class AsicIterator implements IndexedIterator<InputStream>, Iterable<InputStream> {
+
+        private AsicReader asicReader;
+        private String filename;
+
+        public AsicIterator(InputStream inputStream) throws IOException {
+            asicReader  = AsicReaderFactory.newFactory().open(inputStream);
+        }
+
+        @Override
+        public Iterator<InputStream> iterator() {
+            return this;
+        }
+
+        @Override
+        public boolean hasNext() {
+            try {
+                return (filename = asicReader.getNextFile()) != null;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @Override
+        public InputStream next() {
+            try {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                asicReader.writeFile(byteArrayOutputStream);
+                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public void remove() {
+            // No action.
+        }
+
+        @Override
+        public String currentIndex() {
+            return filename;
         }
     }
 }
