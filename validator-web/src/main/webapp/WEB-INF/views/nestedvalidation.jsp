@@ -69,7 +69,7 @@
                     </c:if>
                     <c:out value="${test.textFriendly}" />
                 </div>
-                <c:if test="${test.location != null}"><div class="location"><v:location value="${test.location}" /></div></c:if>
+                <c:if test="${test.locationFriendly != null}"><div class="location" title="<c:out value="${test.location}"/>"><c:out value="${test.locationFriendly}" /></div></c:if>
                 <c:if test="${test.test != null}"><div class="test"><strong>Test:</strong> <c:out value="${test.test}" /></div></c:if>
             </div>
             </c:forEach>

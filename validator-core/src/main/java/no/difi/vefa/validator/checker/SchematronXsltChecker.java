@@ -8,6 +8,7 @@ import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.NsPrefixInAttributeValues;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.regex.Matcher;
 
 @CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt"})
 public class SchematronXsltChecker implements Checker {
@@ -61,16 +64,16 @@ public class SchematronXsltChecker implements Checker {
 
             for (Object o : output.getActivePatternAndFiredRuleAndFailedAssert())
                 if (o instanceof FailedAssert)
-                    add(section, (FailedAssert) o);
+                    add(section, (FailedAssert) o, output.getNsPrefixInAttributeValues());
                 else if (o instanceof SuccessfulReport)
-                    add(section, (SuccessfulReport) o);
+                    add(section, (SuccessfulReport) o, output.getNsPrefixInAttributeValues());
         } catch (Exception e) {
             throw new ValidatorException(
                     String.format("Unable to perform check: %s", e.getMessage()), e);
         }
     }
 
-    public void add(Section section, FailedAssert failedAssert) {
+    public void add(Section section, FailedAssert failedAssert, List<NsPrefixInAttributeValues> namespaces) {
         AssertionType assertionType = new AssertionType();
 
         String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll("     ", " ").replaceAll("   ", " ").replaceAll("  ", " ");
@@ -86,6 +89,7 @@ public class SchematronXsltChecker implements Checker {
 
         assertionType.setText(text);
         assertionType.setLocation(failedAssert.getLocation());
+        assertionType.setLocationFriendly(getFriendlyLocation(failedAssert.getLocation(), namespaces));
         assertionType.setTest(failedAssert.getTest());
 
         if (failedAssert.getFlag() == null) {
@@ -107,7 +111,7 @@ public class SchematronXsltChecker implements Checker {
         section.add(assertionType);
     }
 
-    public void add(Section section, SuccessfulReport failedAssert) {
+    public void add(Section section, SuccessfulReport failedAssert, List<NsPrefixInAttributeValues> namespaces) {
         AssertionType assertionType = new AssertionType();
 
         String text = failedAssert.getText().replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll("     ", " ").replaceAll("   ", " ").replaceAll("  ", " ");
@@ -123,6 +127,7 @@ public class SchematronXsltChecker implements Checker {
 
         assertionType.setText(text);
         assertionType.setLocation(failedAssert.getLocation());
+        assertionType.setLocationFriendly(getFriendlyLocation(failedAssert.getLocation(), namespaces));
         assertionType.setTest(failedAssert.getTest());
 
         switch (failedAssert.getFlag()) {
@@ -135,5 +140,17 @@ public class SchematronXsltChecker implements Checker {
         }
 
         section.add(assertionType);
+    }
+
+    private String getFriendlyLocation(String location, List<NsPrefixInAttributeValues> namespaces) {
+        String locationFriendly = location;
+        for (NsPrefixInAttributeValues ns : namespaces) {
+            locationFriendly = locationFriendly.replaceAll(
+                    ":([\\p{Alnum}]+?)\\[namespace-uri\\(\\)='" + Matcher.quoteReplacement(ns.getUri()) + "'\\]",
+                    ns.getPrefix() + ":$1"
+            );
+        }
+
+        return locationFriendly.replace("/*", " \\ ").trim();
     }
 }
