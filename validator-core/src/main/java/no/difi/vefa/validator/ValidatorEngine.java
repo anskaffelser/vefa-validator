@@ -252,15 +252,6 @@ class ValidatorEngine implements Closeable {
         return packages;
     }
 
-    /**
-     * Fetch a list of all declarations supported by the validator.
-     *
-     * @return List of declarations.
-     */
-    public List<String> getDeclarations() {
-        return new ArrayList<>(declarationMap.keySet());
-    }
-
     private String addResource(Path source) {
         String identifier = source.toString();
         configurationSourceMap.put(identifier, source);
