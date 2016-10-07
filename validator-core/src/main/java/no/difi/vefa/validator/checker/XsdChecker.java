@@ -2,7 +2,10 @@ package no.difi.vefa.validator.checker;
 
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.PathLSResolveResource;
+import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
@@ -14,6 +17,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -44,9 +48,9 @@ public class XsdChecker implements Checker {
         long tsStart = System.currentTimeMillis();
         try {
             validator.validate(xmlFile);
-        } catch (Exception e) {
-            String humanMessage = null;
-            if (e.getMessage().contains("Invalid content was found starting with element")) {
+        } catch (SAXParseException e) {
+            String humanMessage = e.getMessage();
+            if (humanMessage.startsWith("cvc-complex-type.2.4.")) {
                 try {
                     XMLStreamReader xmlStreamReader = XML_INPUT_FACTORY.createXMLStreamReader(document.getInputStream());
 
@@ -54,7 +58,6 @@ public class XsdChecker implements Checker {
                     while (xmlStreamReader.hasNext() && xmlStreamReader.getEventType() != XMLStreamConstants.START_ELEMENT)
                         xmlStreamReader.next();
 
-                    humanMessage = e.getMessage().replace("cvc-complex-type.2.4.a: ", "");
                     for (int i = 0; i < xmlStreamReader.getNamespaceCount(); i++) {
                         if (xmlStreamReader.getNamespacePrefix(i) == null)
                             humanMessage = humanMessage.replace(String.format("\"%s\":", xmlStreamReader.getNamespaceURI(i)), "");
@@ -68,7 +71,18 @@ public class XsdChecker implements Checker {
                 }
             }
 
-            section.add("XSD", e.getMessage(), humanMessage, FlagType.FATAL);
+            if (humanMessage.startsWith("cvc-"))
+                humanMessage = humanMessage.replaceAll("^(.*?): (.*)$", "$2");
+
+            AssertionType assertionType = new AssertionType();
+            assertionType.setIdentifier("XSD");
+            assertionType.setText(e.getMessage());
+            assertionType.setTextFriendly(humanMessage);
+            assertionType.setLocation(String.format("Line %s, column %s.", e.getLineNumber(), e.getColumnNumber()));
+            assertionType.setFlag(FlagType.FATAL);
+            section.add(assertionType);
+        } catch (SAXException | IOException e) {
+            section.add("XSD", e.getMessage(), FlagType.FATAL);
         }
 
         section.setRuntime((System.currentTimeMillis() - tsStart) + "ms");
