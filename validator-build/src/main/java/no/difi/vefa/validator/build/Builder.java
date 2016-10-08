@@ -64,7 +64,7 @@ public class Builder {
         Set<String> capabilities = new TreeSet<>();
 
         // Find configurations
-        for (File file : FileUtils.listFiles(workFolder, new NameFileFilter("buildconfig.xml"), TrueFileFilter.INSTANCE)) {
+        for (File file : FileUtils.listFiles(workFolder, new NameFileFilter(build.getSetting("config")), TrueFileFilter.INSTANCE)) {
             try {
                 BuildConfigurations config = (BuildConfigurations) unmarshaller.unmarshal(new FileInputStream(file));
 

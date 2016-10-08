@@ -154,6 +154,7 @@
         <xs:sequence>
             <xs:element name="setting" type="settingType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="type" type="xs:string"/>
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="source" type="xs:string"/>
         <xs:attribute name="path" type="xs:string"/>
@@ -196,7 +197,9 @@
     <xs:complexType name="assertionType">
         <xs:sequence>
             <xs:element name="text" type="xs:string"/>
+            <xs:element name="textFriendly" type="xs:string"/>
             <xs:element name="location" type="xs:string"/>
+            <xs:element name="locationFriendly" type="xs:string"/>
             <xs:element name="test" type="xs:string"/>
         </xs:sequence>
         <xs:attribute name="identifier" type="xs:string"/>

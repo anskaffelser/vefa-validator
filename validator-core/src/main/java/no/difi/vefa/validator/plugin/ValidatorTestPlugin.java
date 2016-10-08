@@ -1,10 +1,11 @@
 package no.difi.vefa.validator.plugin;
 
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.Trigger;
+import no.difi.vefa.validator.api.ValidatorPlugin;
 import no.difi.vefa.validator.builder.ConfigurationBuilder;
 import no.difi.vefa.validator.builder.ConfigurationsBuilder;
-import no.difi.vefa.validator.declaration.ValidatorTestDeclaration;
-import no.difi.vefa.validator.declaration.ValidatorTestSetDeclaration;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.util.ArrayList;
@@ -24,14 +25,6 @@ public class ValidatorTestPlugin implements ValidatorPlugin {
     }
 
     @Override
-    public List<Declaration> declarations() {
-        return new ArrayList<Declaration>() {{
-            add(new ValidatorTestDeclaration());
-            add(new ValidatorTestSetDeclaration());
-        }};
-    }
-
-    @Override
     public List<Class<? extends Renderer>> renderers() {
         return Collections.emptyList();
     }
@@ -44,7 +37,7 @@ public class ValidatorTestPlugin implements ValidatorPlugin {
                     .configuration(ConfigurationBuilder
                             .identifier("vefa-testset")
                             .title("VEFA Validator Test Set")
-                            .standardId("http://difi.no/xsd/vefa/validator/1.0::testSet")
+                            .declaration("xml.testset", "http://difi.no/xsd/vefa/validator/1.0::testSet")
                             .weight(Long.MIN_VALUE)
                             .build())
                     .build());

@@ -6,7 +6,6 @@ import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -14,40 +13,17 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-public class AsiceDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
+public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements DeclarationWithConverter, DeclarationWithChildren {
 
-    private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1";
+    private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1::asic";
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
 
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
     public boolean verify(byte[] content, String parent) throws ValidatorException {
-        if (Arrays.equals(startsWith, Arrays.copyOfRange(content, 0, 4))) {
-            if (content[28] != 0)
-                return false;
-
-            try {
-                ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content));
-                ZipEntry entry = zipInputStream.getNextEntry();
-
-                if ("mimetype".equals(entry.getName())) {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    ByteStreams.copy(zipInputStream, byteArrayOutputStream);
-
-                    return MIME.equals(byteArrayOutputStream.toString());
-                }
-            } catch (IOException e) {
-                // No action.
-            }
-        } else if (NAMESPACE.equals(XmlUtils.extractRootNamespace(new String(content)))) {
-            return true;
-        }
-
-        return false;
+        return NAMESPACE.equals(parent);
     }
 
     @Override

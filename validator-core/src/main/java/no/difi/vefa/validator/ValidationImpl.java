@@ -4,6 +4,9 @@ import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
+import no.difi.vefa.validator.util.DeclarationDetector;
+import no.difi.vefa.validator.util.DeclarationIdentifier;
+import no.difi.vefa.validator.util.DeclarationWrapper;
 import no.difi.xsd.vefa.validator._1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +48,14 @@ class ValidationImpl implements Validation {
      */
     private Document document;
 
-    private Declaration declaration;
+    private DeclarationIdentifier declarationIdentifier;
+
+    private DeclarationWrapper declaration;
 
     private List<Validation> children;
 
     /**
-     * Constructing new validator using validator instance and #InputStream containing document to validate.
+     * Constructing new validator using validator instance and validation source containing document to validate.
      *
      * @param validatorInstance Instance of validator.
      * @param validationSource Source to validate.
@@ -120,13 +125,10 @@ class ValidationImpl implements Validation {
         bytes = Arrays.copyOfRange(bytes, 0, length);
 
         // Use declaration implementations to detect declaration to use.
-        for (Declaration d : validatorInstance.getDeclarations()) {
-            if (d.verify(bytes)) {
-                declaration = d;
-                break;
-            }
-        }
-        if (declaration == null)
+        declarationIdentifier = validatorInstance.detect(bytes);
+        declaration = declarationIdentifier.getDeclaration();
+
+        if (declarationIdentifier.equals(DeclarationDetector.UNKNOWN))
             throw new UnknownDocumentTypeException("Unable to detect type of content.");
 
         // Detect expectation
@@ -137,14 +139,14 @@ class ValidationImpl implements Validation {
                 report.setDescription(expectation.getDescription());
         }
 
-        if (declaration instanceof DeclarationWithConverter) {
+        if (declaration.supportsConverter()) {
             ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
             byteArrayInputStream.reset();
-            ((DeclarationWithConverter) declaration).convert(byteArrayInputStream, convertedOutputStream);
+            declaration.convert(byteArrayInputStream, convertedOutputStream);
 
-            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declaration.detect(bytes), expectation);
+            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declarationIdentifier.toString(), expectation);
         } else {
-            document = new Document(byteArrayInputStream, declaration.detect(bytes), expectation);
+            document = new Document(byteArrayInputStream, declarationIdentifier.toString(), expectation);
         }
     }
 
@@ -214,8 +216,8 @@ class ValidationImpl implements Validation {
      */
     private void nestedValidation() throws ValidatorException{
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
-            if (declaration instanceof DeclarationWithChildren && properties.getBoolean("feature.nesting")) {
-                Iterable<InputStream> iterable = ((DeclarationWithChildren) declaration).children(document.getInputStream());
+            if (declaration.supportsChildren() && properties.getBoolean("feature.nesting")) {
+                Iterable<InputStream> iterable = declaration.children(document.getInputStream());
                 for (InputStream inputStream : iterable) {
                     String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
                     addChildValidation(new ValidationImpl(validatorInstance, new ValidationSourceImpl(inputStream)), filename);

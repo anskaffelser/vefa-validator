@@ -107,7 +107,7 @@ public class Tester implements Closeable {
             Validation validation = validator.validate(file);
             validation.getReport().setFilename(file.toString());
 
-            if ("http://difi.no/xsd/vefa/validator/1.0::testSet".equals(validation.getDocument().getDeclaration())) {
+            if ("xml.testset::http://difi.no/xsd/vefa/validator/1.0::testSet".equals(validation.getDocument().getDeclaration())) {
                 logger.info("TestSet '{}'", file);
 
                 for (int i = 0; i < validation.getChildren().size(); i++) {
@@ -118,7 +118,7 @@ public class Tester implements Closeable {
             } else {
                 append(file.toString(), validation, null);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             logger.warn("Test '{}' ({})", file, e.getMessage(), e);
         }
     }

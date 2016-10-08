@@ -29,6 +29,23 @@ public class Section extends SectionType {
      * @param text Description of identifier.
      * @param flagType Flag associated with identifier.
      */
+    public void add(String identifier, String text, String textFriendly, FlagType flagType) {
+        AssertionType assertionType = new AssertionType();
+        assertionType.setIdentifier(identifier);
+        assertionType.setText(text);
+        assertionType.setTextFriendly(textFriendly);
+        assertionType.setFlag(flagType);
+
+        add(assertionType);
+    }
+
+    /**
+     * Add assertion to section using identifier, description and flag.
+     *
+     * @param identifier Identifier used for matching.
+     * @param text Description of identifier.
+     * @param flagType Flag associated with identifier.
+     */
     public void add(String identifier, String text, FlagType flagType) {
         AssertionType assertionType = new AssertionType();
         assertionType.setIdentifier(identifier);
@@ -40,6 +57,12 @@ public class Section extends SectionType {
 
     public void add(AssertionType assertionType) {
         flagFilterer.filterFlag(assertionType);
+
+        if (assertionType.getTextFriendly() == null)
+            assertionType.setTextFriendly(assertionType.getText());
+        if (assertionType.getLocationFriendly() == null)
+            assertionType.setLocationFriendly(assertionType.getLocation());
+
 
         if (getInfoUrl() != null)
             assertionType.setInfoUrl(getInfoUrl().replace("{}", assertionType.getIdentifier()));

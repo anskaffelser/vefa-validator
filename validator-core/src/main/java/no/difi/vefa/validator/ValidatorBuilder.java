@@ -1,7 +1,10 @@
 package no.difi.vefa.validator;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.plugin.*;
+import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +28,7 @@ public class ValidatorBuilder {
     public static ValidatorBuilder newValidator() {
         return emptyValidator()
                 .plugin(UblPlugin.class)
-                .plugin(SbdhPlugin.class)
-                .plugin(AsicePlugin.class)
-                .plugin(EspdPlugin.class);
+                .plugin(AsicePlugin.class);
     }
 
     /**
@@ -46,6 +47,11 @@ public class ValidatorBuilder {
      * @return Builder
      */
     public static ValidatorBuilder emptyValidator() {
+        Config config = ConfigFactory.load();
+        config = config.withFallback(config.getConfig("defaults"));
+
+        new DeclarationDetector(config);
+
         return new ValidatorBuilder();
     }
 
@@ -57,7 +63,7 @@ public class ValidatorBuilder {
     /**
      * Implementations of declarations to use.
      */
-    private Set<Declaration> declarations = new HashSet<>();
+    private DeclarationDetector declarationDetector;
 
     /**
      * Implementations of checker to use.
@@ -83,6 +89,11 @@ public class ValidatorBuilder {
      * Internal constructor, no action needed.
      */
     private ValidatorBuilder() {
+        Config config = ConfigFactory.load();
+        config = config.withFallback(config.getConfig("defaults"));
+
+        declarationDetector = new DeclarationDetector(config);
+
         // No action
     }
 
@@ -98,23 +109,6 @@ public class ValidatorBuilder {
         return this;
     }
 
-    @Deprecated
-    public ValidatorBuilder setCheckerImpls(Class<? extends Checker>... checkerImpls) {
-        this.checkers.clear();
-        return checker(checkerImpls);
-    }
-
-    public ValidatorBuilder declaration(Declaration... declarations) {
-        Collections.addAll(this.declarations, declarations);
-        return this;
-    }
-
-    @Deprecated
-    ValidatorBuilder setDeclarations(Declaration... declarations) {
-        this.declarations.clear();
-        return declaration(declarations);
-    }
-
     /**
      * Defines implementations of Renderer to use.
      *
@@ -125,12 +119,6 @@ public class ValidatorBuilder {
     public final ValidatorBuilder renderer(Class<? extends Renderer>... renderers) {
         Collections.addAll(this.renderers, renderers);
         return this;
-    }
-
-    @Deprecated
-    public ValidatorBuilder setRendererImpls(Class<? extends Renderer>... rendererImpls) {
-        this.renderers.clear();
-        return renderer(rendererImpls);
     }
 
     @SafeVarargs
@@ -154,7 +142,6 @@ public class ValidatorBuilder {
         for (ValidatorPlugin plugin : plugins) {
             this.checkers.addAll(plugin.checkers());
             this.triggers.addAll(plugin.triggers());
-            this.declarations.addAll(plugin.declarations());
             this.renderers.addAll(plugin.renderers());
             this.configurations.addAll(plugin.configurations());
         }
@@ -195,7 +182,7 @@ public class ValidatorBuilder {
                 checkers.toArray(new Class[checkers.size()]),
                 triggers.toArray(new Class[triggers.size()]),
                 renderers.toArray(new Class[renderers.size()]),
-                declarations.toArray(new Declaration[declarations.size()]),
+                declarationDetector,
                 configurations.toArray(new Configurations[configurations.size()])
         );
 

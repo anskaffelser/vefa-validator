@@ -1,9 +1,11 @@
 package no.difi.vefa.validator.plugin;
 
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.Trigger;
+import no.difi.vefa.validator.api.ValidatorPlugin;
 import no.difi.vefa.validator.builder.ConfigurationBuilder;
 import no.difi.vefa.validator.builder.ConfigurationsBuilder;
-import no.difi.vefa.validator.declaration.AsiceDeclaration;
 import no.difi.vefa.validator.trigger.AsiceTrigger;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
@@ -26,13 +28,6 @@ public class AsicePlugin implements ValidatorPlugin {
     }
 
     @Override
-    public List<Declaration> declarations() {
-        return new ArrayList<Declaration>() {{
-            add(new AsiceDeclaration());
-        }};
-    }
-
-    @Override
     public List<Class<? extends Renderer>> renderers() {
         return Collections.emptyList();
     }
@@ -42,12 +37,18 @@ public class AsicePlugin implements ValidatorPlugin {
         return new ArrayList<Configurations>() {{
             add(ConfigurationsBuilder
                     .instance()
-                    // .pkg("ASiC-E")
+                            // .pkg("ASiC-E")
                     .configuration(ConfigurationBuilder
                             .identifier("asice-archive")
                             .title("ASiC-E")
-                            .standardId("application/vnd.etsi.asic-e+zip")
+                            .declaration("zip.asice", "application/vnd.etsi.asic-e+zip")
                             .trigger("asice")
+                            .weight(Long.MIN_VALUE)
+                            .build())
+                    .configuration(ConfigurationBuilder
+                            .identifier("asice-archive-xml")
+                            .title("ASiC-E")
+                            .declaration("xml.asice", "application/vnd.etsi.asic-e+zip")
                             .weight(Long.MIN_VALUE)
                             .build())
                     .build());
