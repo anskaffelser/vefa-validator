@@ -2,7 +2,6 @@ package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.properties.SimpleProperties;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 
 /**
  * Class to hold defaults in validator.
@@ -14,23 +13,21 @@ class ValidatorDefaults {
      */
     final static Properties PROPERTIES = new SimpleProperties()
 
-        // feature
-        .set("feature.expectation", false)
-        .set("feature.nesting", false)
-        .set("feature.suppress_notloaded", false)
-        .set("feature.infourl", false)
+            // feature
+            .set("feature.expectation", false)
+            .set("feature.nesting", false)
+            .set("feature.suppress_notloaded", false)
+            .set("feature.infourl", false)
 
-        // pools.checker
-        .set("pools.checker.size", 250)
-        .set("pools.checker.expire", 60 * 24)
+            // pools.checker
+            .set("pools.checker.size", 250)
+            .set("pools.checker.expire", 60 * 24)
 
-        // pools.presenter
-        .set("pools.presenter.blockerWhenExhausted", GenericKeyedObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED)
-        .set("pools.presenter.lifo", GenericKeyedObjectPoolConfig.DEFAULT_LIFO)
-        .set("pools.presenter.maxTotal", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL)
-        .set("pools.presenter.maxTotalPerKey", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL_PER_KEY)
+            // pools.presenter
+            .set("pools.presenter.size", 250)
+            .set("pools.presenter.expire", 60 * 24)
 
-        // finish
-        ;
+            // finish
+            ;
 
 }

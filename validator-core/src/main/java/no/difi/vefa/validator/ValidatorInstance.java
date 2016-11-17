@@ -8,7 +8,6 @@ import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
 import no.difi.xsd.vefa.validator._1.*;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Pool of presenters.
      */
-    private GenericKeyedObjectPool<String, Renderer> rendererPool;
+    private LoadingCache<String, Renderer> rendererPool;
 
     /**
      * Trigger factory.
@@ -88,11 +87,10 @@ class ValidatorInstance implements Closeable {
                 .build(new CheckerPoolLoader(validatorEngine, checkerImpls));
 
         // New pool for presenters
-        rendererPool = new GenericKeyedObjectPool<>(new RendererPoolFactory(validatorEngine, rendererImpls));
-        rendererPool.setBlockWhenExhausted(this.properties.getBoolean("pools.presenter.blockerWhenExhausted"));
-        rendererPool.setLifo(this.properties.getBoolean("pools.presenter.lifo"));
-        rendererPool.setMaxTotal(this.properties.getInteger("pools.presenter.maxTotal"));
-        rendererPool.setMaxTotalPerKey(this.properties.getInteger("pools.presenter.maxTotalPerKey"));
+        this.rendererPool = CacheBuilder.newBuilder()
+                .maximumSize(this.properties.getInteger("pools.presenter.size"))
+                .expireAfterAccess(this.properties.getInteger("pools.presenter.expire"), TimeUnit.MINUTES)
+                .build(new RendererPoolLoader(validatorEngine, rendererImpls));
 
         // Initiate trigger factory
         triggerFactory = new TriggerFactory(triggerImpls);
@@ -151,18 +149,14 @@ class ValidatorInstance implements Closeable {
     void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
         try {
-            renderer = rendererPool.borrowObject(stylesheet.getIdentifier());
+            renderer = rendererPool.get(stylesheet.getIdentifier());
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             throw new ValidatorException(
                     String.format("Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
         }
 
-        try {
-            renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
-        } finally {
-            rendererPool.returnObject(stylesheet.getIdentifier(), renderer);
-        }
+        renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
     }
 
     /**
@@ -212,8 +206,11 @@ class ValidatorInstance implements Closeable {
 
     @Override
     public void close() throws IOException {
+        checkerPool.invalidateAll();
         checkerPool.cleanUp();
-        rendererPool.clear();
+
+        rendererPool.invalidateAll();
+        rendererPool.cleanUp();
 
         // This is last statement, allow to propagate.
         validatorEngine.close();

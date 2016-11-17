@@ -1,15 +1,14 @@
 package no.difi.vefa.validator.renderer;
 
-import net.sf.saxon.TransformerFactoryImpl;
+import net.sf.saxon.s9api.*;
+import net.sf.saxon.stax.XMLStreamWriterDestination;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.PathURIResolver;
+import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -21,15 +20,16 @@ import java.nio.file.Path;
 @RendererInfo({".xsl", ".xslt"})
 public class XsltRenderer implements Renderer {
 
-    /**
-     * Holds the transformer ready for use.
-     */
-    private Transformer transformer;
+    private static XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
+
+    private XsltExecutable xsltExecutable;
 
     /**
      * Holds the stylesheet definition.
      */
     private StylesheetType stylesheetType;
+
+    private Path path;
 
     /**
      * {@inheritDoc}
@@ -38,14 +38,13 @@ public class XsltRenderer implements Renderer {
     public void prepare(StylesheetType stylesheetType, Path path) throws ValidatorException {
         // Keep reference.
         this.stylesheetType = stylesheetType;
+        this.path = path;
 
         try {
-            // Create new factory to create transformer
-            TransformerFactory transformerFactory = new TransformerFactoryImpl();
-            // Define an use a URIResolver supporting Path.
-            transformerFactory.setURIResolver(new PathURIResolver(path.getParent()));
-            // Create the transformer using the template file.
-            transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
+            XsltCompiler xsltCompiler = new Processor(false).newXsltCompiler();
+            xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
+            xsltCompiler.setURIResolver(new PathURIResolver(path.getParent()));
+            xsltExecutable = xsltCompiler.compile(new StreamSource(Files.newInputStream(path)));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }
@@ -57,13 +56,22 @@ public class XsltRenderer implements Renderer {
     @Override
     public void render(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         try {
+            XsltTransformer xsltTransformer = xsltExecutable.load();
+            xsltTransformer.setURIResolver(new PathURIResolver(path.getParent()));
+
             // Look through default values for stylesheet.
             for (SettingType setting : stylesheetType.getSetting())
-                transformer.setParameter(setting.getName(), properties.get(String.format("stylesheet.%s.%s", stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()));
+                xsltTransformer.setParameter(
+                        new QName(setting.getName()),
+                        new XdmAtomicValue(properties.getString(String.format("stylesheet.%s.%s", stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()))
+                );
 
             // Use transformer to write the result to stream.
-            transformer.transform(new StreamSource(document.getInputStream()), new StreamResult(outputStream));
-        } catch (TransformerException e) {
+            xsltTransformer.setSource(new StreamSource(document.getInputStream()));
+            xsltTransformer.setDestination(new XMLStreamWriterDestination(xmlOutputFactory.createXMLStreamWriter(outputStream, "UTF-8")));
+            xsltTransformer.transform();
+            xsltTransformer.close();
+        } catch (Exception e) {
             throw new ValidatorException("Unable to render document.", e);
         }
     }

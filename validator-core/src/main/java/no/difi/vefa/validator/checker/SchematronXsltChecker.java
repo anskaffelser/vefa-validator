@@ -54,6 +54,7 @@ public class SchematronXsltChecker implements Checker {
             xsltTransformer.setSource(new StreamSource(document.getInputStream()));
             xsltTransformer.setDestination(new DOMDestination(node));
             xsltTransformer.transform();
+            xsltTransformer.close();
 
             long tsEnd = System.currentTimeMillis();
 
