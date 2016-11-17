@@ -135,7 +135,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>9.7.0-6</version>
+                <version>9.7.0-11</version>
             </dependency>
 
             <!-- Logging -->
@@ -191,7 +191,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>19.0</version>
+                <version>20.0</version>
             </dependency>
 
             <!-- Typesafe -->

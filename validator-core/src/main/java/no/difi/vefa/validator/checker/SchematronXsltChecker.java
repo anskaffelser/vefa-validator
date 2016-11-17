@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.checker;
 
-import net.sf.saxon.TransformerFactoryImpl;
-import net.sf.saxon.lib.FeatureKeys;
+import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+import net.sf.saxon.s9api.*;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
@@ -13,10 +13,11 @@ import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
-import javax.xml.bind.util.JAXBResult;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,23 +29,15 @@ public class SchematronXsltChecker implements Checker {
 
     private static Logger logger = LoggerFactory.getLogger(SchematronXsltChecker.class);
 
-    private static TransformerFactory transformerFactory;
+    private static JAXBContext jaxbContext = JAXBHelper.context(SchematronOutput.class);
 
-    static {
-        transformerFactory = new TransformerFactoryImpl();
-        transformerFactory.setAttribute(FeatureKeys.ERROR_LISTENER_CLASS, SaxonErrorListener.class.getCanonicalName());
-        transformerFactory.setAttribute(FeatureKeys.DEFAULT_COUNTRY, "US");
-        transformerFactory.setAttribute(FeatureKeys.DEFAULT_LANGUAGE, "en");
-    }
-
-    private Transformer transformer;
-    private JAXBResult jaxbResult;
+    private XsltExecutable xsltExecutable;
 
     public void prepare(Path path) throws ValidatorException {
         try {
-            transformer = transformerFactory.newTransformer(new StreamSource(Files.newInputStream(path)));
-
-            jaxbResult = new JAXBResult(JAXBHelper.context(SchematronOutput.class));
+            XsltCompiler xsltCompiler = new Processor(false).newXsltCompiler();
+            xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
+            xsltExecutable = xsltCompiler.compile(new StreamSource(Files.newInputStream(path)));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }
@@ -54,10 +47,18 @@ public class SchematronXsltChecker implements Checker {
     public void check(Document document, Section section) throws ValidatorException {
         long tsStart = System.currentTimeMillis();
         try {
-            transformer.transform(new StreamSource(document.getInputStream()), jaxbResult);
+            Node node = new DocumentImpl();
+
+            XsltTransformer xsltTransformer = xsltExecutable.load();
+            xsltTransformer.setErrorListener(SaxonErrorListener.INSTANCE);
+            xsltTransformer.setSource(new StreamSource(document.getInputStream()));
+            xsltTransformer.setDestination(new DOMDestination(node));
+            xsltTransformer.transform();
+
             long tsEnd = System.currentTimeMillis();
 
-            SchematronOutput output = (SchematronOutput) jaxbResult.getResult();
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            SchematronOutput output = unmarshaller.unmarshal(new DOMSource(node), SchematronOutput.class).getValue();
 
             section.setTitle(output.getTitle());
             section.setRuntime((tsEnd - tsStart) + "ms");

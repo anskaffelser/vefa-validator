@@ -26,14 +26,13 @@ public class XsdChecker implements Checker {
 
     private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
 
-    private Validator validator;
+    private Schema schema;
 
     public void prepare(Path path) throws ValidatorException {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new PathLSResolveResource(path.getParent()));
-            Schema schema = schemaFactory.newSchema(new StreamSource(Files.newInputStream(path)));
-            validator = schema.newValidator();
+            schema = schemaFactory.newSchema(new StreamSource(Files.newInputStream(path)));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }
@@ -47,6 +46,7 @@ public class XsdChecker implements Checker {
 
         long tsStart = System.currentTimeMillis();
         try {
+            Validator validator = schema.newValidator();
             validator.validate(xmlFile);
         } catch (SAXParseException e) {
             String humanMessage = e.getMessage();

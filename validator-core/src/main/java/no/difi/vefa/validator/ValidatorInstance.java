@@ -1,5 +1,7 @@
 package no.difi.vefa.validator;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.LoadingCache;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
@@ -16,6 +18,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
@@ -50,7 +53,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Pool of checkers.
      */
-    private GenericKeyedObjectPool<String, Checker> checkerPool;
+    private LoadingCache<String, Checker> checkerPool;
 
     /**
      * Pool of presenters.
@@ -73,17 +76,16 @@ class ValidatorInstance implements Closeable {
         this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
 
         // Create a new engine
-        validatorEngine = new ValidatorEngine(source.createInstance(this.properties), configurations);
+        this.validatorEngine = new ValidatorEngine(source.createInstance(this.properties), configurations);
 
         // Declarations
         this.declarationDetector = declarationDetector;
 
         // New pool for checkers
-        checkerPool = new GenericKeyedObjectPool<>(new CheckerPoolFactory(validatorEngine, checkerImpls));
-        checkerPool.setBlockWhenExhausted(this.properties.getBoolean("pools.checker.blockerWhenExhausted"));
-        checkerPool.setLifo(this.properties.getBoolean("pools.checker.lifo"));
-        checkerPool.setMaxTotal(this.properties.getInteger("pools.checker.maxTotal"));
-        checkerPool.setMaxTotalPerKey(this.properties.getInteger("pools.checker.maxTotalPerKey"));
+        this.checkerPool = CacheBuilder.newBuilder()
+                .maximumSize(this.properties.getInteger("pools.checker.size"))
+                .expireAfterAccess(this.properties.getInteger("pools.checker.expire"), TimeUnit.MINUTES)
+                .build(new CheckerPoolLoader(validatorEngine, checkerImpls));
 
         // New pool for presenters
         rendererPool = new GenericKeyedObjectPool<>(new RendererPoolFactory(validatorEngine, rendererImpls));
@@ -174,11 +176,11 @@ class ValidatorInstance implements Closeable {
     Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
         Checker checker;
         try {
-            checker = checkerPool.borrowObject(fileType.getPath());
+            checker = checkerPool.get(fileType.getPath());
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             throw new ValidatorException(
-                    String.format("Unable to borrow checker object from pool for '%s'.", configuration.getIdentifier()), e);
+                    String.format("Unable to get checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
         Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
@@ -187,11 +189,7 @@ class ValidatorInstance implements Closeable {
         if (properties.getBoolean("feature.infourl"))
             section.setInfoUrl(fileType.getInfoUrl());
 
-        try {
-            checker.check(document, section);
-        } finally {
-            checkerPool.returnObject(fileType.getPath(), checker);
-        }
+        checker.check(document, section);
 
         section.setInfoUrl(null);
         return section;
@@ -214,7 +212,7 @@ class ValidatorInstance implements Closeable {
 
     @Override
     public void close() throws IOException {
-        checkerPool.clear();
+        checkerPool.cleanUp();
         rendererPool.clear();
 
         // This is last statement, allow to propagate.

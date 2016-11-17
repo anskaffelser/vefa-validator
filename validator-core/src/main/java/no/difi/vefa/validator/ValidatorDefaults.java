@@ -21,10 +21,8 @@ class ValidatorDefaults {
         .set("feature.infourl", false)
 
         // pools.checker
-        .set("pools.checker.blockerWhenExhausted", GenericKeyedObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED)
-        .set("pools.checker.lifo", GenericKeyedObjectPoolConfig.DEFAULT_LIFO)
-        .set("pools.checker.maxTotal", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL)
-        .set("pools.checker.maxTotalPerKey", GenericKeyedObjectPoolConfig.DEFAULT_MAX_TOTAL_PER_KEY)
+        .set("pools.checker.size", 250)
+        .set("pools.checker.expire", 60 * 24)
 
         // pools.presenter
         .set("pools.presenter.blockerWhenExhausted", GenericKeyedObjectPoolConfig.DEFAULT_BLOCK_WHEN_EXHAUSTED)

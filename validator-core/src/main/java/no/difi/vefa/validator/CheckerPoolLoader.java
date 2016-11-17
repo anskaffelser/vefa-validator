@@ -1,32 +1,30 @@
 package no.difi.vefa.validator;
 
+import com.google.common.cache.CacheLoader;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Pool of prepared checkers. Size if configured using properties.
  */
-class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
+class CheckerPoolLoader extends CacheLoader<String, Checker> {
 
-    private static Logger logger = LoggerFactory.getLogger(CheckerPoolFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(CheckerPoolLoader.class);
 
     private ValidatorEngine validatorEngine;
     private Class<? extends Checker>[] implementations;
 
-    CheckerPoolFactory(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
+    CheckerPoolLoader(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
         this.validatorEngine = validatorEngine;
         this.implementations = implementations;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Checker create(String key) throws Exception {
+    @SuppressWarnings("unchecked")
+    public Checker load(String key) throws Exception {
         try {
             for (Class cls : implementations) {
                 try {
@@ -47,10 +45,5 @@ class CheckerPoolFactory extends BaseKeyedPooledObjectFactory<String, Checker> {
         }
 
         throw new ValidatorException(String.format("No checker found for '%s'", key));
-    }
-
-    @Override
-    public PooledObject<Checker> wrap(Checker checker) {
-        return new DefaultPooledObject<>(checker);
     }
 }

@@ -226,6 +226,7 @@
             <xs:enumeration value="suppress"/>
             <xs:enumeration value="setWarning"/>
             <xs:enumeration value="setError"/>
+            <xs:enumeration value="setFutureError"/>
             <xs:enumeration value="setFatal"/>
             <xs:enumeration value="none"/>
         </xs:restriction>

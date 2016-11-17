@@ -8,7 +8,17 @@ import javax.xml.transform.TransformerException;
 
 public class SaxonErrorListener implements ErrorListener {
 
-    private static Logger logger = LoggerFactory.getLogger(SaxonErrorListener.class);
+    public static SaxonErrorListener INSTANCE = new SaxonErrorListener();
+
+    private Logger logger;
+
+    public SaxonErrorListener() {
+        this(LoggerFactory.getLogger(SaxonErrorListener.class));
+    }
+
+    public SaxonErrorListener(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public void warning(TransformerException exception) throws TransformerException {

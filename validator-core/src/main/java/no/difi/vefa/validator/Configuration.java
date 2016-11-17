@@ -97,6 +97,9 @@ class Configuration extends ConfigurationType implements FlagFilterer {
     public void filterFlag(AssertionType assertionType) {
         if (ruleActions.containsKey(assertionType.getIdentifier())) {
             switch (ruleActions.get(assertionType.getIdentifier())) {
+                case SET_FUTURE_ERROR:
+                    assertionType.setFlag(FlagType.FUTURE_ERROR);
+                    break;
                 case SET_ERROR:
                     assertionType.setFlag(FlagType.ERROR);
                     break;
