@@ -10,9 +10,9 @@ fi
 build=$(md5sum ubl-2.1-source.zip | cut -d " " -f 1)
 
 echo "* Unzip source"
-unzip -q ubl-2.1-source.zip xsd/* -d target
+unzip -q ubl-2.1-source.zip xsdrt/* -d target
 
-cd target/xsd
+cd target/xsdrt
 
 echo "* Generate buildconfig.xml"
 
