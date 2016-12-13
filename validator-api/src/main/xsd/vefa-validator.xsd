@@ -51,20 +51,26 @@
     </xs:element>
 
     <xs:complexType name="artifactType">
+        <xs:sequence>
+            <xs:element name="dependency" type="dependencyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="filename" type="xs:string"/>
         <xs:attribute name="timestamp" type="xs:long" default="0"/>
+        <xs:attribute name="type" type="xs:string"/>
     </xs:complexType>
 
     <xs:element name="buildConfigurations">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="package" type="packageType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="dependency" type="dependencyType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="testfolder" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="include" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="capabilities" type="xs:string" use="optional"/>
+            <xs:attribute name="type" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
@@ -72,11 +78,13 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="package" type="packageType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="dependency" type="dependencyType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="configuration" type="configurationType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
             <xs:attribute name="timestamp" type="xs:long"/>
             <xs:attribute name="capabilities" type="xs:string" use="optional"/>
+            <xs:attribute name="type" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
@@ -205,6 +213,12 @@
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="flag" type="flagType"/>
         <xs:attribute name="infoUrl" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="dependencyType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string"/>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:simpleType name="flagType">

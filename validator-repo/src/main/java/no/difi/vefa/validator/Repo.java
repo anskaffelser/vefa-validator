@@ -56,22 +56,23 @@ public class Repo {
 
                         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-                        // If inspected configuration file is part of the set of detected files.
-                        // if (fileFound.contains(parentString)) {
-                            // Read configuration file.
-                            Configurations configurations = unmarshaller.unmarshal(new StreamSource(Files.newInputStream(file)), Configurations.class).getValue();
+                        // Read configuration file.
+                        Configurations configurations = unmarshaller.unmarshal(new StreamSource(Files.newInputStream(file)), Configurations.class).getValue();
 
-                            // New artifact
-                            ArtifactType artifactType = new ArtifactType();
-                            // Name of artifact
-                            artifactType.setName(configurations.getName());
-                            // Detect filename from recorded name as metadata may not correlate with internal name.
-                            artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
-                            // Fetch timestamp of creation.
-                            artifactType.setTimestamp(configurations.getTimestamp());
-                            // Add artifact to list of artifacts.
-                            artifactsTypes.add(artifactType);
-                        // }
+                        // New artifact
+                        ArtifactType artifactType = new ArtifactType();
+                        // Name of artifact
+                        artifactType.setName(configurations.getName());
+                        // Detect filename from recorded name as metadata may not correlate with internal name.
+                        artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
+                        // Fetch timestamp of creation.
+                        artifactType.setTimestamp(configurations.getTimestamp());
+                        // Type of artifact
+                        artifactType.setType(configurations.getType());
+                        // Add dependencies.
+                        artifactType.getDependency().addAll(configurations.getDependency());
+                        // Add artifact to list of artifacts.
+                        artifactsTypes.add(artifactType);
                     } catch (JAXBException e) {
                         // We are only allowed to return IOException.
                         throw new IOException(e.getMessage(), e);
