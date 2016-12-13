@@ -24,7 +24,7 @@ public class Cli {
 
     public static int perform(String... args) throws Exception {
         Options options = new Options();
-        options.addOption("c", "config", false, "Config file");
+        options.addOption("c", "config", true, "Config file");
         options.addOption("t", "test", false, "Run tests");
         options.addOption("s", "site", false, "Create site");
         options.addOption("b", "build", true, "Build identifier");
