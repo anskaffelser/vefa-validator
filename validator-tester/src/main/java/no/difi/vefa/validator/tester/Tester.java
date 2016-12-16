@@ -132,10 +132,7 @@ public class Tester implements Closeable {
         String prefix = numberInSet == null ? "" : "  ";
 
         if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
-            if (numberInSet == null)
-                logger.warn("{}Test '{}' ({})", prefix, description, validation.getReport().getFlag());
-            else
-                logger.warn("{}Test '{}) {}' ({})", prefix, numberInSet, description, validation.getReport().getFlag());
+            logger.warn("{}Test '{}' ({})", prefix, description, validation.getReport().getFlag());
             failed++;
 
             for (SectionType sectionType : validation.getReport().getSection())

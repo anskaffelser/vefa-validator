@@ -68,6 +68,9 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
                 if (test.getConfiguration() == null)
                     test.setConfiguration(testSet.getConfiguration());
 
+                if (test.getId() == null)
+                    test.setId(String.valueOf(counter + 1));
+
                 if (testSet.getAssert() != null) {
                     test.getAssert().getScope().addAll(testSet.getAssert().getScope());
                     test.getAssert().getFatal().addAll(testSet.getAssert().getFatal());

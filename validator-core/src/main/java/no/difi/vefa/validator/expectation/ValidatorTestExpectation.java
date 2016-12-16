@@ -26,7 +26,7 @@ public class ValidatorTestExpectation extends AbstractExpectation {
             AssertType assertType = test.getAssert();
 
             if (assertType != null) {
-                description = assertType.getDescription();
+                description = test.getId() == null ? assertType.getDescription() : String.format("%s) %s", test.getId(), assertType.getDescription());
                 scopes.addAll(assertType.getScope());
 
                 for (AssertElementType a : assertType.getFatal())
