@@ -15,10 +15,12 @@ import java.util.regex.Pattern;
  */
 public class UblDeclaration extends AbstractXmlDeclaration {
 
-    private static Pattern pattern = Pattern.compile("urn:oasis:names:specification:ubl:schema:xsd:(.+)-2::(.+)");
+    private static final Pattern PATTERN = Pattern.compile("urn:oasis:names:specification:ubl:schema:xsd:(.+)-2::(.+)");
+
+    private static final String TC434 = "urn:cen.eu:en16931:2017";
 
     public boolean verify(byte[] content, String parent) throws ValidatorException {
-        return pattern.matcher(parent).matches();
+        return PATTERN.matcher(parent).matches();
     }
 
     public String detect(byte[] content, String parent) throws ValidatorException {
@@ -37,6 +39,9 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)
                             customizationId = ((Characters) xmlEvent).getData();
+
+                        if (TC434.equals(customizationId))
+                            return TC434;
                     }
 
                     if ("ProfileID".equals(startElement.getName().getLocalPart())) {

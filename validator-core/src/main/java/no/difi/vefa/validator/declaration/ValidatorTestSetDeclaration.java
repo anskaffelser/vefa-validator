@@ -74,6 +74,9 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
                     test.getAssert().getError().addAll(testSet.getAssert().getError());
                     test.getAssert().getWarning().addAll(testSet.getAssert().getWarning());
                     test.getAssert().getSuccess().addAll(testSet.getAssert().getSuccess());
+
+                    if (test.getAssert().getDescription() == null)
+                        test.getAssert().setDescription(testSet.getAssert().getDescription());
                 }
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
