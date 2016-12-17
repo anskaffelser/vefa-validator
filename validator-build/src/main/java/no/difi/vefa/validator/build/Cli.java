@@ -52,7 +52,7 @@ public class Cli {
                         cmd.getOptionValue("pkp"));
             }
 
-            Build build = new Build(Paths.get(arg), cmd.getOptionValue("target", "target"));
+            Build build = new Build(Paths.get(arg), cmd.getOptionValue("target", cmd.hasOption("profile") ? String.format("target-%s", cmd.getOptionValue("profile")) : "target"));
             build.setSetting("config", cmd.getOptionValue("config", cmd.hasOption("profile") ? String.format("buildconfig-%s.xml", cmd.getOptionValue("profile")) : "buildconfig.xml"));
             build.setSetting("name", cmd.getOptionValue("name", "rules"));
             build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
