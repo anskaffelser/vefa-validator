@@ -31,6 +31,8 @@ public class Cli {
         options.addOption("n", "name", true, "Name");
         options.addOption("w", "weight", true, "Weight");
         options.addOption("x", "exitcode", false, "Status in exit code");
+        options.addOption("p", "profile", true, "Buildconfig profile");
+        options.addOption(Option.builder("target").desc("Target folder").hasArg(true).build());
         options.addOption(Option.builder("ksf").desc("Keystore file").hasArg(true).build());
         options.addOption(Option.builder("ksp").desc("Keystore password").hasArg(true).build());
         options.addOption(Option.builder("pkp").desc("Private key password").hasArg(true).build());
@@ -50,8 +52,8 @@ public class Cli {
                         cmd.getOptionValue("pkp"));
             }
 
-            Build build = new Build(Paths.get(arg));
-            build.setSetting("config", cmd.getOptionValue("config", "buildconfig.xml"));
+            Build build = new Build(Paths.get(arg), cmd.getOptionValue("target", "target"));
+            build.setSetting("config", cmd.getOptionValue("config", cmd.hasOption("profile") ? String.format("buildconfig-%s.xml", cmd.getOptionValue("profile")) : "buildconfig.xml"));
             build.setSetting("name", cmd.getOptionValue("name", "rules"));
             build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
             build.setSetting("weight", cmd.getOptionValue("weight", "0"));
