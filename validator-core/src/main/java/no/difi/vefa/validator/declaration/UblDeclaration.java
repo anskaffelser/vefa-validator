@@ -41,7 +41,7 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                             customizationId = ((Characters) xmlEvent).getData();
 
                         if (TC434.equals(customizationId))
-                            return TC434;
+                            return String.format("%s::%s", parent.split("::")[1], TC434);
                     }
 
                     if ("ProfileID".equals(startElement.getName().getLocalPart())) {
