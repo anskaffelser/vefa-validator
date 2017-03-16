@@ -10,7 +10,7 @@ fi
 build=$(md5sum ubl-2.0-source.zip | cut -d " " -f 1)
 
 echo "* Unzip source"
-unzip -q ubl-2.0-source.zip os-UBL-2.0/xsdrt/* -d target
+unzip -q ubl-2.0-source.zip 'os-UBL-2.0/xsdrt/*' -d target
 
 cd target/os-UBL-2.0/xsdrt
 
