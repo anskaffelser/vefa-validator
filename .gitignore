@@ -3,3 +3,4 @@ target
 *.iml
 /workspace
 /validator.properties
+*.html

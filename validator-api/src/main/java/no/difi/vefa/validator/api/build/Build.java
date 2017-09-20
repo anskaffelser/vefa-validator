@@ -15,6 +15,7 @@ public class Build {
     private Map<String, String> setting = new HashMap<>();
 
     private Path projectPath;
+    private Path[] sourcePath;
     private Path targetFolder;
 
     private Configurations configurations;
@@ -23,15 +24,23 @@ public class Build {
     private List<Validation> testValidations = new ArrayList<>();
 
     public Build(Path projectPath) {
-        this(projectPath, "target");
+        this(projectPath, "", "target");
     }
 
-    public Build(Path projectPath, String targetFolder) {
-        this(projectPath, projectPath.resolve(targetFolder));
-    }
-
-    public Build(Path projectPath, Path targetFolder) {
+    public Build(Path projectPath, String sourceFolder, String targetFolder) {
         this.projectPath = projectPath;
+
+        String[] sfs = sourceFolder.split(",");
+        this.sourcePath = new Path[sfs.length];
+        for (int i = 0; i < sfs.length; i++)
+            sourcePath[i] = projectPath.resolve(sfs[i]);
+
+        this.targetFolder = projectPath.resolve(targetFolder);
+    }
+
+    public Build(Path projectPath, Path[] sourceFolder, Path targetFolder) {
+        this.projectPath = projectPath;
+        this.sourcePath = sourceFolder;
         this.targetFolder = targetFolder;
     }
 
@@ -47,6 +56,10 @@ public class Build {
 
     public Path getProjectPath() {
         return projectPath;
+    }
+
+    public Path[] getSourcePath() {
+        return sourcePath;
     }
 
     public Path getTargetFolder() {

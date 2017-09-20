@@ -1,11 +1,11 @@
 package no.difi.vefa.validator.build.preparer;
 
-import no.difi.commons.schematron.SchematronTransformer;
+import no.difi.commons.schematron.SchematronCompiler;
+import no.difi.commons.schematron.SchematronException;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
 import no.difi.vefa.validator.api.build.PreparerInfo;
 
-import javax.xml.transform.TransformerConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -13,19 +13,19 @@ import java.io.File;
 @SuppressWarnings("unused")
 public class SchematronPreparer implements Preparer {
 
-    protected SchematronTransformer schematronTransformer;
+    protected SchematronCompiler schematronTransformer;
 
     public SchematronPreparer() {
         try {
-            this.schematronTransformer = new SchematronTransformer();
-        } catch (TransformerConfigurationException e) {
+            this.schematronTransformer = new SchematronCompiler();
+        } catch (SchematronException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     public ByteArrayOutputStream prepare(Build build, File file) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        schematronTransformer.transform(file, byteArrayOutputStream);
+        schematronTransformer.compile(file, byteArrayOutputStream);
         return byteArrayOutputStream;
     }
 }
