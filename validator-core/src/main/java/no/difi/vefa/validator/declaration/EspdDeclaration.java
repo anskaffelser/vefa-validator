@@ -30,6 +30,11 @@ public class EspdDeclaration extends AbstractXmlDeclaration {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
                 if (xmlEvent.isStartElement()) {
+                    if ("CustomizationID".equals(((StartElement) xmlEvent).getName().getLocalPart())) {
+                        xmlEvent = xmlEventReader.nextEvent();
+                        if (xmlEvent instanceof Characters)
+                            return String.format("%s::%s", parent, ((Characters) xmlEvent).getData());
+                    }
                     if ("VersionID".equals(((StartElement) xmlEvent).getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)

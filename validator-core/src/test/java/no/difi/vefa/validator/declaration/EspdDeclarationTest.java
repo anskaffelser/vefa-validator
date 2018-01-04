@@ -24,6 +24,14 @@ public class EspdDeclarationTest {
 
     @Test
     public void simple() throws Exception {
+        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse-2.xml"));
+
+        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
+        assertEquals(declarationIdentifier.getIdentifier(), "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::SomeCustomization");
+    }
+
+    @Test
+    public void simpleCustomization() throws Exception {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse.xml"));
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
