@@ -1,13 +1,17 @@
-FROM maven:3-jdk-8
+FROM maven:3.3.9-jdk-8 AS mvn
 
 ADD . $MAVEN_HOME
 
 RUN cd $MAVEN_HOME \
  && mvn -B clean package \
- && mv $MAVEN_HOME/target/vefa-validator /vefa-validator \
- && rm -r $MAVEN_HOME
+ && mv $MAVEN_HOME/target/vefa-validator /vefa-validator
 
-VOLUME /src
-VOLUME /vefa-validator/workspace
+
+
+FROM java:8-jre-alpine
+
+COPY --from=mvn /vefa-validator /vefa-validator
+
+VOLUME /src /vefa-validator/workspace
 
 ENTRYPOINT ["sh", "/vefa-validator/bin/run.sh"]
