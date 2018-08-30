@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.util.XmlUtils;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -40,8 +39,8 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                         if (xmlEvent instanceof Characters)
                             customizationId = ((Characters) xmlEvent).getData();
 
-                        if (TC434.equals(customizationId))
-                            return String.format("%s::%s", parent.split("::")[1], TC434);
+                        if (customizationId != null && customizationId.startsWith(TC434))
+                            customizationId = String.format("%s::%s", parent.split("::")[1], customizationId);
                     }
 
                     if ("ProfileID".equals(startElement.getName().getLocalPart())) {
