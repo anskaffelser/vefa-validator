@@ -2,8 +2,8 @@ package no.difi.vefa.validator.trigger;
 
 import no.difi.asic.AsicVerifier;
 import no.difi.asic.AsicVerifierFactory;
+import no.difi.commons.asic.jaxb.asic.Certificate;
 import no.difi.vefa.validator.api.*;
-import no.difi.xsd.asic.model._1.Certificate;
 import no.difi.xsd.vefa.validator._1.FlagType;
 
 @TriggerInfo("asice")

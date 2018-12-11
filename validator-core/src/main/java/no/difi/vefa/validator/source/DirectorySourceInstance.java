@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,7 +46,12 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                     // Read artifacts.xml
                     Path artifactsPath = directory.resolve("artifacts.xml");
                     logger.info("Loading {}", artifactsPath);
-                    Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(Files.newInputStream(artifactsPath));
+                    Artifacts artifactsType;
+
+                    try (InputStream inputStream = Files.newInputStream(artifactsPath)) {
+                        artifactsType = unmarshaller
+                                .unmarshal(new StreamSource(inputStream), Artifacts.class).getValue();
+                    }
 
                     // Loop through artifacts.
                     for (ArtifactType artifact : artifactsType.getArtifact()) {

@@ -13,6 +13,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
@@ -51,13 +52,13 @@ public class Repo {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 // If file is a configuration file...
                 if (matcher.matches(file)) {
-                    try {
+                    try (InputStream inputStream = Files.newInputStream(file)) {
                         String parentString = file.getParent().toString();
 
                         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
                         // Read configuration file.
-                        Configurations configurations = unmarshaller.unmarshal(new StreamSource(Files.newInputStream(file)), Configurations.class).getValue();
+                        Configurations configurations = unmarshaller.unmarshal(new StreamSource(inputStream), Configurations.class).getValue();
 
                         // New artifact
                         ArtifactType artifactType = new ArtifactType();

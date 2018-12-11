@@ -80,8 +80,8 @@ class ValidatorEngine implements Closeable {
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         if (matcher.matches(file)) {
                             String configurationSource = addResource(file.getParent());
-                            try {
-                                loadConfigurations(configurationSource, Files.newInputStream(file));
+                            try (InputStream inputStream = Files.newInputStream(file)) {
+                                loadConfigurations(configurationSource, inputStream);
                             } catch (ValidatorException e) {
                                 throw new IOException(e.getMessage(), e);
                             }

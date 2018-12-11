@@ -18,6 +18,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -29,10 +30,10 @@ public class XsdChecker implements Checker {
     private Schema schema;
 
     public void prepare(Path path) throws ValidatorException {
-        try {
+        try (InputStream inputStream = Files.newInputStream(path)) {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new PathLSResolveResource(path.getParent()));
-            schema = schemaFactory.newSchema(new StreamSource(Files.newInputStream(path)));
+            schema = schemaFactory.newSchema(new StreamSource(inputStream));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }

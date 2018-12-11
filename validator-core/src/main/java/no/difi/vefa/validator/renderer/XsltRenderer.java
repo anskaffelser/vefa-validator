@@ -4,6 +4,7 @@ import net.sf.saxon.s9api.*;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.PathURIResolver;
 import no.difi.vefa.validator.util.SaxonErrorListener;
+import no.difi.vefa.validator.util.SaxonHelper;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
@@ -13,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,11 +55,11 @@ public class XsltRenderer implements Renderer {
         this.stylesheetType = stylesheetType;
         this.path = path;
 
-        try {
-            XsltCompiler xsltCompiler = new Processor(false).newXsltCompiler();
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            XsltCompiler xsltCompiler = SaxonHelper.newXsltCompiler();
             xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
             xsltCompiler.setURIResolver(new PathURIResolver(path.getParent()));
-            xsltExecutable = xsltCompiler.compile(new StreamSource(Files.newInputStream(path)));
+            xsltExecutable = xsltCompiler.compile(new StreamSource(inputStream));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }

@@ -1,7 +1,11 @@
 package no.difi.vefa.validator.checker;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import net.sf.saxon.s9api.*;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.commons.schematron.jaxb.svrl.FailedAssert;
 import no.difi.commons.schematron.jaxb.svrl.NsPrefixInAttributeValues;
 import no.difi.commons.schematron.jaxb.svrl.SchematronOutput;
@@ -9,35 +13,34 @@ import no.difi.commons.schematron.jaxb.svrl.SuccessfulReport;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
+import no.difi.vefa.validator.util.SaxonHelper;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 
+@Slf4j
 @CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt"})
 public class SchematronXsltChecker implements Checker {
-
-    private static Logger logger = LoggerFactory.getLogger(SchematronXsltChecker.class);
 
     private static JAXBContext jaxbContext = JAXBHelper.context(SchematronOutput.class);
 
     private XsltExecutable xsltExecutable;
 
     public void prepare(Path path) throws ValidatorException {
-        try {
-            XsltCompiler xsltCompiler = new Processor(false).newXsltCompiler();
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            XsltCompiler xsltCompiler = SaxonHelper.newXsltCompiler();
             xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
-            xsltExecutable = xsltCompiler.compile(new StreamSource(Files.newInputStream(path)));
+            xsltExecutable = xsltCompiler.compile(new StreamSource(inputStream));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }
@@ -105,7 +108,7 @@ public class SchematronXsltChecker implements Checker {
                     assertionType.setFlag(FlagType.WARNING);
                     break;
                 default:
-                    logger.warn("Unknown: " + failedAssert.getFlag());
+                    log.warn("Unknown: " + failedAssert.getFlag());
                     break;
             }
         }

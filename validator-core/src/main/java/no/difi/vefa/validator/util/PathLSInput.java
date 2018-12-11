@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.util;
 
-import com.google.common.io.ByteStreams;
 import org.w3c.dom.ls.LSInput;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +15,7 @@ public class PathLSInput implements LSInput {
     private String sysId;
     private Path file;
 
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     public PathLSInput(Path file, String publicId, String sysId) {
         this.publicId = publicId;
@@ -24,9 +23,7 @@ public class PathLSInput implements LSInput {
         this.file = file;
 
         try {
-            InputStream inputStream = Files.newInputStream(file);
-            ByteStreams.copy(inputStream, outputStream);
-            inputStream.close();
+            Files.copy(file, outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

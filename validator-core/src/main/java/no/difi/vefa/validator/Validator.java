@@ -1,12 +1,11 @@
 package no.difi.vefa.validator;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import no.difi.xsd.vefa.validator._1.PackageType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -22,12 +21,8 @@ import java.util.List;
  * <p/>
  * Validator is thread safe and should normally be created only once in a program.
  */
+@Slf4j
 public class Validator implements Closeable {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(Validator.class);
 
     /**
      * Config
@@ -70,10 +65,9 @@ public class Validator implements Closeable {
      * @throws IOException
      */
     public Validation validate(Path file) throws IOException {
-        InputStream inputStream = Files.newInputStream(file);
-        Validation validation = validate(inputStream);
-        inputStream.close();
-        return validation;
+        try (InputStream inputStream = Files.newInputStream(file)) {
+            return validate(inputStream);
+        }
     }
 
     /**
@@ -106,6 +100,7 @@ public class Validator implements Closeable {
     public Validation validate(ValidationSource validationSource) {
         return new ValidationImpl(this.validatorInstance, validationSource);
     }
+
     /**
      * Validate file from filePath string
      *
@@ -113,9 +108,10 @@ public class Validator implements Closeable {
      * @return Validation result
      * @throws IOException
      */
-    public Validation validate(String filePath) throws IOException{
+    public Validation validate(String filePath) throws IOException {
         return validate(Paths.get(filePath));
     }
+
     /**
      * List of packages supported by validator.
      *
@@ -157,7 +153,7 @@ public class Validator implements Closeable {
             // Create a new instance based on source.
             validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationDetector, configurations);
         } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
 
             // Exceptions during running is not a problem, but exception before the first validator is created is a problem.
             if (validatorInstance == null)
@@ -171,7 +167,7 @@ public class Validator implements Closeable {
             if (validatorInstance != null)
                 validatorInstance.close();
         } catch (IOException e) {
-            logger.warn("Exception when closing Validator: {}", e.getMessage(), e);
+            log.warn("Exception when closing Validator: {}", e.getMessage(), e);
         } finally {
             validatorInstance = null;
         }
