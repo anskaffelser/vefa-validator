@@ -2,12 +2,13 @@ package no.difi.vefa.validator;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.plugin.*;
+import no.difi.vefa.validator.plugin.AsicePlugin;
+import no.difi.vefa.validator.plugin.UblPlugin;
+import no.difi.vefa.validator.plugin.ValidatorTestPlugin;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.xsd.vefa.validator._1.Configurations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,9 +17,8 @@ import java.util.Set;
 /**
  * Builder supporting creation of validator.
  */
+@Slf4j
 public class ValidatorBuilder {
-
-    private static Logger logger = LoggerFactory.getLogger(ValidatorBuilder.class);
 
     /**
      * Initiate creation of a new validator. Loads default plugins.
@@ -127,7 +127,7 @@ public class ValidatorBuilder {
             try {
                 plugin(plugin.newInstance());
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
         return this;

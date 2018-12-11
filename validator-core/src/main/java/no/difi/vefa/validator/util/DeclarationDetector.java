@@ -1,24 +1,22 @@
 package no.difi.vefa.validator.util;
 
 import com.typesafe.config.Config;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ValidatorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class DeclarationDetector {
-
-    private static Logger logger = LoggerFactory.getLogger(DeclarationDetector.class);
 
     public static final DeclarationIdentifier UNKNOWN = new DeclarationIdentifier(null, null, "unknown");
 
     private List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
 
-    public DeclarationDetector(Config config){
+    public DeclarationDetector(Config config) {
         Map<String, DeclarationWrapper> wrapperMap = new HashMap<>();
         for (String s : config.getObject("declaration").keySet()) {
             Config declarationConfig = config.getConfig("declaration").getConfig(s);
@@ -48,12 +46,12 @@ public class DeclarationDetector {
                     String identifier = wrapper.detect(content, parent == null ? null : parent.getIdentifier());
                     if (identifier == null)
                         break;
-                    logger.debug("Found: {} - {}", wrapper.getType(), identifier);
+                    log.debug("Found: {} - {}", wrapper.getType(), identifier);
 
                     return detect(wrapper.getChildren(), content, new DeclarationIdentifier(parent, wrapper, identifier));
                 }
             } catch (ValidatorException e) {
-                logger.warn(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             }
         }
 

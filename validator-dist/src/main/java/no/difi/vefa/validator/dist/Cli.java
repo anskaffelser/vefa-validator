@@ -1,15 +1,13 @@
 package no.difi.vefa.validator.dist;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Cli {
-
-    private static Logger logger = LoggerFactory.getLogger(Cli.class);
 
     public static void main(String... args) throws Exception {
         if (args.length == 0) {
-            logger.error("No command specified.");
+            log.error("No command specified.");
             System.exit(1);
         }
 
@@ -28,7 +26,7 @@ public class Cli {
                 no.difi.vefa.validator.tester.Cli.main(realArgs);
                 break;
             default:
-                logger.error(String.format("Unknown command: '%s'", args[0]));
+                log.error(String.format("Unknown command: '%s'", args[0]));
                 System.exit(1);
         }
     }

@@ -1,18 +1,16 @@
 package no.difi.vefa.validator;
 
 import com.google.common.cache.CacheLoader;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Pool of prepared checkers. Size if configured using properties.
  */
+@Slf4j
 class CheckerPoolLoader extends CacheLoader<String, Checker> {
-
-    private static Logger logger = LoggerFactory.getLogger(CheckerPoolLoader.class);
 
     private ValidatorEngine validatorEngine;
     private Class<? extends Checker>[] implementations;
@@ -30,7 +28,7 @@ class CheckerPoolLoader extends CacheLoader<String, Checker> {
                 try {
                     for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value()) {
                         if (key.toLowerCase().endsWith(extension)) {
-                            logger.debug("Checker '{}'", key);
+                            log.debug("Checker '{}'", key);
                             Checker checker = (Checker) cls.getConstructor().newInstance();
                             checker.prepare(validatorEngine.getResource(key));
                             return checker;

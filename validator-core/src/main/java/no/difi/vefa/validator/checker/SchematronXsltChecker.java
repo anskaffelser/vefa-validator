@@ -1,8 +1,6 @@
 package no.difi.vefa.validator.checker;
 
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.DOMDestination;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
@@ -16,12 +14,12 @@ import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.vefa.validator.util.SaxonHelper;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
-import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,19 +48,20 @@ public class SchematronXsltChecker implements Checker {
     public void check(Document document, Section section) throws ValidatorException {
         long tsStart = System.currentTimeMillis();
         try {
-            Node node = new DocumentImpl();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             XsltTransformer xsltTransformer = xsltExecutable.load();
             xsltTransformer.setErrorListener(SaxonErrorListener.INSTANCE);
             xsltTransformer.setSource(new StreamSource(document.getInputStream()));
-            xsltTransformer.setDestination(new DOMDestination(node));
+            xsltTransformer.setDestination(SaxonHelper.PROCESSOR.newSerializer(baos));
             xsltTransformer.transform();
             xsltTransformer.close();
 
             long tsEnd = System.currentTimeMillis();
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            SchematronOutput output = unmarshaller.unmarshal(new DOMSource(node), SchematronOutput.class).getValue();
+            SchematronOutput output = unmarshaller.unmarshal(new StreamSource(
+                    new ByteArrayInputStream(baos.toByteArray())), SchematronOutput.class).getValue();
 
             section.setTitle(output.getTitle());
             section.setRuntime((tsEnd - tsStart) + "ms");

@@ -1,18 +1,16 @@
 package no.difi.vefa.validator.util;
 
 import com.typesafe.config.Config;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class DeclarationWrapper implements Declaration, DeclarationWithChildren, DeclarationWithConverter {
-
-    private static Logger logger = LoggerFactory.getLogger(DeclarationWrapper.class);
 
     private Declaration declaration;
     private String type;
@@ -30,11 +28,11 @@ public class DeclarationWrapper implements Declaration, DeclarationWithChildren,
                 try {
                     declaration = cls.getConstructor().newInstance();
                 } catch (Exception ex) {
-                    logger.warn(e.getMessage(), ex);
+                    log.warn(e.getMessage(), ex);
                 }
             }
         } catch (ClassNotFoundException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         }
     }
 

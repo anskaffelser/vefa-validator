@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.build;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.SignatureHelper;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
@@ -7,16 +8,13 @@ import no.difi.vefa.validator.build.task.SiteTask;
 import no.difi.vefa.validator.tester.Tester;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+@Slf4j
 public class Cli {
-
-    private static Logger logger = LoggerFactory.getLogger(Cli.class);
 
     public static void main(String... args) throws Exception {
         System.exit(perform(args));
@@ -46,7 +44,7 @@ public class Cli {
         for (String arg : cmd.getArgs()) {
             SignatureHelper signatureHelper = null;
             if (cmd.hasOption("ksf")) {
-                logger.info("Signing information detected.");
+                log.info("Signing information detected.");
                 signatureHelper = new SignatureHelper(
                         new File(cmd.getOptionValue("ksf")),
                         cmd.getOptionValue("ksp"),

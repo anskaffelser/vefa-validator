@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.build;
 
-import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.*;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
@@ -10,8 +10,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,9 +20,8 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.TreeSet;
 
+@Slf4j
 public class Builder {
-
-    private static Logger logger = LoggerFactory.getLogger(Builder.class);
 
     private static JAXBContext jaxbContext = JAXBHelper.context(Configurations.class, BuildConfigurations.class);
     private static AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(SignatureMethod.CAdES);
@@ -63,7 +60,7 @@ public class Builder {
 
             File workFolder = sourcePath.toFile();
 
-            logger.info("Source '{}'", workFolder.getAbsolutePath());
+            log.info("Source '{}'", workFolder.getAbsolutePath());
 
             // Find configurations
             for (File file : FileUtils.listFiles(workFolder, new NameFileFilter(build.getSetting("config")), TrueFileFilter.INSTANCE)) {
@@ -111,10 +108,6 @@ public class Builder {
                         asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("application/xml"));
                     }
 
-                    if (config.getCapabilities() != null)
-                        for (String s : config.getCapabilities().split(","))
-                            capabilities.add(s.trim());
-
                     configurations.getPackage().addAll(config.getPackage());
 
                     for (String testFolder : config.getTestfolder())
@@ -123,16 +116,13 @@ public class Builder {
                         else
                             build.addTestFolder(new File(configFolder, testFolder));
 
-                    logger.info("Loading '{}'", file.toString());
+                    log.info("Loading '{}'", file.toString());
                 } catch (JAXBException e) {
-                    logger.warn("Loading failed for '{}'", file.toString());
+                    log.warn("Loading failed for '{}'", file.toString());
                     e.printStackTrace();
                 }
             }
         }
-
-        if (capabilities.size() > 0)
-            configurations.setCapabilities(Joiner.on(",").join(capabilities));
 
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

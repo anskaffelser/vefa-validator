@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
@@ -8,8 +9,6 @@ import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,12 @@ import org.springframework.stereotype.Service;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+@Slf4j
 @Service
 public class WorkspaceService {
-
-    private static Logger logger = LoggerFactory.getLogger(WorkspaceService.class);
 
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static JAXBContext jaxbContext = JAXBHelper.context(Report.class);
@@ -75,7 +72,7 @@ public class WorkspaceService {
 
             walkRendering(folder, validation);
         } catch (ValidatorException e) {
-            logger.warn(String.format("%s: %s", identifier, e.getMessage()));
+            log.warn(String.format("%s: %s", identifier, e.getMessage()));
         }
 
         return identifier;
@@ -90,7 +87,7 @@ public class WorkspaceService {
                 }
             }
         } catch (Exception e) {
-            logger.warn(String.format("%s: %s", validation.getReport().getUuid(), e.getMessage()));
+            log.warn(String.format("%s: %s", validation.getReport().getUuid(), e.getMessage()));
         }
 
         if (validation.getChildren() != null)
@@ -133,7 +130,7 @@ public class WorkspaceService {
 
     @Scheduled(fixedDelay = 60 * 60 * 1000, initialDelay = 1000)
     public void cleanWorkspace() {
-        logger.info("Cleaning workspace.");
+        log.info("Cleaning workspace.");
 
         if (workspaceExpire < 0)
             return;
@@ -142,10 +139,10 @@ public class WorkspaceService {
             if (f.isDirectory() && !new File(f, ".keep").exists()) {
                 if (new DateTime(f.lastModified()).isBefore(DateTime.now().minusDays(workspaceExpire))) {
                     try {
-                        logger.info("Delete validation '{}'.", f.getName());
+                        log.info("Delete validation '{}'.", f.getName());
                         FileUtils.deleteDirectory(f);
                     } catch (IOException e) {
-                        logger.warn(e.getMessage(), e);
+                        log.warn(e.getMessage(), e);
                     }
                 }
             }

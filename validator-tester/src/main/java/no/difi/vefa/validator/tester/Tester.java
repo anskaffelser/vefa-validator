@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.tester;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Validation;
@@ -14,8 +15,6 @@ import no.difi.xsd.vefa.validator._1.SectionType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -26,9 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 public class Tester implements Closeable {
-
-    private static Logger logger = LoggerFactory.getLogger(Tester.class);
 
     public static void perform(Build build) throws ValidatorException {
         for (Validation validation : perform(build.getTargetFolder(), build.getTestFolders()))
@@ -67,9 +65,9 @@ public class Tester implements Closeable {
         validator = ValidatorBuilder
                 .newValidatorWithTest()
                 .setProperties(new SimpleProperties()
-                                .set("feature.nesting", true)
-                                .set("feature.expectation", true)
-                                .set("feature.suppress_notloaded", true)
+                        .set("feature.nesting", true)
+                        .set("feature.expectation", true)
+                        .set("feature.suppress_notloaded", true)
                 )
                 .setSource(new DirectorySource(artifactsPath))
                 .build();
@@ -79,9 +77,9 @@ public class Tester implements Closeable {
         validator = ValidatorBuilder
                 .newValidatorWithTest()
                 .setProperties(new SimpleProperties()
-                                .set("feature.nesting", true)
-                                .set("feature.expectation", true)
-                                .set("feature.suppress_notloaded", true)
+                        .set("feature.nesting", true)
+                        .set("feature.expectation", true)
+                        .set("feature.suppress_notloaded", true)
                 )
                 .setSource(new RepositorySource(artifactsUri))
                 .build();
@@ -97,7 +95,7 @@ public class Tester implements Closeable {
     }
 
     private List<Validation> finish() {
-        logger.info("{} tests performed, {} tests failed", tests, failed);
+        log.info("{} tests performed, {} tests failed", tests, failed);
 
         return validations;
     }
@@ -108,7 +106,7 @@ public class Tester implements Closeable {
             validation.getReport().setFilename(file.toString());
 
             if ("xml.testset::http://difi.no/xsd/vefa/validator/1.0::testSet".equals(validation.getDocument().getDeclaration())) {
-                logger.info("TestSet '{}'", file);
+                log.info("TestSet '{}'", file);
 
                 for (int i = 0; i < validation.getChildren().size(); i++) {
                     Validation v = validation.getChildren().get(i);
@@ -119,7 +117,7 @@ public class Tester implements Closeable {
                 append(file.toString(), validation, null);
             }
         } catch (IOException | NullPointerException e) {
-            logger.warn("Test '{}' ({})", file, e.getMessage(), e);
+            log.warn("Test '{}' ({})", file, e.getMessage(), e);
         }
     }
 
@@ -132,15 +130,15 @@ public class Tester implements Closeable {
         String prefix = numberInSet == null ? "" : "  ";
 
         if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0) {
-            logger.warn("{}Test '{}' ({})", prefix, description, validation.getReport().getFlag());
+            log.warn("{}Test '{}' ({})", prefix, description, validation.getReport().getFlag());
             failed++;
 
             for (SectionType sectionType : validation.getReport().getSection())
                 for (AssertionType assertionType : sectionType.getAssertion())
                     if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
-                        logger.debug("{}  * {} {} ({})", prefix, assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
+                        log.debug("{}  * {} {} ({})", prefix, assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
         } else if (numberInSet == null) {
-            logger.info("Test '{}'", description);
+            log.info("Test '{}'", description);
         }
     }
 

@@ -1,17 +1,12 @@
 package no.difi.vefa.validator.expectation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class XmlExpectation extends AbstractExpectation {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(XmlExpectation.class);
 
     public XmlExpectation(byte[] bytes) {
         String content = new String(bytes);
@@ -65,7 +60,7 @@ public class XmlExpectation extends AbstractExpectation {
                     target.put(r[0], target.get(r[0]) + (r.length == 1 ? 1 : Integer.parseInt(r[1])));
                 }
             } catch (Exception e) {
-                logger.warn(e.getMessage());
+                log.warn(e.getMessage());
             }
         }
     }

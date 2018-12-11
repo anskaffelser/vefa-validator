@@ -1,13 +1,12 @@
 package no.difi.vefa.validator.declaration;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.DeclarationWithConverter;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
@@ -26,9 +25,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Slf4j
 public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
-
-    private static Logger logger = LoggerFactory.getLogger(ValidatorTestDeclaration.class);
 
     private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
@@ -70,7 +68,7 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
                 transformer.transform(new DOMSource((Node) test.getAny()), new StreamResult(outputStream));
             }
         } catch (JAXBException | TransformerException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         }
     }
 

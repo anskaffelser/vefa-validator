@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,9 +8,8 @@ import java.util.Map;
 /**
  * Simple implementation of Properties using a HashMap to store values.
  */
+@Slf4j
 public class SimpleProperties extends AbstractProperties {
-
-    private static Logger logger = LoggerFactory.getLogger(SimpleProperties.class);
 
     private Map<String, Object> values;
 
@@ -45,7 +43,7 @@ public class SimpleProperties extends AbstractProperties {
             if (values.containsKey(key))
                 return Integer.parseInt(String.valueOf(values.get(key)));
         } catch (NumberFormatException e) {
-            logger.error(String.format("Error while casting '%s' to integer for key '%s'.", values.get(key), key));
+            log.error(String.format("Error while casting '%s' to integer for key '%s'.", values.get(key), key));
         }
         return defaultValue;
     }

@@ -1,23 +1,19 @@
 package no.difi.vefa.validator.expectation;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.AssertElementType;
 import no.difi.xsd.vefa.validator._1.AssertType;
 import no.difi.xsd.vefa.validator._1.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 
+@Slf4j
 public class ValidatorTestExpectation extends AbstractExpectation {
 
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(ValidatorTestExpectation.class);
     private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
 
     public ValidatorTestExpectation(byte[] bytes) {
@@ -40,7 +36,7 @@ public class ValidatorTestExpectation extends AbstractExpectation {
             }
 
         } catch (JAXBException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         }
     }
 }

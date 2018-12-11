@@ -1,19 +1,17 @@
 package no.difi.vefa.validator;
 
 import com.google.common.cache.CacheLoader;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.RendererInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Pool of prepared renderers. Size if configured using properties.
  */
+@Slf4j
 class RendererPoolLoader extends CacheLoader<String, Renderer> {
-
-    private static Logger logger = LoggerFactory.getLogger(RendererPoolLoader.class);
 
     private ValidatorEngine validatorEngine;
     private Class<? extends Renderer>[] implementations;
@@ -33,7 +31,7 @@ class RendererPoolLoader extends CacheLoader<String, Renderer> {
                 try {
                     for (String extension : ((RendererInfo) cls.getAnnotation(RendererInfo.class)).value()) {
                         if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
-                            logger.debug("Renderer '{}'", key);
+                            log.debug("Renderer '{}'", key);
                             Renderer renderer = (Renderer) cls.getConstructor().newInstance();
                             renderer.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
                             return renderer;

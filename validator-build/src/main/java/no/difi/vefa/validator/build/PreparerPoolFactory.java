@@ -1,21 +1,19 @@
 package no.difi.vefa.validator.build;
 
 import com.google.common.reflect.ClassPath;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.api.build.Preparer;
 import no.difi.vefa.validator.api.build.PreparerInfo;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 class PreparerPoolFactory extends BaseKeyedPooledObjectFactory<String, Preparer> {
-
-    private static Logger logger = LoggerFactory.getLogger(PreparerPoolFactory.class);
 
     private static List<Class<? extends Preparer>> preparers = new ArrayList<>();
 
@@ -25,13 +23,13 @@ class PreparerPoolFactory extends BaseKeyedPooledObjectFactory<String, Preparer>
             for (ClassPath.ClassInfo info : classPath.getTopLevelClasses("no.difi.vefa.validator.build.preparer")) {
                 try {
                     preparers.add((Class<? extends Preparer>) info.load());
-                    logger.info("Preparer '{}'", info.getName());
+                    log.info("Preparer '{}'", info.getName());
                 } catch (Exception e) {
-                    logger.info("Unable to load '{}'", info.getName());
+                    log.info("Unable to load '{}'", info.getName());
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

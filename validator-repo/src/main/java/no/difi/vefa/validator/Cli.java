@@ -1,20 +1,21 @@
 package no.difi.vefa.validator;
 
-import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 
 import java.nio.file.Paths;
 
+@Slf4j
 public class Cli {
-
-    private static Logger logger = LoggerFactory.getLogger(Cli.class);
 
     public static void main(String... args) throws Exception {
         if (args.length == 0) {
-            logger.info("Usage:");
-            logger.info("  Generate artifacts.xml in repo-folder:");
-            logger.info("    validator-repo --target repo-folder");
+            log.info("Usage:");
+            log.info("  Generate artifacts.xml in repo-folder:");
+            log.info("    validator-repo --target repo-folder");
             return;
         }
 

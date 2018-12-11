@@ -8,6 +8,7 @@ import java.io.InputStream;
 class ValidationSourceImpl implements ValidationSource {
 
     private InputStream inputStream;
+
     private Properties properties;
 
     public ValidationSourceImpl(InputStream inputStream) {

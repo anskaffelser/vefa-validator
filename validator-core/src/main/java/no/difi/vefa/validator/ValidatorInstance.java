@@ -2,14 +2,13 @@ package no.difi.vefa.validator;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
 import no.difi.xsd.vefa.validator._1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -22,12 +21,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
  */
+@Slf4j
 class ValidatorInstance implements Closeable {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(ValidatorInstance.class);
 
     /**
      * Instance of ValidatorEngine containing all raw content needed for validation.
@@ -151,7 +146,7 @@ class ValidatorInstance implements Closeable {
         try {
             renderer = rendererPool.get(stylesheet.getIdentifier());
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             throw new ValidatorException(
                     String.format("Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
         }
@@ -172,7 +167,7 @@ class ValidatorInstance implements Closeable {
         try {
             checker = checkerPool.get(fileType.getPath());
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             throw new ValidatorException(
                     String.format("Unable to get checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }

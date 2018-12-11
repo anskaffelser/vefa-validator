@@ -1,17 +1,15 @@
 package no.difi.vefa.validator;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Trigger;
 import no.difi.vefa.validator.api.TriggerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 class TriggerFactory {
-
-    private static Logger logger = LoggerFactory.getLogger(TriggerFactory.class);
 
     private Map<String, Trigger> triggers = new HashMap<>();
 
@@ -21,7 +19,7 @@ class TriggerFactory {
             try {
                 triggers.put(trigger.getAnnotation(TriggerInfo.class).value(), trigger.newInstance());
             } catch (IllegalAccessException | InstantiationException e) {
-                logger.info("Unable to load '{}'", trigger, e);
+                log.info("Unable to load '{}'", trigger, e);
             }
         }
     }

@@ -1,10 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.ValidatorException;
-import no.difi.vefa.validator.util.XmlUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -14,11 +12,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+@Slf4j
 public class SbdhDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren {
 
     private static final String NAMESPACE = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
-
-    private static Logger logger = LoggerFactory.getLogger(SbdhDeclaration.class);
 
     @Override
     public boolean verify(byte[] content, String parent) throws ValidatorException {
@@ -122,7 +119,7 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
                 if (!written)
                     outputStream = null;
             } catch (Exception e) {
-                logger.warn(e.getMessage(), e);
+                log.warn(e.getMessage(), e);
             }
             inputStream = null;
             return outputStream != null;

@@ -1,6 +1,7 @@
 package no.difi.vefa.validator;
 
 import com.google.common.io.ByteStreams;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.properties.CombinedProperties;
@@ -8,8 +9,6 @@ import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
 import no.difi.vefa.validator.util.DeclarationWrapper;
 import no.difi.xsd.vefa.validator._1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,12 +19,8 @@ import java.util.UUID;
 /**
  * Result of a validation.
  */
+@Slf4j
 class ValidationImpl implements Validation {
-
-    /**
-     * Logger.
-     */
-    private static Logger logger = LoggerFactory.getLogger(ValidationImpl.class);
 
     private ValidatorInstance validatorInstance;
 
@@ -58,7 +53,7 @@ class ValidationImpl implements Validation {
      * Constructing new validator using validator instance and validation source containing document to validate.
      *
      * @param validatorInstance Instance of validator.
-     * @param validationSource Source to validate.
+     * @param validationSource  Source to validate.
      */
     ValidationImpl(ValidatorInstance validatorInstance, ValidationSource validationSource) {
         this.validatorInstance = validatorInstance;
@@ -79,7 +74,7 @@ class ValidationImpl implements Validation {
             if (configuration != null)
                 validate();
         } catch (IOException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         } catch (UnknownDocumentTypeException e) {
             section.add("SYSTEM-003", e.getMessage(), FlagType.UNKNOWN);
         } catch (ValidatorException e) {
@@ -173,7 +168,7 @@ class ValidationImpl implements Validation {
         long start = System.currentTimeMillis();
 
         for (FileType fileType : configuration.getFile()) {
-            logger.debug("Validate: {}", fileType.getPath());
+            log.debug("Validate: {}", fileType.getPath());
 
             try {
                 Section section = validatorInstance.check(fileType, document, configuration);
@@ -214,7 +209,7 @@ class ValidationImpl implements Validation {
     /**
      * Handling nested validation.
      */
-    private void nestedValidation() throws ValidatorException{
+    private void nestedValidation() throws ValidatorException {
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
             if (declaration.supportsChildren() && properties.getBoolean("feature.nesting")) {
                 Iterable<InputStream> iterable = declaration.children(document.getInputStream());

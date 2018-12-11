@@ -1,11 +1,10 @@
 package no.difi.vefa.validator.source;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -17,12 +16,8 @@ import java.nio.file.Path;
 /**
  * Defines a directory as source for validation artifacts.
  */
+@Slf4j
 class DirectorySourceInstance extends AbstractSourceInstance {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(DirectorySourceInstance.class);
 
     /**
      * Constructor, loads validation artifacts into memory.
@@ -36,7 +31,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
 
         try {
             for (Path directory : directories) {
-                logger.info("Directory: {}", directory);
+                log.info("Directory: {}", directory);
 
                 // Directories containing artifacts.xml results in lower memory footprint.
                 if (Files.exists(directory.resolve("artifacts.xml"))) {
@@ -45,7 +40,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
 
                     // Read artifacts.xml
                     Path artifactsPath = directory.resolve("artifacts.xml");
-                    logger.info("Loading {}", artifactsPath);
+                    log.info("Loading {}", artifactsPath);
                     Artifacts artifactsType;
 
                     try (InputStream inputStream = Files.newInputStream(artifactsPath)) {
@@ -57,7 +52,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                     for (ArtifactType artifact : artifactsType.getArtifact()) {
                         // Load validation artifact to memory.
                         Path artifactPath = directory.resolve(artifact.getFilename());
-                        logger.info("Loading {}", artifactPath);
+                        log.info("Loading {}", artifactPath);
                         unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
                     }
                 } else {
@@ -65,7 +60,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                     try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
                         for (Path path : directoryStream) {
                             if (path.toString().endsWith(".asice")) {
-                                logger.info("Loading: {}", path);
+                                log.info("Loading: {}", path);
                                 unpackContainer(asicReaderFactory.open(path), path.getFileName().toString());
                             }
                         }
@@ -74,7 +69,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
             }
         } catch (Exception e) {
             // Log and throw ValidatorException.
-            logger.warn(e.getMessage());
+            log.warn(e.getMessage());
             throw new ValidatorException(e.getMessage(), e);
         }
     }

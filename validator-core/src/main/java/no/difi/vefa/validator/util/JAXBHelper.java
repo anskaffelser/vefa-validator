@@ -8,7 +8,7 @@ public class JAXBHelper {
         try {
             return JAXBContext.newInstance(classes);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load JAXBContext.", e);
+            throw new IllegalStateException("Unable to load JAXBContext.", e);
         }
     }
 }

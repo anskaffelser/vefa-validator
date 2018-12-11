@@ -1,13 +1,12 @@
 package no.difi.vefa.validator.declaration;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
 import no.difi.xsd.vefa.validator._1.TestSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -17,9 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+@Slf4j
 public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements DeclarationWithChildren {
-
-    private static Logger logger = LoggerFactory.getLogger(ValidatorTestSetDeclaration.class);
 
     private static JAXBContext jaxbContext = JAXBHelper.context(TestSet.class, Test.class);
 
@@ -86,7 +84,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
                 jaxbContext.createMarshaller().marshal(test, byteArrayOutputStream);
                 return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             } catch (JAXBException e) {
-                logger.warn("Unable to marshall test object.");
+                log.warn("Unable to marshall test object.");
             }
             return null;
         }

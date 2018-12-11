@@ -5,6 +5,7 @@ import no.difi.commons.schematron.SchematronException;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
 import no.difi.vefa.validator.api.build.PreparerInfo;
+import no.difi.vefa.validator.util.SaxonHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,7 +18,7 @@ public class SchematronPreparer implements Preparer {
 
     public SchematronPreparer() {
         try {
-            this.schematronTransformer = new SchematronCompiler();
+            this.schematronTransformer = new SchematronCompiler(SaxonHelper.PROCESSOR);
         } catch (SchematronException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

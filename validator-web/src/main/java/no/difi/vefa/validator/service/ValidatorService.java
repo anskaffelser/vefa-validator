@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Source;
@@ -8,8 +9,6 @@ import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.PackageType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -23,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ValidatorService {
-
-    private static Logger logger = LoggerFactory.getLogger(ValidatorService.class);
 
     @Autowired
     private PropertiesFactoryBean propertiesFactoryBean;
@@ -74,7 +72,7 @@ public class ValidatorService {
                     .setSource(source)
                     .build();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

@@ -2,21 +2,19 @@ package no.difi.vefa.validator.build.task;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.xsd.vefa.validator._1.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 
+@Slf4j
 public class SiteTask {
-
-    private static Logger logger = LoggerFactory.getLogger(SiteTask.class);
 
     private File rootFolder;
     private File siteFolder;
@@ -185,12 +183,12 @@ public class SiteTask {
             holder.put("filenames", filenames);
             holder.put("types", types);
 
-            logger.debug("Process: {}", filename);
+            log.debug("Process: {}", filename);
             FileWriter writer = new FileWriter(new File(siteFolder, filename));
             template.process(holder, writer);
             writer.close();
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         }
     }
 

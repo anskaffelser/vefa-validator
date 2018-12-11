@@ -1,12 +1,11 @@
 package no.difi.vefa.validator;
 
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,12 +21,8 @@ import java.util.*;
  * This class handles all raw configurations detected in source of validation artifacts and preserves links
  * between source and configurations.
  */
+@Slf4j
 class ValidatorEngine implements Closeable {
-
-    /**
-     * Logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(ValidatorEngine.class);
 
     /**
      * JAXBContext
@@ -96,7 +91,7 @@ class ValidatorEngine implements Closeable {
                 }
             }
         } catch (IOException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             throw new ValidatorException("Unable to read all configurations from virtual disk.", e);
         }
 
@@ -136,7 +131,7 @@ class ValidatorEngine implements Closeable {
 
         // Write to log when loading new packages.
         for (PackageType pkg : configurations.getPackage())
-            logger.info("Loaded '{}'", pkg.getValue());
+            log.info("Loaded '{}'", pkg.getValue());
 
         for (ConfigurationType configuration : configurations.getConfiguration()) {
             for (FileType fileType : configuration.getFile()) {
