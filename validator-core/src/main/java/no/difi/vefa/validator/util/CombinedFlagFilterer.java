@@ -1,9 +1,9 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.util;
 
 import no.difi.vefa.validator.api.FlagFilterer;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 
-class CombinedFlagFilterer implements FlagFilterer {
+public class CombinedFlagFilterer implements FlagFilterer {
 
     private FlagFilterer[] flagFilterers;
 

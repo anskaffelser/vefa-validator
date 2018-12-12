@@ -1,5 +1,7 @@
 package no.difi.vefa.validator.util;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ValidatorException;
@@ -10,12 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@Singleton
 public class DeclarationDetector {
 
     public static final DeclarationIdentifier UNKNOWN = new DeclarationIdentifier(null, null, "unknown");
 
     private List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
 
+    @Inject
     public DeclarationDetector(Config config) {
         Map<String, DeclarationWrapper> wrapperMap = new HashMap<>();
         for (String s : config.getObject("declaration").keySet()) {

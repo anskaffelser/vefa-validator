@@ -18,7 +18,7 @@ class ClasspathSourceInstance extends AbstractSourceInstance {
         super(properties);
 
         try {
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
             String artifactsUri = location + "artifacts.xml";
             logger.info(String.format("Fetching %s", artifactsUri));
             Artifacts artifactsType = unmarshaller.unmarshal(new StreamSource(getClass().getResourceAsStream(artifactsUri)), Artifacts.class).getValue();
@@ -26,7 +26,7 @@ class ClasspathSourceInstance extends AbstractSourceInstance {
             for (ArtifactType artifact : artifactsType.getArtifact()) {
                 String artifactUri = location + artifact.getFilename();
                 logger.info(String.format("Fetching %s", artifactUri));
-                unpackContainer(asicReaderFactory.open(getClass().getResourceAsStream(artifactUri)), artifact.getFilename());
+                unpackContainer(ASIC_READER_FACTORY.open(getClass().getResourceAsStream(artifactUri)), artifact.getFilename());
             }
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);

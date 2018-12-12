@@ -4,21 +4,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.module.CacheModule;
+import no.difi.vefa.validator.module.ConfigModule;
 import no.difi.vefa.validator.plugin.AsicePlugin;
 import no.difi.vefa.validator.plugin.UblPlugin;
 import no.difi.vefa.validator.plugin.ValidatorTestPlugin;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.source.RepositorySource;
-import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Builder supporting creation of validator.
@@ -55,11 +54,6 @@ public class ValidatorBuilder {
      * @return Builder
      */
     public static ValidatorBuilder emptyValidator() {
-        Config config = ConfigFactory.load();
-        config = config.withFallback(config.getConfig("defaults"));
-
-        new DeclarationDetector(config);
-
         return new ValidatorBuilder();
     }
 
@@ -67,11 +61,6 @@ public class ValidatorBuilder {
      * Internal constructor, no action needed.
      */
     private ValidatorBuilder() {
-        Config config = ConfigFactory.load();
-        config = config.withFallback(config.getConfig("defaults"));
-
-        module.declarationDetector = new DeclarationDetector(config);
-
         // No action
     }
 
@@ -155,15 +144,11 @@ public class ValidatorBuilder {
      */
     @SuppressWarnings("unchecked")
     public Validator build() {
-        return Guice.createInjector(module, new CacheModule()).getInstance(Validator.class);
+        return Guice.createInjector(module, new CacheModule(), new ConfigModule())
+                .getInstance(Validator.class);
     }
 
     private static class ValidatorBuilderModule extends AbstractModule {
-
-        /**
-         * Implementations of declarations to use.
-         */
-        private DeclarationDetector declarationDetector;
 
         /**
          * Implementations of checker to use.
@@ -188,12 +173,6 @@ public class ValidatorBuilder {
         private Source source;
 
         private Properties properties;
-
-        @Provides
-        @Singleton
-        public DeclarationDetector getDeclarationDetector() {
-            return declarationDetector;
-        }
 
         @Provides
         @Singleton

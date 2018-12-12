@@ -20,4 +20,5 @@ public interface ValidationSource {
      * @return Overriding properties.
      */
     Properties getProperties();
+
 }

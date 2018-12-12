@@ -34,7 +34,7 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
                 for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
                     // Load validation artifact to memory.
                     log.info(String.format("Loading: %s", file));
-                    unpackContainer(asicReaderFactory.open(file), file.getName());
+                    unpackContainer(ASIC_READER_FACTORY.open(file), file.getName());
                 }
             } catch (Exception e) {
                 // Log and throw ValidatorException.

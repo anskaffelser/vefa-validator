@@ -36,7 +36,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                 // Directories containing artifacts.xml results in lower memory footprint.
                 if (Files.exists(directory.resolve("artifacts.xml"))) {
                     // Create unmarshaller (XML => Java)
-                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                    Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 
                     // Read artifacts.xml
                     Path artifactsPath = directory.resolve("artifacts.xml");
@@ -53,7 +53,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         // Load validation artifact to memory.
                         Path artifactPath = directory.resolve(artifact.getFilename());
                         log.info("Loading {}", artifactPath);
-                        unpackContainer(asicReaderFactory.open(artifactPath), artifact.getFilename());
+                        unpackContainer(ASIC_READER_FACTORY.open(artifactPath), artifact.getFilename());
                     }
                 } else {
                     // Detect all ASiC-E-files in the directory.
@@ -61,7 +61,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         for (Path path : directoryStream) {
                             if (path.toString().endsWith(".asice")) {
                                 log.info("Loading: {}", path);
-                                unpackContainer(asicReaderFactory.open(path), path.getFileName().toString());
+                                unpackContainer(ASIC_READER_FACTORY.open(path), path.getFileName().toString());
                             }
                         }
                     }

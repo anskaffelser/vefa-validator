@@ -16,7 +16,7 @@ class RepositorySourceInstance extends AbstractSourceInstance {
         super(properties);
 
         try {
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
             URI artifactsUri = rootUri.resolve("artifacts.xml");
             log.info(String.format("Fetching %s", artifactsUri));
             Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(artifactsUri.toURL());
@@ -24,7 +24,7 @@ class RepositorySourceInstance extends AbstractSourceInstance {
             for (ArtifactType artifact : artifactsType.getArtifact()) {
                 URI artifactUri = rootUri.resolve(artifact.getFilename());
                 log.info(String.format("Fetching %s", artifactUri));
-                unpackContainer(asicReaderFactory.open(artifactUri.toURL().openStream()), artifact.getFilename());
+                unpackContainer(ASIC_READER_FACTORY.open(artifactUri.toURL().openStream()), artifact.getFilename());
             }
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
