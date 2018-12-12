@@ -1,5 +1,7 @@
 package no.difi.vefa.validator;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.api.ValidatorException;
@@ -22,6 +24,7 @@ import java.util.*;
  * between source and configurations.
  */
 @Slf4j
+@Singleton
 class ValidatorEngine implements Closeable {
 
     /**
@@ -51,14 +54,11 @@ class ValidatorEngine implements Closeable {
      */
     private List<PackageType> packages = new ArrayList<>();
 
-    private SourceInstance sourceInstance;
-
     /**
      * Loading a new validator engine loading configurations from current source.
      */
-    ValidatorEngine(SourceInstance sourceInstance, Configurations... configurations) throws ValidatorException {
-        this.sourceInstance = sourceInstance;
-
+    @Inject
+    public ValidatorEngine(SourceInstance sourceInstance, Set<Configurations> configurations) throws ValidatorException {
         // Load configurations from ValidatorBuilder.
         for (Configurations c : configurations)
             loadConfigurations("", c);
@@ -260,7 +260,7 @@ class ValidatorEngine implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (sourceInstance instanceof Closeable)
-            ((Closeable) sourceInstance).close();
+        // TODO if (sourceInstance instanceof Closeable)
+        //     ((Closeable) sourceInstance).close();
     }
 }

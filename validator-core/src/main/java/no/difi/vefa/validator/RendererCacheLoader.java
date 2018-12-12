@@ -1,25 +1,28 @@
 package no.difi.vefa.validator;
 
 import com.google.common.cache.CacheLoader;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.RendererInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
+import java.util.Set;
+
 /**
  * Pool of prepared renderers. Size if configured using properties.
  */
 @Slf4j
-class RendererCacheLoader extends CacheLoader<String, Renderer> {
+@Singleton
+public class RendererCacheLoader extends CacheLoader<String, Renderer> {
 
+    @Inject
     private ValidatorEngine validatorEngine;
-    private Class<? extends Renderer>[] implementations;
 
-    RendererCacheLoader(ValidatorEngine validatorEngine, Class<? extends Renderer>[] implementations) {
-        this.validatorEngine = validatorEngine;
-        this.implementations = implementations;
-    }
+    @Inject
+    private Set<Class<? extends Renderer>> implementations;
 
     @Override
     @SuppressWarnings("unchecked")

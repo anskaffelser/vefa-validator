@@ -1,25 +1,27 @@
 package no.difi.vefa.validator;
 
 import com.google.common.cache.CacheLoader;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 
+import java.util.Set;
+
 /**
  * @author erlend
  */
 @Slf4j
+@Singleton
 public class CheckerCacheLoader extends CacheLoader<String, Checker> {
 
+    @Inject
     private ValidatorEngine validatorEngine;
 
-    private Class<? extends Checker>[] implementations;
-
-    CheckerCacheLoader(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
-        this.validatorEngine = validatorEngine;
-        this.implementations = implementations;
-    }
+    @Inject
+    private Set<Class<? extends Checker>> implementations;
 
     @Override
     public Checker load(String key) throws Exception {

@@ -94,10 +94,14 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JimFS -->
+        <!-- Google -->
         <dependency>
             <groupId>com.github.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
         </dependency>
 
         <!-- Typesafe -->

@@ -1,10 +1,11 @@
 package no.difi.vefa.validator;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.source.RepositorySource;
-import no.difi.vefa.validator.util.DeclarationDetector;
-import no.difi.xsd.vefa.validator._1.Configurations;
+import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.api.ValidationSource;
 import no.difi.xsd.vefa.validator._1.PackageType;
 
 import java.io.Closeable;
@@ -22,29 +23,14 @@ import java.util.List;
  * Validator is thread safe and should normally be created only once in a program.
  */
 @Slf4j
+@Singleton
 public class Validator implements Closeable {
-
-    /**
-     * Config
-     */
-    private Properties properties;
-
-    /**
-     * Source
-     */
-    private Source source;
 
     /**
      * Current validator instance.
      */
+    @Inject
     private ValidatorInstance validatorInstance;
-
-    /**
-     * Constructor
-     */
-    Validator() {
-        // No action
-    }
 
     /**
      * Validate file.
@@ -119,46 +105,6 @@ public class Validator implements Closeable {
      */
     public List<PackageType> getPackages() {
         return this.validatorInstance.getPackages();
-    }
-
-    /**
-     * Set configuration for validator.
-     *
-     * @param properties Configuration
-     */
-    void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    /**
-     * Set source for validator.
-     *
-     * @param source Source
-     */
-    void setSource(Source source) {
-        this.source = source;
-    }
-
-    /**
-     * Creates a new instance of ValidatorInstance for use.
-     *
-     * @throws ValidatorException
-     */
-    void load(Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, DeclarationDetector declarationDetector, Configurations[] configurations) throws ValidatorException {
-        try {
-            // Make sure to default to repository source if no source is set.
-            if (source == null)
-                source = RepositorySource.forProduction();
-
-            // Create a new instance based on source.
-            validatorInstance = new ValidatorInstance(source, properties, checkerImpls, triggerImpls, rendererImpls, declarationDetector, configurations);
-        } catch (ValidatorException e) {
-            log.error(e.getMessage(), e);
-
-            // Exceptions during running is not a problem, but exception before the first validator is created is a problem.
-            if (validatorInstance == null)
-                throw new ValidatorException("Unable to load validator.", e);
-        }
     }
 
     @Override

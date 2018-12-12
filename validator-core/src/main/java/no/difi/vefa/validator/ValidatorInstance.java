@@ -1,7 +1,8 @@
 package no.difi.vefa.validator;
 
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
@@ -16,23 +17,49 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Contains CheckerPools and Configuration, and is entry point for validation.
  */
 @Slf4j
+@Singleton
 class ValidatorInstance implements Closeable {
 
     /**
      * Instance of ValidatorEngine containing all raw content needed for validation.
      */
+    @Inject
     private ValidatorEngine validatorEngine;
 
     /**
      * Current validator configuration.
      */
+    @Inject
     private Properties properties;
+
+    /**
+     * Declarations to use.
+     */
+    @Inject
+    private DeclarationDetector declarationDetector;
+
+    /**
+     * Cache of checkers.
+     */
+    @Inject
+    private LoadingCache<String, Checker> checkerCache;
+
+    /**
+     * Pool of presenters.
+     */
+    @Inject
+    private LoadingCache<String, Renderer> rendererCache;
+
+    /**
+     * Trigger factory.
+     */
+    @Inject
+    private TriggerFactory triggerFactory;
 
     /**
      * Normalized configurations indexed by document declarations.
@@ -40,63 +67,11 @@ class ValidatorInstance implements Closeable {
     private Map<String, Configuration> configurationMap = new HashMap<>();
 
     /**
-     * Declarations to use.
-     */
-    private DeclarationDetector declarationDetector;
-
-    /**
-     * Cache of checkers.
-     */
-    private LoadingCache<String, Checker> chekcerCache;
-
-    /**
-     * Pool of presenters.
-     */
-    private LoadingCache<String, Renderer> rendererCache;
-
-    /**
-     * Trigger factory.
-     */
-    private TriggerFactory triggerFactory;
-
-    /**
-     * Constructor loading artifacts and pools for validations.
-     *
-     * @param source Source for validation artifacts
-     * @throws ValidatorException
-     */
-    ValidatorInstance(Source source, Properties properties, Class<? extends Checker>[] checkerImpls, Class<? extends Trigger>[] triggerImpls, Class<? extends Renderer>[] rendererImpls, DeclarationDetector declarationDetector, Configurations[] configurations) throws ValidatorException {
-        // Create config combined with default values.
-        this.properties = new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
-
-        // Create a new engine
-        this.validatorEngine = new ValidatorEngine(source.createInstance(this.properties), configurations);
-
-        // Declarations
-        this.declarationDetector = declarationDetector;
-
-        // New pool for checkers
-        this.chekcerCache = CacheBuilder.newBuilder()
-                .maximumSize(this.properties.getInteger("pools.checker.size"))
-                .expireAfterAccess(this.properties.getInteger("pools.checker.expire"), TimeUnit.MINUTES)
-                .build(new CheckerCacheLoader(validatorEngine, checkerImpls));
-
-        // New pool for presenters
-        this.rendererCache = CacheBuilder.newBuilder()
-                .maximumSize(this.properties.getInteger("pools.presenter.size"))
-                .expireAfterAccess(this.properties.getInteger("pools.presenter.expire"), TimeUnit.MINUTES)
-                .build(new RendererCacheLoader(validatorEngine, rendererImpls));
-
-        // Initiate trigger factory
-        triggerFactory = new TriggerFactory(triggerImpls);
-    }
-
-    /**
      * List of packages supported by validator.
      *
      * @return List of packages.
      */
-    List<PackageType> getPackages() {
+    protected List<PackageType> getPackages() {
         return validatorEngine.getPackages();
     }
 
@@ -105,7 +80,7 @@ class ValidatorInstance implements Closeable {
      *
      * @return Current properties.
      */
-    Properties getProperties() {
+    protected Properties getProperties() {
         return properties;
     }
 
@@ -114,7 +89,7 @@ class ValidatorInstance implements Closeable {
      *
      * @param declaration Fetch configuration using declaration.
      */
-    Configuration getConfiguration(String declaration) throws UnknownDocumentTypeException {
+    protected Configuration getConfiguration(String declaration) throws UnknownDocumentTypeException {
         // Check cache of configurations is ready to use.
         if (configurationMap.containsKey(declaration))
             return configurationMap.get(declaration);
@@ -130,7 +105,7 @@ class ValidatorInstance implements Closeable {
         return configuration;
     }
 
-    DeclarationIdentifier detect(byte[] content) {
+    protected DeclarationIdentifier detect(byte[] content) {
         return declarationDetector.detect(content);
     }
 
@@ -141,7 +116,7 @@ class ValidatorInstance implements Closeable {
      * @param document     Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
+    protected void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
         try {
             renderer = rendererCache.get(stylesheet.getIdentifier());
@@ -162,10 +137,10 @@ class ValidatorInstance implements Closeable {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
+    protected Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
         Checker checker;
         try {
-            checker = chekcerCache.get(fileType.getPath());
+            checker = checkerCache.get(fileType.getPath());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             throw new ValidatorException(
@@ -192,7 +167,7 @@ class ValidatorInstance implements Closeable {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    Section trigger(TriggerType triggerType, Document document, Configuration configuration) throws ValidatorException {
+    protected Section trigger(TriggerType triggerType, Document document, Configuration configuration) throws ValidatorException {
         Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
         section.setFlag(FlagType.OK);
         triggerFactory.get(triggerType.getIdentifier()).check(document, section);
@@ -201,7 +176,8 @@ class ValidatorInstance implements Closeable {
 
     @Override
     public void close() throws IOException {
-        chekcerCache.cleanUp();
+        checkerCache.invalidateAll();
+        checkerCache.cleanUp();
 
         rendererCache.invalidateAll();
         rendererCache.cleanUp();
