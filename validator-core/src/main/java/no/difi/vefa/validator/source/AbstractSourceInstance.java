@@ -17,16 +17,24 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
-    protected static AsicReaderFactory asicReaderFactory = AsicReaderFactory.newFactory(SignatureMethod.CAdES);
-    protected static JAXBContext jaxbContext = JAXBHelper.context(Artifacts.class);
+    protected static final AsicReaderFactory ASIC_READER_FACTORY =
+            AsicReaderFactory.newFactory(SignatureMethod.CAdES);
+
+    protected static final JAXBContext JAXB_CONTEXT =
+            JAXBHelper.context(Artifacts.class);
 
     protected FileSystem fileSystem;
+
     protected Properties properties;
+
+    protected Map<String, Map<String, byte[]>> content = new HashMap<>();
 
     public AbstractSourceInstance(Properties properties) {
         this.properties = properties;
@@ -42,6 +50,8 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
         // Prepare copying from asice-file to in-memory filesystem
         Path targetDirectory = fileSystem.getPath(targetName);
 
+        Map<String, byte[]> files = new HashMap<>();
+
         // Copy content
         String filename;
         while ((filename = asicReader.getNextFile()) != null) {
@@ -55,11 +65,11 @@ abstract class AbstractSourceInstance implements SourceInstance, Closeable {
         // Close asice-file
         asicReader.close();
 
+        content.put(targetName, files);
+
         // Listing signatures
         // for (Certificate certificate : asicReader.getAsicManifest().getCertificate())
         //     log.info("Signed by '{}'", certificate.getSubject());
-
-        // TODO Validate certificate?
     }
 
     @Override
