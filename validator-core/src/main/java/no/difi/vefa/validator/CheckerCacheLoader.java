@@ -7,21 +7,21 @@ import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 
 /**
- * Pool of prepared checkers. Size if configured using properties.
+ * @author erlend
  */
 @Slf4j
-class CheckerPoolLoader extends CacheLoader<String, Checker> {
+public class CheckerCacheLoader extends CacheLoader<String, Checker> {
 
     private ValidatorEngine validatorEngine;
+
     private Class<? extends Checker>[] implementations;
 
-    CheckerPoolLoader(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
+    CheckerCacheLoader(ValidatorEngine validatorEngine, Class<? extends Checker>[] implementations) {
         this.validatorEngine = validatorEngine;
         this.implementations = implementations;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Checker load(String key) throws Exception {
         try {
             for (Class cls : implementations) {

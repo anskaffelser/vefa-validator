@@ -11,12 +11,12 @@ import no.difi.xsd.vefa.validator._1.StylesheetType;
  * Pool of prepared renderers. Size if configured using properties.
  */
 @Slf4j
-class RendererPoolLoader extends CacheLoader<String, Renderer> {
+class RendererCacheLoader extends CacheLoader<String, Renderer> {
 
     private ValidatorEngine validatorEngine;
     private Class<? extends Renderer>[] implementations;
 
-    RendererPoolLoader(ValidatorEngine validatorEngine, Class<? extends Renderer>[] implementations) {
+    RendererCacheLoader(ValidatorEngine validatorEngine, Class<? extends Renderer>[] implementations) {
         this.validatorEngine = validatorEngine;
         this.implementations = implementations;
     }

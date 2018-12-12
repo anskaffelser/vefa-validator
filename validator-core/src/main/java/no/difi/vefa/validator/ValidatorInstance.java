@@ -45,14 +45,14 @@ class ValidatorInstance implements Closeable {
     private DeclarationDetector declarationDetector;
 
     /**
-     * Pool of checkers.
+     * Cache of checkers.
      */
-    private LoadingCache<String, Checker> checkerPool;
+    private LoadingCache<String, Checker> chekcerCache;
 
     /**
      * Pool of presenters.
      */
-    private LoadingCache<String, Renderer> rendererPool;
+    private LoadingCache<String, Renderer> rendererCache;
 
     /**
      * Trigger factory.
@@ -76,16 +76,16 @@ class ValidatorInstance implements Closeable {
         this.declarationDetector = declarationDetector;
 
         // New pool for checkers
-        this.checkerPool = CacheBuilder.newBuilder()
+        this.chekcerCache = CacheBuilder.newBuilder()
                 .maximumSize(this.properties.getInteger("pools.checker.size"))
                 .expireAfterAccess(this.properties.getInteger("pools.checker.expire"), TimeUnit.MINUTES)
-                .build(new CheckerPoolLoader(validatorEngine, checkerImpls));
+                .build(new CheckerCacheLoader(validatorEngine, checkerImpls));
 
         // New pool for presenters
-        this.rendererPool = CacheBuilder.newBuilder()
+        this.rendererCache = CacheBuilder.newBuilder()
                 .maximumSize(this.properties.getInteger("pools.presenter.size"))
                 .expireAfterAccess(this.properties.getInteger("pools.presenter.expire"), TimeUnit.MINUTES)
-                .build(new RendererPoolLoader(validatorEngine, rendererImpls));
+                .build(new RendererCacheLoader(validatorEngine, rendererImpls));
 
         // Initiate trigger factory
         triggerFactory = new TriggerFactory(triggerImpls);
@@ -144,7 +144,7 @@ class ValidatorInstance implements Closeable {
     void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
         try {
-            renderer = rendererPool.get(stylesheet.getIdentifier());
+            renderer = rendererCache.get(stylesheet.getIdentifier());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             throw new ValidatorException(
@@ -165,7 +165,7 @@ class ValidatorInstance implements Closeable {
     Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
         Checker checker;
         try {
-            checker = checkerPool.get(fileType.getPath());
+            checker = chekcerCache.get(fileType.getPath());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             throw new ValidatorException(
@@ -201,11 +201,10 @@ class ValidatorInstance implements Closeable {
 
     @Override
     public void close() throws IOException {
-        checkerPool.invalidateAll();
-        checkerPool.cleanUp();
+        chekcerCache.cleanUp();
 
-        rendererPool.invalidateAll();
-        rendererPool.cleanUp();
+        rendererCache.invalidateAll();
+        rendererCache.cleanUp();
 
         // This is last statement, allow to propagate.
         validatorEngine.close();
