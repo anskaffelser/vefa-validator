@@ -1,8 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -14,14 +14,12 @@ public class UblDeclarationTest {
 
     private String docStart = "<Invoice:Invoice xmlns:Invoice=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"";
 
+    @Inject
     private DeclarationDetector declarationDetector;
 
     @BeforeClass
     public void beforeClass() {
-        Config config = ConfigFactory.load();
-        config = config.withFallback(config.getConfig("defaults"));
-
-        declarationDetector = new DeclarationDetector(config);
+        Guice.createInjector().injectMembers(this);
     }
 
     @Test

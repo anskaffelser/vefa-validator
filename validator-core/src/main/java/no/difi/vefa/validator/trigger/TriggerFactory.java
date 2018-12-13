@@ -1,4 +1,4 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.trigger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Slf4j
 @Singleton
-class TriggerFactory {
+public class TriggerFactory {
 
     private Map<String, Trigger> triggers = new HashMap<>();
 

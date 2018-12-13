@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.Type;
 import no.difi.vefa.validator.api.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
@@ -12,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 
+@Type("xml.espd")
 @MetaInfServices(Declaration.class)
 public class EspdDeclaration extends AbstractXmlDeclaration {
 

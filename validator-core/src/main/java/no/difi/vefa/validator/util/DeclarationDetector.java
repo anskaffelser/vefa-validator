@@ -1,15 +1,12 @@
 package no.difi.vefa.validator.util;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.Type;
 import no.difi.vefa.validator.api.ValidatorException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Singleton
@@ -19,14 +16,15 @@ public class DeclarationDetector {
 
     private List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
 
-    @Inject
-    public DeclarationDetector(Config config) {
+    public DeclarationDetector() {
         Map<String, DeclarationWrapper> wrapperMap = new HashMap<>();
-        for (String s : config.getObject("declaration").keySet()) {
-            Config declarationConfig = config.getConfig("declaration").getConfig(s);
 
-            if (!declarationConfig.hasPath("enabled") || declarationConfig.getBoolean("enabled"))
-                wrapperMap.put(declarationConfig.getString("type"), new DeclarationWrapper(declarationConfig));
+        for (Declaration declaration : ServiceLoader.load(Declaration.class)) {
+            if (declaration.getClass().isAnnotationPresent(Type.class)) {
+                for (String type : declaration.getClass().getAnnotation(Type.class).value()) {
+                    wrapperMap.put(type, new DeclarationWrapper(type, declaration));
+                }
+            }
         }
 
         for (String key : wrapperMap.keySet()) {

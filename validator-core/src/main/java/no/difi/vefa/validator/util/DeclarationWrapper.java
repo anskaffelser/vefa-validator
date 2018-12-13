@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.util;
 
-import com.typesafe.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 
@@ -12,28 +11,15 @@ import java.util.List;
 @Slf4j
 public class DeclarationWrapper implements Declaration, DeclarationWithChildren, DeclarationWithConverter {
 
-    private Declaration declaration;
     private String type;
+
+    private Declaration declaration;
+
     private List<DeclarationWrapper> children = new ArrayList<>();
 
-    public DeclarationWrapper(Config config) {
-        try {
-            type = config.getString("type");
-
-            Class<? extends Declaration> cls = (Class<? extends Declaration>) Class.forName(config.getString("class"));
-
-            try {
-                declaration = cls.getConstructor(Config.class).newInstance();
-            } catch (Exception e) {
-                try {
-                    declaration = cls.getConstructor().newInstance();
-                } catch (Exception ex) {
-                    log.warn(e.getMessage(), ex);
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            log.warn(e.getMessage(), e);
-        }
+    public DeclarationWrapper(String type, Declaration declaration) {
+        this.type = type;
+        this.declaration = declaration;
     }
 
     public String getType() {

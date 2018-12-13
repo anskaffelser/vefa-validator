@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Type("zip.asice")
 @MetaInfServices(Declaration.class)
 public class AsiceDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
 

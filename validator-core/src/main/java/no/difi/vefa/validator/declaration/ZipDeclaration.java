@@ -1,10 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
-import no.difi.vefa.validator.api.CachedFile;
-import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.DeclarationWithChildren;
-import no.difi.vefa.validator.api.Expectation;
+import no.difi.vefa.validator.api.*;
 import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayInputStream;
@@ -17,6 +14,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Type("zip")
 @MetaInfServices(Declaration.class)
 public class ZipDeclaration implements Declaration, DeclarationWithChildren {
 

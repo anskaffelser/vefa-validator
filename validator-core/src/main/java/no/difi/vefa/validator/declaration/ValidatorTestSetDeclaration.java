@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 @Slf4j
+@Type("xml.testset")
 @MetaInfServices(Declaration.class)
 public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements DeclarationWithChildren {
 

@@ -1,10 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.CachedFile;
-import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.DeclarationWithChildren;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;
@@ -15,6 +12,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 @Slf4j
+@Type("xml.sbdh")
 @MetaInfServices(Declaration.class)
 public class SbdhDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren {
 

@@ -1,10 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.DeclarationWithConverter;
-import no.difi.vefa.validator.api.Expectation;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
@@ -28,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 @Slf4j
+@Type("xml.test")
 @MetaInfServices(Declaration.class)
 public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
 

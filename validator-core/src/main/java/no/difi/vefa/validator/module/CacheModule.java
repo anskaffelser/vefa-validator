@@ -3,6 +3,7 @@ package no.difi.vefa.validator.module;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import no.difi.vefa.validator.CheckerCacheLoader;
@@ -10,12 +11,14 @@ import no.difi.vefa.validator.RendererCacheLoader;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Renderer;
+import org.kohsuke.MetaInfServices;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author erlend
  */
+@MetaInfServices(Module.class)
 public class CacheModule extends AbstractModule {
 
     @Provides

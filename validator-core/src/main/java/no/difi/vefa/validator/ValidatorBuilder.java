@@ -1,17 +1,18 @@
 package no.difi.vefa.validator;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Guice;
-import lombok.extern.slf4j.Slf4j;
+import com.google.inject.Module;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
-import no.difi.vefa.validator.module.CacheModule;
-import no.difi.vefa.validator.module.ConfigModule;
-import no.difi.vefa.validator.module.ValidatorModule;
+import no.difi.vefa.validator.module.ConfigurationModule;
+
+import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * Builder supporting creation of validator.
  */
-@Slf4j
 public class ValidatorBuilder {
 
     private Source source;
@@ -38,7 +39,7 @@ public class ValidatorBuilder {
      * Defines configuration to use for validator.
      *
      * @param properties Configuration
-     * @return Builder
+     * @return Builder object
      */
     public ValidatorBuilder setProperties(Properties properties) {
         this.properties = properties;
@@ -49,7 +50,7 @@ public class ValidatorBuilder {
      * Define source to use if other source then production repository to be used.
      *
      * @param source Source giving access to validation rules.
-     * @return Builder
+     * @return Builder object
      */
     public ValidatorBuilder setSource(Source source) {
         this.source = source;
@@ -62,7 +63,9 @@ public class ValidatorBuilder {
      * @return Validator ready for use.
      */
     public Validator build() {
-        return Guice.createInjector(new ValidatorModule(source, properties), new CacheModule(), new ConfigModule())
-                .getInstance(Validator.class);
+        List<Module> modules = Lists.newArrayList(ServiceLoader.load(Module.class));
+        modules.add(new ConfigurationModule(source, properties));
+
+        return Guice.createInjector(modules).getInstance(Validator.class);
     }
 }

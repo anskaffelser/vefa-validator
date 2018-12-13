@@ -7,7 +7,10 @@ import no.difi.commons.schematron.jaxb.svrl.FailedAssert;
 import no.difi.commons.schematron.jaxb.svrl.NsPrefixInAttributeValues;
 import no.difi.commons.schematron.jaxb.svrl.SchematronOutput;
 import no.difi.commons.schematron.jaxb.svrl.SuccessfulReport;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.api.Section;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.vefa.validator.util.SaxonHelper;
@@ -23,7 +26,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 @Slf4j
-@CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt"})
 public class SchematronXsltChecker implements Checker {
 
     private static JAXBContext jaxbContext = JAXBHelper.context(SchematronOutput.class);

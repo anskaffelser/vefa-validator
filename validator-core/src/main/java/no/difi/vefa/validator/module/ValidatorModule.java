@@ -1,14 +1,13 @@
 package no.difi.vefa.validator.module;
 
 import com.google.common.collect.Lists;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import no.difi.vefa.validator.ValidatorDefaults;
-import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.source.RepositorySource;
+import com.google.inject.*;
+import no.difi.vefa.validator.api.CheckerFactory;
+import no.difi.vefa.validator.api.ConfigurationProvider;
+import no.difi.vefa.validator.api.RendererFactory;
+import no.difi.vefa.validator.api.Trigger;
 import no.difi.xsd.vefa.validator._1.Configurations;
+import org.kohsuke.MetaInfServices;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,33 +17,40 @@ import java.util.ServiceLoader;
 /**
  * @author erlend
  */
+@MetaInfServices(Module.class)
 public class ValidatorModule extends AbstractModule {
 
-    private Source source;
+    @Provides
+    @Singleton
+    public List<CheckerFactory> getCheckerFactories(Injector injector) {
+        List<CheckerFactory> factories = Lists.newArrayList(ServiceLoader.load(CheckerFactory.class));
 
-    private Properties properties;
+        for (CheckerFactory factory : factories)
+            injector.injectMembers(factory);
 
-    public ValidatorModule(Source source, Properties properties) {
-        this.source = source;
-        this.properties = properties;
+        return Collections.unmodifiableList(factories);
     }
 
     @Provides
     @Singleton
-    public List<CheckerFactory> getCheckerFactories() {
-        return Collections.unmodifiableList(Lists.newArrayList(ServiceLoader.load(CheckerFactory.class)));
+    public List<RendererFactory> getRendererFactories(Injector injector) {
+        List<RendererFactory> factories = Lists.newArrayList(ServiceLoader.load(RendererFactory.class));
+
+        for (RendererFactory factory : factories)
+            injector.injectMembers(factory);
+
+        return Collections.unmodifiableList(factories);
     }
 
     @Provides
     @Singleton
-    public List<RendererFactory> getRendererFactories() {
-        return Collections.unmodifiableList(Lists.newArrayList(ServiceLoader.load(RendererFactory.class)));
-    }
+    public List<Trigger> getTriggers(Injector injector) {
+        List<Trigger> triggers = Lists.newArrayList(ServiceLoader.load(Trigger.class));
 
-    @Provides
-    @Singleton
-    public List<Trigger> getTriggers() {
-        return Collections.unmodifiableList(Lists.newArrayList(ServiceLoader.load(Trigger.class)));
+        for (Trigger trigger : triggers)
+            injector.injectMembers(trigger);
+
+        return Collections.unmodifiableList(triggers);
     }
 
     @Provides
@@ -56,20 +62,5 @@ public class ValidatorModule extends AbstractModule {
             configurations.add(provider.getConfigurations());
 
         return configurations;
-    }
-
-    @Provides
-    @Singleton
-    public SourceInstance getSource(Properties properties) throws ValidatorException {
-        // Make sure to default to repository source if no source is set.
-        return (source != null ? source : RepositorySource.forProduction())
-                .createInstance(properties);
-    }
-
-    @Provides
-    @Singleton
-    public Properties getProperties() {
-        // Create config combined with default values.
-        return new CombinedProperties(properties, ValidatorDefaults.PROPERTIES);
     }
 }
