@@ -1,16 +1,17 @@
 package no.difi.vefa.validator.build.preparer;
 
+import no.difi.vefa.validator.api.Type;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
-import no.difi.vefa.validator.api.build.PreparerInfo;
 import org.apache.commons.io.IOUtils;
+import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-@PreparerInfo(".xsd")
-@SuppressWarnings("unused")
+@MetaInfServices
+@Type(".xsd")
 public class XsdPreparer implements Preparer {
 
     @Override

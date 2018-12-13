@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.api.build;
 
+import lombok.Getter;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class Build {
 
     private Map<String, String> setting = new HashMap<>();
@@ -54,18 +56,6 @@ public class Build {
         return configurations;
     }
 
-    public Path getProjectPath() {
-        return projectPath;
-    }
-
-    public Path[] getSourcePath() {
-        return sourcePath;
-    }
-
-    public Path getTargetFolder() {
-        return targetFolder;
-    }
-
     public void setSetting(String key, String value) {
         setting.put(key, value);
     }
@@ -82,15 +72,8 @@ public class Build {
         testFolders.add(testFolder);
     }
 
-    public List<Path> getTestFolders() {
-        return testFolders;
-    }
-
     public void addTestValidation(Validation validation) {
         testValidations.add(validation);
     }
 
-    public List<Validation> getTestValidations() {
-        return testValidations;
-    }
 }

@@ -1,40 +1,50 @@
 package no.difi.vefa.validator.build;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.asic.SignatureHelper;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.api.build.Build;
-import no.difi.vefa.validator.build.task.SiteTask;
+import no.difi.vefa.validator.build.module.BuildModule;
+import no.difi.vefa.validator.build.module.SchematronModule;
+import no.difi.vefa.validator.module.SaxonModule;
 import no.difi.vefa.validator.tester.Tester;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.apache.commons.cli.*;
 
-import java.io.File;
 import java.nio.file.Paths;
 import java.util.UUID;
 
 @Slf4j
 public class Cli {
 
+    @Inject
+    private Provider<Builder> builder;
+
     public static void main(String... args) throws Exception {
-        System.exit(perform(args));
+        System.exit(getInjector()
+                .getInstance(Cli.class)
+                .perform(args));
     }
 
-    public static int perform(String... args) throws Exception {
+    protected static Injector getInjector() {
+        return Guice.createInjector(new SaxonModule(), new BuildModule(), new SchematronModule());
+    }
+
+    public int perform(String... args) throws Exception {
         Options options = new Options();
         options.addOption("c", "config", true, "Config file");
         options.addOption("t", "test", false, "Run tests");
-        options.addOption("s", "site", false, "Create site");
         options.addOption("b", "build", true, "Build identifier");
         options.addOption("n", "name", true, "Name");
         options.addOption("w", "weight", true, "Weight");
         options.addOption("x", "exitcode", false, "Status in exit code");
         options.addOption("p", "profile", true, "Buildconfig profile");
         options.addOption("a", "source", true, "Source folder");
+        options.addOption("s", "site", true, "Create site - DEPRECATED");
         options.addOption(Option.builder("target").desc("Target folder").hasArg(true).build());
-        options.addOption(Option.builder("ksf").desc("Keystore file").hasArg(true).build());
-        options.addOption(Option.builder("ksp").desc("Keystore password").hasArg(true).build());
-        options.addOption(Option.builder("pkp").desc("Private key password").hasArg(true).build());
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -42,15 +52,6 @@ public class Cli {
         int result = 0;
 
         for (String arg : cmd.getArgs()) {
-            SignatureHelper signatureHelper = null;
-            if (cmd.hasOption("ksf")) {
-                log.info("Signing information detected.");
-                signatureHelper = new SignatureHelper(
-                        new File(cmd.getOptionValue("ksf")),
-                        cmd.getOptionValue("ksp"),
-                        cmd.getOptionValue("pkp"));
-            }
-
             Build build = new Build(Paths.get(arg),
                     cmd.getOptionValue("source", ""),
                     cmd.getOptionValue("target", cmd.hasOption("profile") ? String.format("target-%s", cmd.getOptionValue("profile")) : "target"));
@@ -59,13 +60,10 @@ public class Cli {
             build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
             build.setSetting("weight", cmd.getOptionValue("weight", "0"));
 
-            new Builder().build(build, signatureHelper);
+            builder.get().build(build);
 
             if (cmd.hasOption("test"))
                 Tester.perform(build);
-
-            if (cmd.hasOption("site"))
-                new SiteTask().build(build);
 
             if (cmd.hasOption("x"))
                 for (Validation validation : build.getTestValidations())

@@ -3,16 +3,12 @@ package no.difi.vefa.validator.checker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
-import net.sf.saxon.s9api.XdmDestination;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
-import net.sf.saxon.s9api.XsltTransformer;
+import net.sf.saxon.s9api.*;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
-import no.difi.vefa.validator.util.SaxonHelper;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
@@ -33,6 +29,9 @@ public class SchematronCheckerFactory implements CheckerFactory {
     @Named("schematron-step3")
     private Provider<XsltExecutable> schematronCompiler;
 
+    @Inject
+    private Processor processor;
+
     @Override
     public Checker prepare(Path path) throws ValidatorException {
         try (InputStream inputStream = Files.newInputStream(path)) {
@@ -44,9 +43,9 @@ public class SchematronCheckerFactory implements CheckerFactory {
             xsltTransformer.setDestination(destination);
             xsltTransformer.transform();
 
-            XsltCompiler xsltCompiler = SaxonHelper.newXsltCompiler();
+            XsltCompiler xsltCompiler = processor.newXsltCompiler();
             xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
-            return new SchematronXsltChecker(xsltCompiler.compile(destination.getXdmNode().asSource()));
+            return new SchematronXsltChecker(processor, xsltCompiler.compile(destination.getXdmNode().asSource()));
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage(), e);
         }

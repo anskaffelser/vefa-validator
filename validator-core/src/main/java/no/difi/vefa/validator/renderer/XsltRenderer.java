@@ -1,12 +1,11 @@
 package no.difi.vefa.validator.renderer;
 
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.XdmAtomicValue;
-import net.sf.saxon.s9api.XsltExecutable;
-import net.sf.saxon.s9api.XsltTransformer;
-import no.difi.vefa.validator.api.*;
+import net.sf.saxon.s9api.*;
+import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.Renderer;
+import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.PathURIResolver;
-import no.difi.vefa.validator.util.SaxonHelper;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
@@ -28,10 +27,13 @@ public class XsltRenderer implements Renderer {
 
     private Path path;
 
-    public XsltRenderer(XsltExecutable xsltExecutable, StylesheetType stylesheetType, Path path) {
+    private Processor processor;
+
+    public XsltRenderer(XsltExecutable xsltExecutable, StylesheetType stylesheetType, Path path, Processor processor) {
         this.xsltExecutable = xsltExecutable;
         this.stylesheetType = stylesheetType;
         this.path = path;
+        this.processor = processor;
     }
 
     /**
@@ -53,7 +55,7 @@ public class XsltRenderer implements Renderer {
 
             // Use transformer to write the result to stream.
             xsltTransformer.setSource(new StreamSource(document.getInputStream()));
-            xsltTransformer.setDestination(SaxonHelper.PROCESSOR.newSerializer(outputStream));
+            xsltTransformer.setDestination(processor.newSerializer(outputStream));
             xsltTransformer.transform();
             xsltTransformer.close();
         } catch (Exception e) {

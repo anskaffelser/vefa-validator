@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.checker;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.commons.schematron.jaxb.svrl.FailedAssert;
@@ -13,7 +14,6 @@ import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
-import no.difi.vefa.validator.util.SaxonHelper;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 
@@ -30,9 +30,12 @@ public class SchematronXsltChecker implements Checker {
 
     private static JAXBContext jaxbContext = JAXBHelper.context(SchematronOutput.class);
 
+    private Processor processor;
+
     private XsltExecutable xsltExecutable;
 
-    public SchematronXsltChecker(XsltExecutable xsltExecutable) {
+    public SchematronXsltChecker(Processor processor, XsltExecutable xsltExecutable) {
+        this.processor = processor;
         this.xsltExecutable = xsltExecutable;
     }
 
@@ -45,7 +48,7 @@ public class SchematronXsltChecker implements Checker {
             XsltTransformer xsltTransformer = xsltExecutable.load();
             xsltTransformer.setErrorListener(SaxonErrorListener.INSTANCE);
             xsltTransformer.setSource(new StreamSource(document.getInputStream()));
-            xsltTransformer.setDestination(SaxonHelper.PROCESSOR.newSerializer(baos));
+            xsltTransformer.setDestination(processor.newSerializer(baos));
             xsltTransformer.transform();
             xsltTransformer.close();
 
