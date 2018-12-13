@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<svrl:schematron-output xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
+                        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        xmlns:saxon="http://saxon.sf.net/"
+                        xmlns:schold="http://www.ascc.net/xml/schematron"
+                        xmlns:iso="http://purl.oclc.org/dsdl/schematron"
+                        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                        xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                        xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                        xmlns:u="utils"
+                        title="Common EHF rules for Post-Award"
+                        schemaVersion="iso"><!--   
+		   
+		   
+		 -->
+    <svrl:ns-prefix-in-attribute-values uri="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                                        prefix="cbc"/>
+    <svrl:ns-prefix-in-attribute-values uri="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                                        prefix="cac"/>
+    <svrl:ns-prefix-in-attribute-values uri="utils" prefix="u"/>
+    <svrl:active-pattern document=""/>
+    <svrl:fired-rule context="cac:*"/>
+    <svrl:fired-rule context="cbc:*"/>
+    <svrl:fired-rule context="cbc:*"/>
+    <svrl:failed-assert test="text() != ''"
+                        id="EHF-COMMON-R001"
+                        flag="fatal"
+                        location="/*:OrderResponse[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2'][1]/*:TaxCategory[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:ID[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][2]">
+        <svrl:text>Document MUST not contain empty elements.</svrl:text>
+    </svrl:failed-assert>
+    <svrl:active-pattern document=""/>
+    <svrl:fired-rule context="/*"/>
+    <svrl:failed-assert test="cbc:UBLVersionID"
+                        id="EHF-COMMON-R004"
+                        flag="fatal"
+                        location="/*:OrderResponse[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2'][1]">
+        <svrl:text>Document MUST have a syntax identifier.</svrl:text>
+    </svrl:failed-assert>
+    <svrl:fired-rule context="cac:*[ends-with(name(), 'TaxCategory')]/cbc:ID"/>
+    <svrl:failed-assert test="some $code in tokenize('AA E H K R S Z AE G', '\s') satisfies $code = normalize-space(.)"
+                        id="EHF-COMMON-R020"
+                        flag="fatal"
+                        location="/*:OrderResponse[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2'][1]/*:TaxCategory[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:ID[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+        <svrl:text>Tax categories MUST be one of the follwoing codes:  AA E H K R S Z AE G</svrl:text>
+    </svrl:failed-assert>
+    <svrl:fired-rule context="cac:*[ends-with(name(), 'TaxCategory')]/cbc:ID"/>
+    <svrl:failed-assert test="some $code in tokenize('AA E H K R S Z AE G', '\s') satisfies $code = normalize-space(.)"
+                        flag="fatal"
+                        location="/*:OrderResponse[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2'][1]/*:TaxCategory[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:ID[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][2]">
+        <svrl:text>[EHF-COMMON-R020]-Tax categories MUST be one of the follwoing codes:  AA E H K R S Z AE G</svrl:text>
+    </svrl:failed-assert>
+</svrl:schematron-output>

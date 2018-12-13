@@ -3,9 +3,8 @@ package no.difi.vefa.validator.tester;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
-import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.api.Build;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
@@ -28,28 +27,24 @@ import java.util.List;
 @Slf4j
 public class Tester implements Closeable {
 
-    public static void perform(Build build) throws ValidatorException {
+    public static void perform(Build build) {
         for (Validation validation : perform(build.getTargetFolder(), build.getTestFolders()))
             build.addTestValidation(validation);
     }
 
-    public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) throws ValidatorException {
+    public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) {
         try (Tester tester = new Tester(artifactsPath)) {
             for (Path path : testPaths)
                 tester.perform(path);
             return tester.finish();
-        } catch (IOException e) {
-            throw new ValidatorException(e.getMessage(), e);
         }
     }
 
-    public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) throws ValidatorException {
+    public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) {
         try (Tester tester = new Tester(artifactsUri)) {
             for (Path path : testPaths)
                 tester.perform(path);
             return tester.finish();
-        } catch (IOException e) {
-            throw new ValidatorException(e.getMessage(), e);
         }
     }
 
@@ -61,7 +56,7 @@ public class Tester implements Closeable {
 
     private int failed;
 
-    private Tester(Path artifactsPath) throws ValidatorException {
+    private Tester(Path artifactsPath) {
         validator = ValidatorBuilder
                 .newValidator()
                 .setProperties(new SimpleProperties()
@@ -73,7 +68,7 @@ public class Tester implements Closeable {
                 .build();
     }
 
-    private Tester(URI artifactsUri) throws ValidatorException {
+    private Tester(URI artifactsUri) {
         validator = ValidatorBuilder
                 .newValidator()
                 .setProperties(new SimpleProperties()
@@ -136,14 +131,14 @@ public class Tester implements Closeable {
             for (SectionType sectionType : validation.getReport().getSection())
                 for (AssertionType assertionType : sectionType.getAssertion())
                     if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
-                        log.debug("{}  * {} {} ({})", prefix, assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
+                        log.info("{}  * {} {} ({})", prefix, assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
         } else if (numberInSet == null) {
             log.info("Test '{}'", description);
         }
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (validator != null) {
             validator.close();
             validator = null;

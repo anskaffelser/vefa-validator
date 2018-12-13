@@ -5,6 +5,7 @@ import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.List;
 
 public class Section extends SectionType {
 
@@ -55,24 +56,29 @@ public class Section extends SectionType {
         add(assertionType);
     }
 
-    public void add(AssertionType assertionType) {
-        flagFilterer.filterFlag(assertionType);
+    public void add(List<AssertionType> assertions) {
+        for (AssertionType assertion : assertions)
+            add(assertion);
+    }
 
-        if (assertionType.getTextFriendly() == null)
-            assertionType.setTextFriendly(assertionType.getText());
-        if (assertionType.getLocationFriendly() == null)
-            assertionType.setLocationFriendly(assertionType.getLocation());
+    public void add(AssertionType assertion) {
+        flagFilterer.filterFlag(assertion);
+
+        if (assertion.getTextFriendly() == null)
+            assertion.setTextFriendly(assertion.getText());
+        if (assertion.getLocationFriendly() == null)
+            assertion.setLocationFriendly(assertion.getLocation());
 
 
         if (getInfoUrl() != null)
-            assertionType.setInfoUrl(getInfoUrl().replace("{}", assertionType.getIdentifier()));
+            assertion.setInfoUrl(getInfoUrl().replace("{}", assertion.getIdentifier()));
 
-        if (assertionType.getFlag() != null) {
+        if (assertion.getFlag() != null) {
 
-            if (assertionType.getFlag().compareTo(getFlag()) > 0)
-                setFlag(assertionType.getFlag());
+            if (assertion.getFlag().compareTo(getFlag()) > 0)
+                setFlag(assertion.getFlag());
 
-            this.getAssertion().add(assertionType);
+            this.getAssertion().add(assertion);
         }
     }
 }

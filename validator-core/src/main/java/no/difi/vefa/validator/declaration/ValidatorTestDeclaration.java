@@ -56,12 +56,12 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     }
 
     @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
+    public Expectation expectations(byte[] content) {
         return new ValidatorTestExpectation(content);
     }
 
     @Override
-    public void convert(InputStream inputStream, OutputStream outputStream) throws ValidatorException {
+    public void convert(InputStream inputStream, OutputStream outputStream) {
         try {
             Test test = convertInputStream(inputStream);
 
