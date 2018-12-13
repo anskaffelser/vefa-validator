@@ -13,15 +13,6 @@ import java.nio.file.Path;
 public interface Renderer {
 
     /**
-     * Method for preparing for use, can be seen as a constructor.
-     *
-     * @param stylesheetType Definition of the stylesheet defining the presenter.
-     * @param path Path of file used for presentation.
-     * @throws ValidatorException
-     */
-    void prepare(StylesheetType stylesheetType, Path path) throws ValidatorException;
-
-    /**
      * Writes presentation to a OutputStream given a business document.
      *
      * @param document Document to render.

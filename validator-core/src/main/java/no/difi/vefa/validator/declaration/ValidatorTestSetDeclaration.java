@@ -1,12 +1,14 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.api.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
 import no.difi.xsd.vefa.validator._1.TestSet;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 @Slf4j
+@MetaInfServices(Declaration.class)
 public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements DeclarationWithChildren {
 
     private static JAXBContext jaxbContext = JAXBHelper.context(TestSet.class, Test.class);

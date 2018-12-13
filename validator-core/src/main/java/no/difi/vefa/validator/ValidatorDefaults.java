@@ -6,12 +6,12 @@ import no.difi.vefa.validator.properties.SimpleProperties;
 /**
  * Class to hold defaults in validator.
  */
-class ValidatorDefaults {
+public class ValidatorDefaults {
 
     /**
      * Default configuration.
      */
-    final static Properties PROPERTIES = new SimpleProperties()
+    public static final Properties PROPERTIES = new SimpleProperties()
 
             // feature
             .set("feature.expectation", false)

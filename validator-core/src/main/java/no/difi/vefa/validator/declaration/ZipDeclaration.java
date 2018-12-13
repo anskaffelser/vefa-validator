@@ -2,6 +2,7 @@ package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
 import no.difi.vefa.validator.api.*;
+import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@MetaInfServices(Declaration.class)
 public class ZipDeclaration implements Declaration, DeclarationWithChildren {
 
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};

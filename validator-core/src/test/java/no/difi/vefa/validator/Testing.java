@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 
 public class Testing {
 
@@ -28,7 +27,7 @@ public class Testing {
     @BeforeClass
     public void beforeClass() throws Exception {
         validator = ValidatorBuilder
-                .newValidatorWithTest()
+                .newValidator()
                 .setProperties(new SimpleProperties()
                         .set("feature.expectation", true))
                 .setSource(new ClasspathSource("/rules/"))
@@ -42,50 +41,40 @@ public class Testing {
     }
 
     @Test
-    public void simpleError() {
-        try {
-            Validation validation = validator.validate(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"));
+    public void simpleError() throws Exception {
+        Validation validation = validator.validate(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"));
 
-            for (SectionType sectionType : validation.getReport().getSection()) {
-                logger.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
-                for (AssertionType assertion : sectionType.getAssertion())
-                    logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
-            }
-
-            OutputStream outputStream = new FileOutputStream("target/test-simple-feilkoder.html");
-            validation.render(outputStream);
-            outputStream.close();
-
-            assertEquals(validation.getReport().getFlag(), FlagType.ERROR);
-            assertEquals(validation.getReport().getSection().get(5).getAssertion().size(), 5);
-            assertEquals(validation.getDocument().getDeclaration(), "xml.ubl::urn:www.cenbii.eu:profile:bii04:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol4a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
-        } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
-            fail("Received exception.");
+        for (SectionType sectionType : validation.getReport().getSection()) {
+            logger.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
+            for (AssertionType assertion : sectionType.getAssertion())
+                logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
         }
+
+        OutputStream outputStream = new FileOutputStream("target/test-simple-feilkoder.html");
+        validation.render(outputStream);
+        outputStream.close();
+
+        assertEquals(validation.getReport().getFlag(), FlagType.ERROR);
+        assertEquals(validation.getReport().getSection().get(5).getAssertion().size(), 5);
+        assertEquals(validation.getDocument().getDeclaration(), "xml.ubl::urn:www.cenbii.eu:profile:bii04:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol4a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
     }
 
     @Test
-    public void simpleOk() {
-        try {
-            Validation validation = validator.validate(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
+    public void simpleOk() throws Exception {
+        Validation validation = validator.validate(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
 
-            for (SectionType sectionType : validation.getReport().getSection()) {
-                logger.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
-                for (AssertionType assertion : sectionType.getAssertion())
-                    logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
-            }
-
-            OutputStream outputStream = new FileOutputStream("target/test-simple-invoice.html");
-            validation.render(outputStream);
-            outputStream.close();
-
-            assertEquals(validation.getReport().getFlag(), FlagType.OK);
-            assertEquals(validation.getDocument().getDeclaration(), "xml.ubl::urn:www.cenbii.eu:profile:bii05:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
-        } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
-            fail("Received exception.");
+        for (SectionType sectionType : validation.getReport().getSection()) {
+            logger.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
+            for (AssertionType assertion : sectionType.getAssertion())
+                logger.info(String.format("- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
         }
+
+        OutputStream outputStream = new FileOutputStream("target/test-simple-invoice.html");
+        validation.render(outputStream);
+        outputStream.close();
+
+        assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        assertEquals(validation.getDocument().getDeclaration(), "xml.ubl::urn:www.cenbii.eu:profile:bii05:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
     }
 
     @Test

@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.checker;
 
 import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.commons.schematron.jaxb.svrl.FailedAssert;
@@ -20,9 +19,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -34,14 +30,8 @@ public class SchematronXsltChecker implements Checker {
 
     private XsltExecutable xsltExecutable;
 
-    public void prepare(Path path) throws ValidatorException {
-        try (InputStream inputStream = Files.newInputStream(path)) {
-            XsltCompiler xsltCompiler = SaxonHelper.newXsltCompiler();
-            xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
-            xsltExecutable = xsltCompiler.compile(new StreamSource(inputStream));
-        } catch (Exception e) {
-            throw new ValidatorException(e.getMessage(), e);
-        }
+    public SchematronXsltChecker(XsltExecutable xsltExecutable) {
+        this.xsltExecutable = xsltExecutable;
     }
 
     @Override

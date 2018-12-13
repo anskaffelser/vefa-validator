@@ -67,7 +67,7 @@ public class ValidatorService {
                     config.set(entry.getKey().toString().substring(10), entry.getValue());
 
             validator = ValidatorBuilder
-                    .newValidatorWithTest()
+                    .newValidator()
                     .setProperties(config)
                     .setSource(source)
                     .build();

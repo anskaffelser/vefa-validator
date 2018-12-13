@@ -1,6 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
+import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.ValidatorException;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -10,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 
+@MetaInfServices(Declaration.class)
 public class EspdDeclaration extends AbstractXmlDeclaration {
 
     private static List<String> validParents = Arrays.asList(

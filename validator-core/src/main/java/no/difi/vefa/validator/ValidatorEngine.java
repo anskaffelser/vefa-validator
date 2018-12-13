@@ -58,7 +58,7 @@ class ValidatorEngine implements Closeable {
      * Loading a new validator engine loading configurations from current source.
      */
     @Inject
-    public ValidatorEngine(SourceInstance sourceInstance, Set<Configurations> configurations) throws ValidatorException {
+    public ValidatorEngine(SourceInstance sourceInstance, List<Configurations> configurations) throws ValidatorException {
         // Load configurations from ValidatorBuilder.
         for (Configurations c : configurations)
             loadConfigurations("", c);

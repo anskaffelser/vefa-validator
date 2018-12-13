@@ -5,10 +5,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.api.CheckerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author erlend
@@ -18,26 +19,19 @@ import java.util.Set;
 public class CheckerCacheLoader extends CacheLoader<String, Checker> {
 
     @Inject
-    private ValidatorEngine validatorEngine;
+    private List<CheckerFactory> factories;
 
     @Inject
-    private Set<Class<? extends Checker>> implementations;
+    private ValidatorEngine validatorEngine;
 
     @Override
     public Checker load(String key) throws Exception {
         try {
-            for (Class cls : implementations) {
-                try {
-                    for (String extension : ((CheckerInfo) cls.getAnnotation(CheckerInfo.class)).value()) {
-                        if (key.toLowerCase().endsWith(extension)) {
-                            log.debug("Checker '{}'", key);
-                            Checker checker = (Checker) cls.getConstructor().newInstance();
-                            checker.prepare(validatorEngine.getResource(key));
-                            return checker;
-                        }
+            for (CheckerFactory factory : factories) {
+                for (String extension : factory.getClass().getAnnotation(CheckerInfo.class).value()) {
+                    if (key.toLowerCase().endsWith(extension)) {
+                        return factory.prepare(validatorEngine.getResource(key));
                     }
-                } catch (Exception e) {
-                    throw new ValidatorException(String.format("Unable to use %s for checker.", cls), e);
                 }
             }
         } catch (Exception e) {

@@ -8,8 +8,8 @@ import no.difi.vefa.validator.api.TriggerInfo;
 import no.difi.vefa.validator.api.ValidatorException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Singleton
@@ -18,13 +18,9 @@ class TriggerFactory {
     private Map<String, Trigger> triggers = new HashMap<>();
 
     @Inject
-    public TriggerFactory(Set<Class<? extends Trigger>> triggerImpls) {
-        for (Class<? extends Trigger> trigger : triggerImpls) {
-            try {
-                triggers.put(trigger.getAnnotation(TriggerInfo.class).value(), trigger.newInstance());
-            } catch (IllegalAccessException | InstantiationException e) {
-                log.info("Unable to load '{}'", trigger, e);
-            }
+    public TriggerFactory(List<Trigger> triggers) {
+        for (Trigger trigger : triggers) {
+            this.triggers.put(trigger.getClass().getAnnotation(TriggerInfo.class).value(), trigger);
         }
     }
 

@@ -7,6 +7,7 @@ import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.XmlUtils;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@MetaInfServices(Declaration.class)
 public class AsiceDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1";

@@ -1,6 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
+import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.ValidatorException;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -12,6 +14,7 @@ import java.util.regex.Pattern;
 /**
  * Document declaration for OASIS Universal Business Language (UBL).
  */
+@MetaInfServices(Declaration.class)
 public class UnCefactDeclaration extends AbstractXmlDeclaration {
 
     private static Pattern pattern = Pattern.compile("urn:un:unece:uncefact:data:standard:(.+)::(.+)");

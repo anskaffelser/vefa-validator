@@ -63,7 +63,7 @@ public class Tester implements Closeable {
 
     private Tester(Path artifactsPath) throws ValidatorException {
         validator = ValidatorBuilder
-                .newValidatorWithTest()
+                .newValidator()
                 .setProperties(new SimpleProperties()
                         .set("feature.nesting", true)
                         .set("feature.expectation", true)
@@ -75,7 +75,7 @@ public class Tester implements Closeable {
 
     private Tester(URI artifactsUri) throws ValidatorException {
         validator = ValidatorBuilder
-                .newValidatorWithTest()
+                .newValidator()
                 .setProperties(new SimpleProperties()
                         .set("feature.nesting", true)
                         .set("feature.expectation", true)

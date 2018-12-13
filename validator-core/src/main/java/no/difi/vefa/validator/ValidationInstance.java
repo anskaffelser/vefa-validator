@@ -21,7 +21,7 @@ import java.util.UUID;
  * Result of a validation.
  */
 @Slf4j
-class ValidationImpl implements Validation {
+class ValidationInstance implements Validation {
 
     private ValidatorInstance validatorInstance;
 
@@ -56,7 +56,7 @@ class ValidationImpl implements Validation {
      * @param validatorInstance Instance of validator.
      * @param validationSource  Source to validate.
      */
-    ValidationImpl(ValidatorInstance validatorInstance, ValidationSource validationSource) {
+    ValidationInstance(ValidatorInstance validatorInstance, ValidationSource validationSource) {
         this.validatorInstance = validatorInstance;
         this.properties = new CombinedProperties(validationSource.getProperties(), validatorInstance.getProperties());
 
@@ -216,7 +216,7 @@ class ValidationImpl implements Validation {
                 Iterable<InputStream> iterable = declaration.children(document.getInputStream());
                 for (InputStream inputStream : iterable) {
                     String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
-                    addChildValidation(new ValidationImpl(validatorInstance, new ValidationSourceImpl(inputStream)), filename);
+                    addChildValidation(new ValidationInstance(validatorInstance, new ValidationSourceImpl(inputStream)), filename);
                 }
             }
         }

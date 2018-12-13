@@ -1,8 +1,10 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.ValidatorException;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -13,6 +15,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 @Slf4j
+@MetaInfServices(Declaration.class)
 public class SbdhDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren {
 
     private static final String NAMESPACE = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
