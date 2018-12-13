@@ -213,10 +213,10 @@ class ValidationInstance implements Validation {
     private void nestedValidation() throws ValidatorException {
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
             if (declaration.supportsChildren() && properties.getBoolean("feature.nesting")) {
-                Iterable<InputStream> iterable = declaration.children(document.getInputStream());
-                for (InputStream inputStream : iterable) {
-                    String filename = iterable instanceof IndexedIterator ? ((IndexedIterator) iterable).currentIndex() : null;
-                    addChildValidation(new ValidationInstance(validatorInstance, new ValidationSourceImpl(inputStream)), filename);
+                Iterable<CachedFile> iterable = declaration.children(document.getInputStream());
+                for (CachedFile cachedFile : iterable) {
+                    addChildValidation(new ValidationInstance(validatorInstance,
+                            new ValidationSourceImpl(cachedFile.getContentStream())), cachedFile.getFilename());
                 }
             }
         }

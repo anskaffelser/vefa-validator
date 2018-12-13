@@ -12,8 +12,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 
 @MetaInfServices(Declaration.class)
 public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements DeclarationWithConverter, DeclarationWithChildren {
@@ -65,56 +66,19 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements Decla
     }
 
     @Override
-    public Iterable<InputStream> children(InputStream inputStream) {
+    public Iterable<CachedFile> children(InputStream inputStream) {
         try {
-            return new AsicIterator(inputStream);
+            AsicReader asicReader = AsicReaderFactory.newFactory().open(inputStream);
+            List<CachedFile> files = new ArrayList<>();
+
+            String filename;
+            while ((filename = asicReader.getNextFile()) != null) {
+                files.add(new CachedFile(filename, ByteStreams.toByteArray(asicReader.inputStream())));
+            }
+
+            return files;
         } catch (IOException e) {
             return null;
-        }
-    }
-
-    private class AsicIterator implements IndexedIterator<InputStream>, Iterable<InputStream> {
-
-        private AsicReader asicReader;
-        private String filename;
-
-        public AsicIterator(InputStream inputStream) throws IOException {
-            asicReader  = AsicReaderFactory.newFactory().open(inputStream);
-        }
-
-        @Override
-        public Iterator<InputStream> iterator() {
-            return this;
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                return (filename = asicReader.getNextFile()) != null;
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        @Override
-        public InputStream next() {
-            try {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                asicReader.writeFile(byteArrayOutputStream);
-                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        public void remove() {
-            // No action.
-        }
-
-        @Override
-        public String currentIndex() {
-            return filename;
         }
     }
 }

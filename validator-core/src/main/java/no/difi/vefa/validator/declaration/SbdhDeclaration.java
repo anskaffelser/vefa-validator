@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.CachedFile;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.ValidatorException;
@@ -9,7 +10,6 @@ import org.kohsuke.MetaInfServices;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -32,11 +32,11 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
     }
 
     @Override
-    public Iterable<InputStream> children(InputStream inputStream) {
+    public Iterable<CachedFile> children(InputStream inputStream) {
         return new SbdhIterator(inputStream);
     }
 
-    private class SbdhIterator implements Iterable<InputStream>, Iterator<InputStream> {
+    private class SbdhIterator implements Iterable<CachedFile>, Iterator<CachedFile> {
 
         private InputStream inputStream;
         private ByteArrayOutputStream outputStream;
@@ -46,7 +46,7 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
         }
 
         @Override
-        public Iterator<InputStream> iterator() {
+        public Iterator<CachedFile> iterator() {
             return this;
         }
 
@@ -129,8 +129,8 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
         }
 
         @Override
-        public InputStream next() {
-            return new ByteArrayInputStream(outputStream.toByteArray());
+        public CachedFile next() {
+            return new CachedFile(outputStream.toByteArray());
         }
 
         @Override

@@ -1,10 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.DeclarationWithChildren;
-import no.difi.vefa.validator.api.Expectation;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
 import no.difi.xsd.vefa.validator._1.TestSet;
@@ -13,7 +10,6 @@ import org.kohsuke.MetaInfServices;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -34,11 +30,11 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
     }
 
     @Override
-    public Iterable<InputStream> children(InputStream inputStream) throws ValidatorException {
+    public Iterable<CachedFile> children(InputStream inputStream) throws ValidatorException {
         return new TestSetIterator(inputStream);
     }
 
-    class TestSetIterator implements Iterator<InputStream>, Iterable<InputStream> {
+    class TestSetIterator implements Iterator<CachedFile>, Iterable<CachedFile> {
 
         private TestSet testSet;
         private int counter = -1;
@@ -52,7 +48,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
         }
 
         @Override
-        public Iterator<InputStream> iterator() {
+        public Iterator<CachedFile> iterator() {
             return this;
         }
 
@@ -62,7 +58,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
         }
 
         @Override
-        public InputStream next() {
+        public CachedFile next() {
             try {
                 Test test = testSet.getTest().get(counter);
 
@@ -85,7 +81,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 jaxbContext.createMarshaller().marshal(test, byteArrayOutputStream);
-                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                return new CachedFile(byteArrayOutputStream.toByteArray());
             } catch (JAXBException e) {
                 log.warn("Unable to marshall test object.");
             }

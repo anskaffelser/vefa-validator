@@ -68,7 +68,7 @@ public class DeclarationWrapper implements Declaration, DeclarationWithChildren,
     }
 
     @Override
-    public Iterable<InputStream> children(InputStream inputStream) throws ValidatorException {
+    public Iterable<CachedFile> children(InputStream inputStream) throws ValidatorException {
         return ((DeclarationWithChildren) declaration).children(inputStream);
     }
 
