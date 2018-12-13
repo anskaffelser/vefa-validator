@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.trigger.TriggerFactory;
 import no.difi.vefa.validator.util.CombinedFlagFilterer;

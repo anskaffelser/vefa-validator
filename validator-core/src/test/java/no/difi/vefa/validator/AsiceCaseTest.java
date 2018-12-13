@@ -2,6 +2,7 @@ package no.difi.vefa.validator;
 
 import com.google.common.jimfs.Jimfs;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.testng.Assert;

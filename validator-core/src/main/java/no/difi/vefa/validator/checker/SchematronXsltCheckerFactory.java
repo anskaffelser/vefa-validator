@@ -5,8 +5,8 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XsltCompiler;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import org.kohsuke.MetaInfServices;
 
@@ -19,7 +19,7 @@ import java.nio.file.Path;
  * @author erlend
  */
 @MetaInfServices
-@CheckerInfo({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt", ".sch.xslt"})
+@Type({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt", ".sch.xslt"})
 public class SchematronXsltCheckerFactory implements CheckerFactory {
 
     @Inject

@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Trigger;
-import no.difi.vefa.validator.api.TriggerInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,8 @@ public class TriggerFactory {
     @Inject
     public TriggerFactory(List<Trigger> triggers) {
         for (Trigger trigger : triggers) {
-            this.triggers.put(trigger.getClass().getAnnotation(TriggerInfo.class).value(), trigger);
+            for (String type : trigger.getClass().getAnnotation(Type.class).value())
+                this.triggers.put(type, trigger);
         }
     }
 

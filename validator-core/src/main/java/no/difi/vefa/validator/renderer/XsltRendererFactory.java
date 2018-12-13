@@ -5,8 +5,8 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XsltCompiler;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.RendererFactory;
-import no.difi.vefa.validator.api.RendererInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.PathURIResolver;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
@@ -21,7 +21,7 @@ import java.nio.file.Path;
  * @author erlend
  */
 @MetaInfServices
-@RendererInfo({".xsl", ".xslt"})
+@Type({".xsl", ".xslt"})
 public class XsltRendererFactory implements RendererFactory {
 
     @Inject

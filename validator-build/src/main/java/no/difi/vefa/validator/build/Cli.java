@@ -6,7 +6,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.api.build.Build;
+import no.difi.vefa.validator.api.Build;
 import no.difi.vefa.validator.build.module.BuildModule;
 import no.difi.vefa.validator.build.module.SchematronModule;
 import no.difi.vefa.validator.module.SaxonModule;

@@ -6,11 +6,11 @@ import no.difi.commons.asic.jaxb.asic.Certificate;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.api.Trigger;
-import no.difi.vefa.validator.api.TriggerInfo;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.kohsuke.MetaInfServices;
 
-@TriggerInfo("asice")
+@Type("asice")
 @MetaInfServices
 public class AsiceTrigger implements Trigger {
 

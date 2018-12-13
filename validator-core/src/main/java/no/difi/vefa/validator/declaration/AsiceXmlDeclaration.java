@@ -5,7 +5,9 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;

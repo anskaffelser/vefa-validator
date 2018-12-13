@@ -1,7 +1,6 @@
-package no.difi.vefa.validator.api.build;
+package no.difi.vefa.validator.api;
 
 import lombok.Getter;
-import no.difi.vefa.validator.api.Validation;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
 import java.io.File;

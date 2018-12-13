@@ -3,7 +3,7 @@ package no.difi.vefa.validator.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.FileUtils;

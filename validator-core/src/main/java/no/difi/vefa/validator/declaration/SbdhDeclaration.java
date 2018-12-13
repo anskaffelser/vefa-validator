@@ -1,7 +1,9 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;

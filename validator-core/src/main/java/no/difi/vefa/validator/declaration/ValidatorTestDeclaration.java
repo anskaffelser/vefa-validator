@@ -1,8 +1,10 @@
 package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
 import org.kohsuke.MetaInfServices;

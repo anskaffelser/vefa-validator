@@ -7,7 +7,7 @@ import no.difi.vefa.validator.ValidatorDefaults;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.source.RepositorySource;
 

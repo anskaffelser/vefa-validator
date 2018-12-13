@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.*;
 import org.kohsuke.MetaInfServices;
 

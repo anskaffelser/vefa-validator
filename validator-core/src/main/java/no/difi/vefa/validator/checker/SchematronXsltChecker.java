@@ -11,7 +11,7 @@ import no.difi.commons.schematron.jaxb.svrl.SuccessfulReport;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Section;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.AssertionType;

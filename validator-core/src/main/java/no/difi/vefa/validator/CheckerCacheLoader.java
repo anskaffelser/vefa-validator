@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class CheckerCacheLoader extends CacheLoader<String, Checker> {
     public Checker load(String key) throws Exception {
         try {
             for (CheckerFactory factory : factories) {
-                for (String extension : factory.getClass().getAnnotation(CheckerInfo.class).value()) {
+                for (String extension : factory.getClass().getAnnotation(Type.class).value()) {
                     if (key.toLowerCase().endsWith(extension)) {
                         return factory.prepare(validatorEngine.getResource(key));
                     }

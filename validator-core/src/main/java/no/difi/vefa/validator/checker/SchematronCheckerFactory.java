@@ -6,8 +6,8 @@ import com.google.inject.name.Named;
 import net.sf.saxon.s9api.*;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import org.kohsuke.MetaInfServices;
 
@@ -22,7 +22,7 @@ import java.nio.file.Path;
  * @author erlend
  */
 @MetaInfServices
-@CheckerInfo(".sch")
+@Type(".sch")
 public class SchematronCheckerFactory implements CheckerFactory {
 
     @Inject

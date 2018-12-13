@@ -1,8 +1,8 @@
 package no.difi.vefa.validator.build.preparer;
 
-import no.difi.vefa.validator.api.Type;
-import no.difi.vefa.validator.api.build.Build;
-import no.difi.vefa.validator.api.build.Preparer;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.api.Build;
+import no.difi.vefa.validator.api.Preparer;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.MetaInfServices;
 

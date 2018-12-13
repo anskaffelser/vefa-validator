@@ -2,6 +2,7 @@ package no.difi.vefa.validator.util;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.lang.ValidatorException;
 
 import java.io.InputStream;
 import java.io.OutputStream;

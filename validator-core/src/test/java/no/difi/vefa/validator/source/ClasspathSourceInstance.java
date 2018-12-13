@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;

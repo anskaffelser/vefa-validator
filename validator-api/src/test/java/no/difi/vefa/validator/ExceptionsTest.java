@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import org.testng.annotations.Test;
 

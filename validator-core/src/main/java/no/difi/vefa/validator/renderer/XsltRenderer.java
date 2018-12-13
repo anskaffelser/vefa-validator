@@ -4,7 +4,7 @@ import net.sf.saxon.s9api.*;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Renderer;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.PathURIResolver;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;

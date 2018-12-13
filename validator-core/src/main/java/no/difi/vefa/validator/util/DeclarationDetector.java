@@ -3,8 +3,8 @@ package no.difi.vefa.validator.util;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.Type;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 
 import java.util.*;
 

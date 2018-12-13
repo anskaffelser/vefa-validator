@@ -1,13 +1,12 @@
 package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Properties;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.net.URI;
-import java.util.TreeSet;
 
 public class RepositorySourceTest {
 

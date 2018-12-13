@@ -2,8 +2,8 @@ package no.difi.vefa.validator.checker;
 
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.api.CheckerInfo;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.PathLSResolveResource;
 import org.kohsuke.MetaInfServices;
 
@@ -18,7 +18,7 @@ import java.nio.file.Path;
  * @author erlend
  */
 @MetaInfServices
-@CheckerInfo({".xsd"})
+@Type(".xsd")
 public class XsdCheckerFactory implements CheckerFactory {
 
     @Override

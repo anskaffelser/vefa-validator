@@ -1,4 +1,4 @@
-package no.difi.vefa.validator.api;
+package no.difi.vefa.validator.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,16 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to define file types used by an implementation of Presenter.
+ * @author erlend
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface RendererInfo {
+public @interface Type {
 
-    /**
-     * List of file extensions.
-     *
-     * @return List extensions.
-     */
     String[] value();
+
 }

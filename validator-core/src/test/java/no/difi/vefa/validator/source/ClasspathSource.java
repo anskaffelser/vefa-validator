@@ -2,9 +2,7 @@ package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.api.ValidatorException;
-
-import java.util.Set;
+import no.difi.vefa.validator.lang.ValidatorException;
 
 public class ClasspathSource extends AbstractSource {
 

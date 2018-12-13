@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.checker;
 
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.testng.annotations.Test;
 
 public class SchematronXsltCheckerTest {

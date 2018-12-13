@@ -1,8 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.api.Declaration;
-import no.difi.vefa.validator.api.Type;
-import no.difi.vefa.validator.api.ValidatorException;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
