@@ -1,13 +1,12 @@
 package no.difi.vefa.validator.build;
 
-import com.google.common.io.MoreFiles;
-import com.google.common.io.RecursiveDeleteOption;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.*;
 import no.difi.vefa.validator.api.build.Build;
 import no.difi.vefa.validator.api.build.Preparer;
+import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
@@ -37,11 +36,11 @@ public class Builder {
     @Inject
     private PreparerProvider preparerProvider;
 
-    public void build(Build build) throws Exception {
+    public void build(final Build build) throws Exception {
         SignatureHelper signatureHelper = new SignatureHelper(Cli.class.getResourceAsStream("/keystore-self-signed.jks"), "changeit", null, "changeit");
 
         if (Files.exists(build.getTargetFolder()))
-            MoreFiles.deleteDirectoryContents(build.getTargetFolder(), RecursiveDeleteOption.ALLOW_INSECURE);
+            DirectoryCleaner.clean(build.getTargetFolder());
         else
             Files.createDirectories(build.getTargetFolder());
 
