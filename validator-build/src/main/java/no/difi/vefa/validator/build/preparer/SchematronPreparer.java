@@ -10,6 +10,7 @@ import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.file.Path;
 
 @MetaInfServices
 @Type({".sch", ".scmt"})
@@ -18,9 +19,8 @@ public class SchematronPreparer implements Preparer {
     @Inject
     private Provider<SchematronCompiler> schematronTransformer;
 
-    public ByteArrayOutputStream prepare(Build build, File file) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        schematronTransformer.get().compile(file, byteArrayOutputStream);
-        return byteArrayOutputStream;
+    @Override
+    public void prepare(Path source, Path target) throws Exception {
+        schematronTransformer.get().compile(source, target);
     }
 }

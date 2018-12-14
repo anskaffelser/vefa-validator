@@ -1,10 +1,9 @@
 package no.difi.vefa.validator.api;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.nio.file.Path;
 
 public interface Preparer {
 
-    ByteArrayOutputStream prepare(Build build, File file) throws Exception;
+    void prepare(Path source, Path target) throws Exception;
 
 }

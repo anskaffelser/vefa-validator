@@ -14,12 +14,15 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
     private Path path;
 
-    public static void clean(Path path) throws IOException {
-        Files.walkFileTree(path, new DirectoryCleaner(path));
+    private boolean deleteRoot;
+
+    public static void clean(Path path, boolean deleteRoot) throws IOException {
+        Files.walkFileTree(path, new DirectoryCleaner(path, deleteRoot));
     }
 
-    public DirectoryCleaner(Path path) {
+    public DirectoryCleaner(Path path, boolean deleteRoot) {
         this.path = path;
+        this.deleteRoot = deleteRoot;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        if (!dir.equals(path))
+        if (!dir.equals(path) || deleteRoot)
             Files.delete(dir);
         return FileVisitResult.CONTINUE;
     }

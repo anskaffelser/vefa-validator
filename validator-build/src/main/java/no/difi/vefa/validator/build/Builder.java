@@ -3,9 +3,8 @@ package no.difi.vefa.validator.build;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.asic.*;
 import no.difi.vefa.validator.api.Build;
-import no.difi.vefa.validator.api.Preparer;
+import no.difi.vefa.validator.build.util.AsicArchiver;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
 import no.difi.vefa.validator.util.JAXBHelper;
@@ -18,10 +17,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -29,25 +27,21 @@ import java.nio.file.Path;
 @Singleton
 public class Builder {
 
-    private static JAXBContext jaxbContext = JAXBHelper.context(Configurations.class, BuildConfigurations.class);
-
-    private static AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(SignatureMethod.CAdES);
+    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Configurations.class, BuildConfigurations.class);
 
     @Inject
     private PreparerProvider preparerProvider;
 
     public void build(final Build build) throws Exception {
-        SignatureHelper signatureHelper = new SignatureHelper(Cli.class.getResourceAsStream("/keystore-self-signed.jks"), "changeit", null, "changeit");
+        Path contentsPath = build.getTargetFolder().resolve("contents");
 
         if (Files.exists(build.getTargetFolder()))
-            DirectoryCleaner.clean(build.getTargetFolder());
-        else
-            Files.createDirectories(build.getTargetFolder());
+            DirectoryCleaner.clean(build.getTargetFolder(), false);
+        Files.createDirectories(contentsPath);
 
         Configurations configurations = build.getConfigurations();
 
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        AsicWriter asicWriter = asicWriterFactory.newContainer(new File(build.getTargetFolder().toFile(), String.format("%s-%s.asice", build.getSetting("name"), build.getSetting("build"))));
+        Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
 
         for (Path sourcePath : build.getSourcePath()) {
 
@@ -69,17 +63,21 @@ public class Builder {
 
                             String extension = fileType.getSource().substring(fileType.getSource().lastIndexOf("."));
 
-                            Preparer preparer = preparerProvider.get(extension);
-
-                            ByteArrayOutputStream byteArrayOutputStream = preparer.prepare(build, new File(configFolder, fileType.getSource()));
-                            asicWriter.add(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), fileType.getPath(), MimeType.forString("application/xml"));
+                            Path target = contentsPath.resolve(fileType.getPath());
+                            Files.createDirectories(target.getParent());
+                            preparerProvider.prepare(extension, configFolder.toPath().resolve(fileType.getSource()), target);
 
                             fileType.setSource(null);
                         }
 
                         if (configuration.getStylesheet() != null) {
                             StylesheetType stylesheet = configuration.getStylesheet();
-                            asicWriter.add(new File(configFolder, stylesheet.getSource() != null ? stylesheet.getSource() : stylesheet.getPath()), stylesheet.getPath(), MimeType.forString("application/xml"));
+                            String source = stylesheet.getSource() != null ? stylesheet.getSource() : stylesheet.getPath();
+
+                            Path target = contentsPath.resolve(stylesheet.getPath());
+                            Files.createDirectories(target.getParent());
+                            Files.copy(configFolder.toPath().resolve(source), target);
+
                             stylesheet.setSource(null);
                         }
 
@@ -96,7 +94,9 @@ public class Builder {
                         if (fileType.getSource() == null)
                             fileType.setSource(fileType.getPath());
 
-                        asicWriter.add(new File(configFolder, fileType.getSource()), fileType.getPath(), MimeType.forString("application/xml"));
+                        Path target = contentsPath.resolve(fileType.getPath());
+                        Files.createDirectories(target.getParent());
+                        Files.copy(configFolder.toPath().resolve(fileType.getSource()), target);
                     }
 
                     configurations.getPackage().addAll(config.getPackage());
@@ -115,12 +115,17 @@ public class Builder {
             }
         }
 
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        String configFilename = String.format("config-%s-%s.xml", build.getSetting("name"), build.getSetting("build"));
+        try (OutputStream outputStream = Files.newOutputStream(contentsPath.resolve(configFilename))) {
+            Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(configurations, outputStream);
+        }
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        marshaller.marshal(configurations, outputStream);
-        asicWriter.add(new ByteArrayInputStream(outputStream.toByteArray()), String.format("config-%s-%s.xml", build.getSetting("name"), build.getSetting("build")));
-        asicWriter.sign(signatureHelper);
+        AsicArchiver.archive(
+                build.getTargetFolder().resolve(String.format("%s-%s.asice", build.getSetting("name"), build.getSetting("build"))),
+                contentsPath);
+
+        DirectoryCleaner.clean(contentsPath, true);
     }
 }
