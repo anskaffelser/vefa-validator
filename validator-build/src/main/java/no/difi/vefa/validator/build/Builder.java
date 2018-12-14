@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Build;
+import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.util.AsicArchiver;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
@@ -58,34 +59,36 @@ public class Builder {
 
                     for (ConfigurationType configuration : config.getConfiguration()) {
                         for (FileType fileType : configuration.getFile()) {
-                            if (fileType.getSource() == null)
-                                fileType.setSource(fileType.getPath());
+                            fileType.setSource(fileType.getSource() != null ?
+                                    fileType.getSource() : fileType.getPath());
 
-                            String extension = fileType.getSource().substring(fileType.getSource().lastIndexOf("."));
-
-                            Path target = contentsPath.resolve(fileType.getPath());
-                            Files.createDirectories(target.getParent());
-                            preparerProvider.prepare(extension, configFolder.toPath().resolve(fileType.getSource()), target);
+                            preparerProvider.prepare(
+                                    configFolder.toPath().resolve(fileType.getSource()),
+                                    contentsPath.resolve(fileType.getPath()),
+                                    Preparer.Type.FILE
+                            );
 
                             fileType.setSource(null);
                         }
 
                         if (configuration.getStylesheet() != null) {
                             StylesheetType stylesheet = configuration.getStylesheet();
-                            String source = stylesheet.getSource() != null ? stylesheet.getSource() : stylesheet.getPath();
+                            stylesheet.setSource(stylesheet.getSource() != null ?
+                                    stylesheet.getSource() : stylesheet.getPath());
 
-                            Path target = contentsPath.resolve(stylesheet.getPath());
-                            Files.createDirectories(target.getParent());
-                            Files.copy(configFolder.toPath().resolve(source), target);
+                            preparerProvider.prepare(
+                                    configFolder.toPath().resolve(stylesheet.getSource()),
+                                    contentsPath.resolve(stylesheet.getPath()),
+                                    Preparer.Type.STYLESHEET
+                            );
 
                             stylesheet.setSource(null);
                         }
 
-                        if (configuration.getBuild() == null)
-                            configuration.setBuild(build.getSetting("build"));
-
-                        if (configuration.getWeight() == 0)
-                            configuration.setWeight(Long.parseLong(build.getSetting("weight")));
+                        configuration.setBuild(configuration.getBuild() != null ?
+                                configuration.getBuild() : build.getSetting("build"));
+                        configuration.setWeight(configuration.getWeight() != 0 ?
+                                configuration.getWeight() : Long.parseLong(build.getSetting("weight")));
 
                         configurations.getConfiguration().add(configuration);
                     }
@@ -94,18 +97,18 @@ public class Builder {
                         if (fileType.getSource() == null)
                             fileType.setSource(fileType.getPath());
 
-                        Path target = contentsPath.resolve(fileType.getPath());
-                        Files.createDirectories(target.getParent());
-                        Files.copy(configFolder.toPath().resolve(fileType.getSource()), target);
+                        preparerProvider.prepare(
+                                configFolder.toPath().resolve(fileType.getSource()),
+                                contentsPath.resolve(fileType.getPath()),
+                                Preparer.Type.INCLUDE
+                        );
                     }
 
                     configurations.getPackage().addAll(config.getPackage());
 
                     for (String testFolder : config.getTestfolder())
-                        if (testFolder.equals("."))
-                            build.addTestFolder(configFolder);
-                        else
-                            build.addTestFolder(new File(configFolder, testFolder));
+                        build.addTestFolder(testFolder.equals(".") ?
+                                configFolder : new File(configFolder, testFolder));
 
                     log.info("Loading '{}'", file.toString());
                 } catch (JAXBException e) {

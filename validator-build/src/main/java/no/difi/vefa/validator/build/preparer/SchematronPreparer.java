@@ -4,10 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import no.difi.commons.schematron.SchematronCompiler;
+import no.difi.commons.schematron.SchematronException;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Preparer;
 import org.kohsuke.MetaInfServices;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 @MetaInfServices
@@ -23,11 +25,15 @@ public class SchematronPreparer implements Preparer {
     private Provider<SchematronCompiler> schematronPrepare;
 
     @Override
-    public void prepare(Path source, Path target) throws Exception {
-        if (target.toString().endsWith(".sch")) {
-            schematronPrepare.get().compile(source, target);
-        } else {
-            schematronCompile.get().compile(source, target);
+    public void prepare(Path source, Path target, Type type) throws IOException {
+        try {
+            if (target.toString().endsWith(".sch")) {
+                schematronPrepare.get().compile(source, target);
+            } else {
+                schematronCompile.get().compile(source, target);
+            }
+        } catch (SchematronException e) {
+            throw new IOException("Unable to handle Schematron.", e);
         }
     }
 }
