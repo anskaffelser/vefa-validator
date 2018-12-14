@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.declaration;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.AsicVerifier;
 import no.difi.asic.AsicVerifierFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
