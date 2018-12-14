@@ -2,14 +2,12 @@ package no.difi.vefa.validator.build.preparer;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.name.Named;
 import no.difi.commons.schematron.SchematronCompiler;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Build;
 import no.difi.vefa.validator.api.Preparer;
 import org.kohsuke.MetaInfServices;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.nio.file.Path;
 
 @MetaInfServices
@@ -17,10 +15,19 @@ import java.nio.file.Path;
 public class SchematronPreparer implements Preparer {
 
     @Inject
-    private Provider<SchematronCompiler> schematronTransformer;
+    @Named("compile")
+    private Provider<SchematronCompiler> schematronCompile;
+
+    @Inject
+    @Named("prepare")
+    private Provider<SchematronCompiler> schematronPrepare;
 
     @Override
     public void prepare(Path source, Path target) throws Exception {
-        schematronTransformer.get().compile(source, target);
+        if (target.toString().endsWith(".sch")) {
+            schematronPrepare.get().compile(source, target);
+        } else {
+            schematronCompile.get().compile(source, target);
+        }
     }
 }
