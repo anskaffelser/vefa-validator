@@ -1,6 +1,5 @@
-package no.difi.vefa.validator.api.build;
+package no.difi.vefa.validator.build.model;
 
-import no.difi.vefa.validator.api.Build;
 import no.difi.vefa.validator.api.Validation;
 import org.mockito.Mockito;
 import org.testng.Assert;

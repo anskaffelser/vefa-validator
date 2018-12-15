@@ -1,10 +1,10 @@
-package no.difi.vefa.validator.build;
+package no.difi.vefa.validator.build.task;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Build;
 import no.difi.vefa.validator.api.Preparer;
+import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.util.AsicArchiver;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
@@ -20,20 +20,22 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Slf4j
 @Singleton
-public class Builder {
+public class BuildTask {
 
-    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Configurations.class, BuildConfigurations.class);
+    private static final JAXBContext JAXB_CONTEXT =
+            JAXBHelper.context(Configurations.class, BuildConfigurations.class);
 
     @Inject
     private PreparerProvider preparerProvider;
 
-    public void build(final Build build) throws Exception {
+    public void build(final Build build) throws IOException, JAXBException {
         Path contentsPath = build.getTargetFolder().resolve("contents");
 
         if (Files.exists(build.getTargetFolder()))
@@ -107,13 +109,12 @@ public class Builder {
                     configurations.getPackage().addAll(config.getPackage());
 
                     for (String testFolder : config.getTestfolder())
-                        build.addTestFolder(testFolder.equals(".") ?
+                        build.addTestFolder(".".equals(testFolder) ?
                                 configFolder : new File(configFolder, testFolder));
 
                     log.info("Loading '{}'", file.toString());
                 } catch (JAXBException e) {
-                    log.warn("Loading failed for '{}'", file.toString());
-                    e.printStackTrace();
+                    log.warn("Loading failed for '{}'", file.toString(), e);
                 }
             }
         }

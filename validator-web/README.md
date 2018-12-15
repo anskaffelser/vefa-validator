@@ -1,6 +1,7 @@
 # validator-web
 
-This is a **sample project** showing how validator-core may be used to provide a validation service. This is not intended to be an API, and behaviour may change in future versions.
+This is a **sample project** showing how validator-core may be used to provide a validation service. 
+This is not intended to be an API, and behaviour may change in future versions.
 
 Available documentation regarding validator-web:
 

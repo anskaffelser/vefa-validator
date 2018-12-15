@@ -25,9 +25,9 @@ Include dependency in your pom.xml:
 
 ```xml
 <dependency>
-	<groupId>no.difi.vefa</groupId>
-	<artifactId>validator-core</artifactId>
-	<version>2.0.2</version>
+  <groupId>no.difi.vefa</groupId>
+  <artifactId>validator-core</artifactId>
+  <version>2.0.2</version>
 </dependency>
 ```
 

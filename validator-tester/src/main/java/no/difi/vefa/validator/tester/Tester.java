@@ -1,9 +1,9 @@
 package no.difi.vefa.validator.tester;
 
+import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
-import no.difi.vefa.validator.api.Build;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
@@ -25,12 +25,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@Singleton
 public class Tester implements Closeable {
-
-    public static void perform(Build build) {
-        for (Validation validation : perform(build.getTargetFolder(), build.getTestFolders()))
-            build.addTestValidation(validation);
-    }
 
     public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) {
         try (Tester tester = new Tester(artifactsPath)) {

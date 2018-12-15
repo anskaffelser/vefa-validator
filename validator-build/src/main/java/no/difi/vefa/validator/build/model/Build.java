@@ -1,14 +1,14 @@
-package no.difi.vefa.validator.api;
+package no.difi.vefa.validator.build.model;
 
 import lombok.Getter;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.xsd.vefa.validator._1.Configurations;
+import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Getter
 public class Build {
@@ -23,6 +23,18 @@ public class Build {
 
     private List<Path> testFolders = new ArrayList<>();
     private List<Validation> testValidations = new ArrayList<>();
+
+    public static Build of(String arg, CommandLine cmd) {
+        Build build = new Build(Paths.get(arg),
+                cmd.getOptionValue("source", ""),
+                cmd.getOptionValue("target", cmd.hasOption("profile") ? String.format("target-%s", cmd.getOptionValue("profile")) : "target"));
+        build.setSetting("config", cmd.getOptionValue("config", cmd.hasOption("profile") ? String.format("buildconfig-%s.xml", cmd.getOptionValue("profile")) : "buildconfig.xml"));
+        build.setSetting("name", cmd.getOptionValue("name", "rules"));
+        build.setSetting("build", cmd.getOptionValue("build", UUID.randomUUID().toString()));
+        build.setSetting("weight", cmd.getOptionValue("weight", "0"));
+
+        return build;
+    }
 
     public Build(Path projectPath) {
         this(projectPath, "", "target");
