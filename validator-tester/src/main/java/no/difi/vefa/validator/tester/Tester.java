@@ -28,6 +28,14 @@ import java.util.List;
 @Singleton
 public class Tester implements Closeable {
 
+    private Validator validator;
+
+    private List<Validation> validations = new ArrayList<>();
+
+    private int tests;
+
+    private int failed;
+
     public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) {
         try (Tester tester = new Tester(artifactsPath)) {
             for (Path path : testPaths)
@@ -43,14 +51,6 @@ public class Tester implements Closeable {
             return tester.finish();
         }
     }
-
-    private Validator validator;
-
-    private List<Validation> validations = new ArrayList<>();
-
-    private int tests;
-
-    private int failed;
 
     private Tester(Path artifactsPath) {
         validator = ValidatorBuilder

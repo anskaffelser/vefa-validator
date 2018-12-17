@@ -42,17 +42,22 @@ public class XsdChecker implements Checker {
             String humanMessage = e.getMessage();
             if (humanMessage.startsWith("cvc-complex-type.2.4.")) {
                 try {
-                    XMLStreamReader xmlStreamReader = XML_INPUT_FACTORY.createXMLStreamReader(document.getInputStream());
+                    XMLStreamReader xmlStreamReader =
+                            XML_INPUT_FACTORY.createXMLStreamReader(document.getInputStream());
 
                     // Go to root element.
-                    while (xmlStreamReader.hasNext() && xmlStreamReader.getEventType() != XMLStreamConstants.START_ELEMENT)
+                    while (xmlStreamReader.hasNext()
+                            && xmlStreamReader.getEventType() != XMLStreamConstants.START_ELEMENT)
                         xmlStreamReader.next();
 
                     for (int i = 0; i < xmlStreamReader.getNamespaceCount(); i++) {
                         if (xmlStreamReader.getNamespacePrefix(i) == null)
-                            humanMessage = humanMessage.replace(String.format("\"%s\":", xmlStreamReader.getNamespaceURI(i)), "");
+                            humanMessage = humanMessage.replace(
+                                    String.format("\"%s\":", xmlStreamReader.getNamespaceURI(i)), "");
                         else
-                            humanMessage = humanMessage.replace(String.format("\"%s\"", xmlStreamReader.getNamespaceURI(i)), xmlStreamReader.getNamespacePrefix(i));
+                            humanMessage = humanMessage.replace(
+                                    String.format("\"%s\"", xmlStreamReader.getNamespaceURI(i)),
+                                    xmlStreamReader.getNamespacePrefix(i));
                     }
 
                     xmlStreamReader.close();
@@ -68,7 +73,8 @@ public class XsdChecker implements Checker {
             assertionType.setIdentifier("XSD");
             assertionType.setText(e.getMessage());
             assertionType.setTextFriendly(humanMessage);
-            assertionType.setLocation(String.format("Line %s, column %s.", e.getLineNumber(), e.getColumnNumber()));
+            assertionType.setLocation(String.format(
+                    "Line %s, column %s.", e.getLineNumber(), e.getColumnNumber()));
             assertionType.setFlag(FlagType.FATAL);
             section.add(assertionType);
         } catch (SAXException | IOException e) {

@@ -11,6 +11,8 @@ import java.net.URI;
  */
 public class RepositorySource extends AbstractSource {
 
+    private URI rootUri;
+
     public static RepositorySource forTest() {
         return create("https://test-vefa.difi.no/validator/repo/");
     }
@@ -22,8 +24,6 @@ public class RepositorySource extends AbstractSource {
     static RepositorySource create(String uri) {
         return new RepositorySource(uri);
     }
-
-    private URI rootUri;
 
     /**
      * Helper method to allow using string when initiating the new source.

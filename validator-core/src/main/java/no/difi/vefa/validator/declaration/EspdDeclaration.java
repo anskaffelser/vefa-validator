@@ -30,7 +30,7 @@ public class EspdDeclaration extends AbstractXmlDeclaration {
     @Override
     public String detect(byte[] content, String parent) throws ValidatorException {
         try {
-            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content));
+            XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 

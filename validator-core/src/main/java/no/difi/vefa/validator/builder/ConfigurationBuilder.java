@@ -7,16 +7,15 @@ import no.difi.xsd.vefa.validator._1.TriggerType;
 
 public class ConfigurationBuilder {
 
+    private ConfigurationType configuration = new ConfigurationType();
+
     public static ConfigurationBuilder identifier(String identifier) {
         return new ConfigurationBuilder(identifier);
     }
 
-    private ConfigurationType configuration = new ConfigurationType();
-
     private ConfigurationBuilder(String identifier) {
         IdentifierType identifierType = new IdentifierType();
         identifierType.setValue(identifier);
-
 
         configuration.setIdentifier(identifierType);
         configuration.setBuild("code");

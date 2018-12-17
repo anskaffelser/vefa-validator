@@ -42,7 +42,7 @@ public abstract class AbstractSourceInstance implements SourceInstance, Closeabl
         try {
             fileSystem = Jimfs.newFileSystem(Configuration.unix());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to create VEFA Validator filesystem.", e);
+            throw new IllegalStateException("Unable to create VEFA Validator filesystem.", e);
         }
     }
 

@@ -32,7 +32,7 @@ public class UblDeclaration extends AbstractXmlDeclaration {
         String profileId = null;
 
         try {
-            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new ByteArrayInputStream(content));
+            XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 

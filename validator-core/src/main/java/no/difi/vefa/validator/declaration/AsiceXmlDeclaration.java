@@ -20,7 +20,8 @@ import java.util.List;
 
 @Type("xml.asice")
 @MetaInfServices(Declaration.class)
-public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements DeclarationWithConverter, DeclarationWithChildren {
+public class AsiceXmlDeclaration extends AbstractXmlDeclaration
+        implements DeclarationWithConverter, DeclarationWithChildren {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1::asic";
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
@@ -28,17 +29,17 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements Decla
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
+    public boolean verify(byte[] content, String parent) {
         return NAMESPACE.equals(parent);
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public String detect(byte[] content, String parent) {
         return MIME;
     }
 
     @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
+    public Expectation expectations(byte[] content) {
         return null;
     }
 
@@ -53,7 +54,8 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements Decla
                 outputStream.write(buffer);
                 ByteStreams.copy(inputStream, outputStream);
             } else {
-                XMLStreamReader source = xmlInputFactory.createXMLStreamReader(new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
+                XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(
+                        new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                 do {
@@ -61,7 +63,8 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration implements Decla
                         byteArrayOutputStream.write(source.getText().getBytes());
                 } while (source.hasNext() && source.next() > 0);
 
-                outputStream.write(BaseEncoding.base64().decode(CharMatcher.WHITESPACE.removeFrom(byteArrayOutputStream.toString())));
+                outputStream.write(BaseEncoding.base64().decode(
+                        CharMatcher.whitespace().removeFrom(byteArrayOutputStream.toString())));
             }
         } catch (IOException | XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);

@@ -10,8 +10,9 @@ import javax.xml.stream.XMLOutputFactory;
 
 abstract class AbstractXmlDeclaration implements Declaration {
 
-    protected static XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
-    protected static XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
+    protected static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newFactory();
+
+    protected static final XMLOutputFactory XML_OUTPUT_FACTORY = XMLOutputFactory.newFactory();
 
     @Override
     public Expectation expectations(byte[] content) throws ValidatorException {

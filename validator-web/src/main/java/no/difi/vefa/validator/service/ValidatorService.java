@@ -5,6 +5,7 @@ import no.difi.vefa.validator.Validator;
 import no.difi.vefa.validator.ValidatorBuilder;
 import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.SimpleProperties;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
@@ -60,7 +61,7 @@ public class ValidatorService {
                     source = new RepositorySource(propRepository);
                     break;
                 default:
-                    throw new Exception("Type of source not recognized.");
+                    throw new ValidatorException("Type of source not recognized.");
             }
 
             SimpleProperties config = new SimpleProperties();

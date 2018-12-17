@@ -79,7 +79,7 @@ public class AsiceDeclaration extends AbstractXmlDeclaration
                 outputStream.write(buffer);
                 ByteStreams.copy(inputStream, outputStream);
             } else {
-                XMLStreamReader source = xmlInputFactory.createXMLStreamReader(
+                XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(
                         new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 

@@ -141,7 +141,8 @@ class ValidationInstance implements Validation {
             byteArrayInputStream.reset();
             declaration.convert(byteArrayInputStream, convertedOutputStream);
 
-            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()), byteArrayInputStream, declarationIdentifier.toString(), expectation);
+            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()),
+                    byteArrayInputStream, declarationIdentifier.toString(), expectation);
         } else {
             document = new Document(byteArrayInputStream, declarationIdentifier.toString(), expectation);
         }
@@ -157,7 +158,8 @@ class ValidationInstance implements Validation {
 
         if (!properties.getBoolean("feature.suppress_notloaded"))
             for (String notLoaded : configuration.getNotLoaded())
-                section.add("SYSTEM-007", String.format("Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
+                section.add("SYSTEM-007", String.format(
+                        "Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
 
         // Update report using configuration for declaration
         report.setTitle(configuration.getTitle());
@@ -254,7 +256,8 @@ class ValidationInstance implements Validation {
     @Override
     public void render(OutputStream outputStream, Properties properties) throws ValidatorException {
         if (getReport().getFlag().equals(FlagType.FATAL))
-            throw new ValidatorException(String.format("Status '%s' is not supported for rendering.", getReport().getFlag()));
+            throw new ValidatorException(String.format(
+                    "Status '%s' is not supported for rendering.", getReport().getFlag()));
         if (configuration == null)
             throw new ValidatorException("Configuration was not detected, configuration is need for rendering.");
         if (configuration.getStylesheet() == null)
@@ -264,13 +267,16 @@ class ValidationInstance implements Validation {
     }
 
     /**
-     * Returns true if validated document is renderable based upon same criteria as may be provide exception when using #render(...).
+     * Returns true if validated document is renderable based upon same criteria as may be provide
+     * exception when using #render(...).
      *
      * @return 'true' if validated document is renderable.
      */
     @Override
     public boolean isRenderable() {
-        return configuration != null && configuration.getStylesheet() != null && !getReport().getFlag().equals(FlagType.FATAL);
+        return configuration != null
+                && configuration.getStylesheet() != null
+                && !getReport().getFlag().equals(FlagType.FATAL);
     }
 
     /**

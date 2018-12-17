@@ -28,6 +28,7 @@ public class Cli {
             default:
                 log.error(String.format("Unknown command: '%s'", args[0]));
                 System.exit(1);
+                break;
         }
     }
 }

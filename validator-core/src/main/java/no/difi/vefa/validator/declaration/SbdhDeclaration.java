@@ -61,8 +61,8 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
             try {
                 outputStream = new ByteArrayOutputStream();
 
-                XMLStreamReader source = xmlInputFactory.createXMLStreamReader(inputStream);
-                XMLStreamWriter target = xmlOutputFactory.createXMLStreamWriter(outputStream, source.getEncoding());
+                XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(inputStream);
+                XMLStreamWriter target = XML_OUTPUT_FACTORY.createXMLStreamWriter(outputStream, source.getEncoding());
 
                 boolean payload = false;
                 boolean written = false;
