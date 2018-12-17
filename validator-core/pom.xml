@@ -96,8 +96,12 @@
         </dependency>
 
         <!-- Google -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.github.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+        </dependency> -->
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
         </dependency>
         <dependency>
@@ -114,12 +118,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 
 </project>

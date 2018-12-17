@@ -200,11 +200,11 @@
                 <artifactId>jimfs</artifactId>
                 <version>1.1</version>
             </dependency>
-            <dependency>
+            <!-- <dependency>
                 <groupId>com.github.google.jimfs</groupId>
                 <artifactId>jimfs</artifactId>
                 <version>7e5b6fe2a0</version>
-            </dependency>
+            </dependency> -->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -363,5 +363,12 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <!-- <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories> -->
 
 </project>
