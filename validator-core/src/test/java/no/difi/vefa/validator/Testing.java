@@ -8,7 +8,6 @@ import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -80,7 +79,7 @@ public class Testing {
     @Test
     public void simpleValidatorTest() {
         Validation validation = validator.validate(getClass().getResourceAsStream("/documents/NOGOV-T10-R014.xml"), new SimpleProperties().set("feature.nesting", true));
-        Assert.assertEquals(validation.getReport().getFlag(), FlagType.OK);
-        Assert.assertEquals(validation.getChildren().size(), 3);
+        assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        assertEquals(validation.getChildren().size(), 3);
     }
 }
