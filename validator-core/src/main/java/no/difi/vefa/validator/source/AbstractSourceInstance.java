@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-abstract class AbstractSourceInstance implements SourceInstance, Closeable {
+public abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
     protected static final AsicReaderFactory ASIC_READER_FACTORY =
             AsicReaderFactory.newFactory(SignatureMethod.CAdES);

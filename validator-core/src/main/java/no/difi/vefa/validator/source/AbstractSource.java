@@ -2,5 +2,5 @@ package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Source;
 
-abstract class AbstractSource implements Source {
+public abstract class AbstractSource implements Source {
 }

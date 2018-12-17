@@ -1,8 +1,9 @@
-package no.difi.vefa.validator.source;
+package no.difi.vefa.validator.repo.source;
 
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.source.AbstractSource;
 
 import java.nio.file.Path;
 

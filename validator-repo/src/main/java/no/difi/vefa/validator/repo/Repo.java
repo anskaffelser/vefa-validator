@@ -1,7 +1,8 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.repo;
 
+import no.difi.vefa.validator.ValidatorDefaults;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.source.SimpleDirectorySource;
+import no.difi.vefa.validator.repo.source.SimpleDirectorySource;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -34,7 +35,6 @@ public class Repo {
      * @param directory   Directory for repository.
      * @param writeToDisk Set to true if list of artifacts is to be written do disk.
      * @return List of current artifacts.
-     * @throws Exception
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.

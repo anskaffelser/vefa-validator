@@ -1,4 +1,4 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.repo;
 
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;

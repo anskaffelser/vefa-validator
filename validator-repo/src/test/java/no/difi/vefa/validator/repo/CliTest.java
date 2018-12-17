@@ -1,4 +1,4 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.repo;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -20,7 +20,7 @@ public class Cli {
                 no.difi.vefa.validator.build.Cli.main(realArgs);
                 break;
             case "repo":
-                no.difi.vefa.validator.Cli.main(realArgs);
+                no.difi.vefa.validator.repo.Cli.main(realArgs);
                 break;
             case "tester":
                 no.difi.vefa.validator.tester.Cli.main(realArgs);

@@ -1,14 +1,12 @@
 package no.difi.vefa.validator.build.module;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.sf.saxon.s9api.Processor;
 import no.difi.commons.schematron.SchematronCompiler;
 import no.difi.commons.schematron.SchematronException;
-import org.kohsuke.MetaInfServices;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.List;
 /**
  * @author erlend
  */
-@MetaInfServices(Module.class)
 public class SchematronModule extends AbstractModule {
 
     @Provides

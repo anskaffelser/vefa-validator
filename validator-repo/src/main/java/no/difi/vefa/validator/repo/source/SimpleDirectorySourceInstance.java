@@ -1,8 +1,9 @@
-package no.difi.vefa.validator.source;
+package no.difi.vefa.validator.repo.source;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.source.AbstractSourceInstance;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -20,7 +21,6 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
      * Constructor, loads validation artifacts into memory.
      *
      * @param directories Directories containing validation artifacts.
-     * @throws ValidatorException
      */
     public SimpleDirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
