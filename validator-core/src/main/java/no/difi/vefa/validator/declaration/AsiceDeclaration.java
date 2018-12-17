@@ -23,15 +23,17 @@ import java.util.zip.ZipInputStream;
 
 @Type("zip.asice")
 @MetaInfServices(Declaration.class)
-public class AsiceDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren, DeclarationWithConverter {
+public class AsiceDeclaration extends AbstractXmlDeclaration
+        implements DeclarationWithChildren, DeclarationWithConverter {
 
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1";
+
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
 
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
+    public boolean verify(byte[] content, String parent) {
         if (Arrays.equals(startsWith, Arrays.copyOfRange(content, 0, 4))) {
             if (content[28] != 0)
                 return false;
@@ -57,12 +59,12 @@ public class AsiceDeclaration extends AbstractXmlDeclaration implements Declarat
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public String detect(byte[] content, String parent) {
         return MIME;
     }
 
     @Override
-    public Expectation expectations(byte[] content) throws ValidatorException {
+    public Expectation expectations(byte[] content) {
         return null;
     }
 
@@ -77,7 +79,8 @@ public class AsiceDeclaration extends AbstractXmlDeclaration implements Declarat
                 outputStream.write(buffer);
                 ByteStreams.copy(inputStream, outputStream);
             } else {
-                XMLStreamReader source = xmlInputFactory.createXMLStreamReader(new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
+                XMLStreamReader source = xmlInputFactory.createXMLStreamReader(
+                        new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
                 do {
@@ -85,7 +88,8 @@ public class AsiceDeclaration extends AbstractXmlDeclaration implements Declarat
                         byteArrayOutputStream.write(source.getText().getBytes());
                 } while (source.hasNext() && source.next() > 0);
 
-                outputStream.write(BaseEncoding.base64().decode(CharMatcher.WHITESPACE.removeFrom(byteArrayOutputStream.toString())));
+                outputStream.write(BaseEncoding.base64().decode(
+                        CharMatcher.whitespace().removeFrom(byteArrayOutputStream.toString())));
             }
         } catch (IOException | XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);

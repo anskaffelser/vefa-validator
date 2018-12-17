@@ -9,26 +9,29 @@ import org.junit.Test;
  * Testing opening and closing two validators in row.
  */
 public class MultipleValidators {
+
     private Validator validator;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() {
         validator = ValidatorBuilder.newValidator()
                 .setSource(new ClasspathSource("/rules/"))
                 .build();
     }
 
     @After
-    public void cleanup() {
+    public void tearDown() {
         validator.close();
     }
 
     @Test
     public void test1() {
+        // No action
     }
 
     @Test
     public void test2() {
+        // No action
     }
 
 }

@@ -28,13 +28,16 @@ public class ValidatorService {
 
     @Autowired
     private PropertiesFactoryBean propertiesFactoryBean;
+
     @Autowired
     private WorkspaceService workspaceService;
 
     @Value("${source}")
     private String propSource;
+
     @Value("${repository}")
     private String propRepository;
+
     @Value("${directory}")
     private String dirRules;
 

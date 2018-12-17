@@ -12,7 +12,9 @@ import java.nio.file.Path;
 public class PathLSInput implements LSInput {
 
     private String publicId;
+
     private String sysId;
+
     private Path file;
 
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -25,7 +27,7 @@ public class PathLSInput implements LSInput {
         try {
             Files.copy(file, outputStream);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
@@ -36,7 +38,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setCharacterStream(Reader characterStream) {
-
+        // No action
     }
 
     @Override
@@ -46,7 +48,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setByteStream(InputStream byteStream) {
-
+        // No action
     }
 
     @Override
@@ -56,7 +58,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setStringData(String stringData) {
-
+        // No action
     }
 
     @Override
@@ -66,7 +68,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setSystemId(String systemId) {
-
+        // No action
     }
 
     @Override
@@ -76,7 +78,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setPublicId(String publicId) {
-
+        // No action
     }
 
     @Override
@@ -86,7 +88,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setBaseURI(String baseURI) {
-
+        // No action
     }
 
     @Override
@@ -96,7 +98,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setEncoding(String encoding) {
-
+        // No action
     }
 
     @Override
@@ -106,6 +108,6 @@ public class PathLSInput implements LSInput {
 
     @Override
     public void setCertifiedText(boolean certifiedText) {
-
+        // No action
     }
 }

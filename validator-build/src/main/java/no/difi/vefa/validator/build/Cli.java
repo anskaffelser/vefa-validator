@@ -5,14 +5,12 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.module.BuildModule;
 import no.difi.vefa.validator.build.module.SchematronModule;
 import no.difi.vefa.validator.build.task.BuildTask;
 import no.difi.vefa.validator.build.task.TestTask;
 import no.difi.vefa.validator.module.SaxonModule;
-import no.difi.xsd.vefa.validator._1.FlagType;
 import org.apache.commons.cli.*;
 
 import javax.xml.bind.JAXBException;
@@ -44,7 +42,7 @@ public class Cli {
         options.addOption("b", "build", true, "Build identifier");
         options.addOption("n", "name", true, "Name");
         options.addOption("w", "weight", true, "Weight");
-        options.addOption("x", "exitcode", false, "Status in exit code");
+        options.addOption("x", "exitcode", false, "Status in exit code - DEPRECATED");
         options.addOption("p", "profile", true, "Buildconfig profile");
         options.addOption("a", "source", true, "Source folder");
         options.addOption("s", "site", true, "Create site - DEPRECATED");
@@ -55,18 +53,13 @@ public class Cli {
 
         int result = 0;
 
-        for (String arg : cmd.getArgs()) {
+        for (String arg : cmd.getArgs().length > 0 ? cmd.getArgs() : new String[]{"."}) {
             Build build = Build.of(arg, cmd);
 
             buildTask.get().build(build);
 
             if (cmd.hasOption("test"))
-                testTask.get().perform(build);
-
-            if (cmd.hasOption("x"))
-                for (Validation validation : build.getTestValidations())
-                    if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0)
-                        result = 1;
+                result += testTask.get().perform(build) ? 0 : 1;
         }
 
         return result;

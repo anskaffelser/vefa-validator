@@ -2,8 +2,9 @@ package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.*;
-import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.api.CachedFile;
+import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.DeclarationWithChildren;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;
@@ -18,15 +19,16 @@ import java.util.Iterator;
 @MetaInfServices(Declaration.class)
 public class SbdhDeclaration extends AbstractXmlDeclaration implements DeclarationWithChildren {
 
-    private static final String NAMESPACE = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
+    private static final String NAMESPACE =
+            "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
 
     @Override
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
+    public boolean verify(byte[] content, String parent) {
         return parent.startsWith(NAMESPACE);
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public String detect(byte[] content, String parent) {
         // Simple stupid
         return "SBDH:1.0";
     }
@@ -39,6 +41,7 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
     private class SbdhIterator implements Iterable<CachedFile>, Iterator<CachedFile> {
 
         private InputStream inputStream;
+
         private ByteArrayOutputStream outputStream;
 
         public SbdhIterator(InputStream inputStream) {
@@ -75,7 +78,8 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
                             break;
 
                         case XMLStreamConstants.START_ELEMENT:
-                            payload = !source.getNamespaceURI().equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
+                            payload = !source.getNamespaceURI()
+                                    .equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
 
                             if (payload) {
                                 written = true;
@@ -89,7 +93,8 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
                             break;
 
                         case XMLStreamConstants.END_ELEMENT:
-                            payload = !source.getNamespaceURI().equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
+                            payload = !source.getNamespaceURI()
+                                    .equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
 
                             if (payload) {
                                 written = true;

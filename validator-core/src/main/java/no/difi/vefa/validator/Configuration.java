@@ -1,5 +1,6 @@
 package no.difi.vefa.validator;
 
+import com.google.common.collect.Lists;
 import no.difi.vefa.validator.api.FlagFilterer;
 import no.difi.xsd.vefa.validator._1.*;
 
@@ -48,10 +49,10 @@ class Configuration extends ConfigurationType implements FlagFilterer {
      */
     void normalize(ValidatorEngine engine) {
         while (getInherit().size() > 0) {
-            List<RuleType> rules = new ArrayList<>();
-            List<FileType> files = new ArrayList<>();
-            List<TriggerType> triggers = new ArrayList<>();
-            List<String> inherits = new ArrayList<>();
+            List<RuleType> rules = Lists.newArrayList();
+            List<FileType> files = Lists.newArrayList();
+            List<TriggerType> triggers = Lists.newArrayList();
+            List<String> inherits = Lists.newArrayList();
             StylesheetType stylesheet = null;
 
             for (String inherit : getInherit()) {

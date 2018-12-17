@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.controller;
 
-import no.difi.vefa.validator.service.PiwikService;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.service.WorkspaceService;
 import no.difi.xsd.vefa.validator._1.Report;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,6 @@ public class ValidationController {
 
     @Autowired
     private WorkspaceService workspaceService;
-    @Autowired
-    private PiwikService piwikService;
 
     @RequestMapping
     public String present(@PathVariable String identifier, ModelMap modelMap) throws Exception {
@@ -38,18 +36,17 @@ public class ValidationController {
         modelMap.put("identifier", identifier);
         modelMap.put("report", report);
 
-        piwikService.update(modelMap);
-
-        return report.getReport().isEmpty() ? presentSingle(identifier, modelMap) : presentNested(identifier, report, modelMap);
+        return report.getReport().isEmpty() ?
+                presentSingle(identifier, modelMap) : presentNested(identifier, report, modelMap);
     }
 
-    private String presentSingle(String identifier, ModelMap modelMap) throws Exception {
+    private String presentSingle(String identifier, ModelMap modelMap) {
         modelMap.put("viewExists", workspaceService.getView(identifier).exists());
 
         return "validation";
     }
 
-    private String presentNested(String identifier, Report report, ModelMap modelMap) throws Exception {
+    private String presentNested(String identifier, Report report, ModelMap modelMap) {
         Set<Report> reports = walkReports(report);
 
         Map<String, Boolean> views = new HashMap<>();
@@ -74,7 +71,8 @@ public class ValidationController {
 
     @ResponseBody
     @RequestMapping(value = "/report.json", produces = "application/json")
-    public FileSystemResource presentJson(@PathVariable String identifier, HttpServletResponse response) throws Exception {
+    public FileSystemResource presentJson(@PathVariable String identifier, HttpServletResponse response)
+            throws Exception {
         if (!workspaceService.exists(identifier))
             throw new Exception("Workspace not found.");
 
@@ -85,7 +83,8 @@ public class ValidationController {
 
     @ResponseBody
     @RequestMapping(value = "/report", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public FileSystemResource presentXml(@PathVariable String identifier, HttpServletResponse response) throws Exception {
+    public FileSystemResource presentXml(@PathVariable String identifier, HttpServletResponse response)
+            throws Exception {
         if (!workspaceService.exists(identifier))
             throw new Exception("Workspace not found.");
 
@@ -97,7 +96,8 @@ public class ValidationController {
 
     @ResponseBody
     @RequestMapping(value = "/source", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public FileSystemResource presentSource(@PathVariable String identifier, HttpServletResponse response) throws Exception {
+    public FileSystemResource presentSource(@PathVariable String identifier, HttpServletResponse response)
+            throws Exception {
         if (!workspaceService.exists(identifier))
             throw new Exception("Workspace not found.");
 
@@ -122,9 +122,9 @@ public class ValidationController {
     @RequestMapping(value = "/view/{uuid}", produces = MediaType.TEXT_HTML_VALUE + "; charset=utf-8")
     public FileSystemResource presentView(@PathVariable String identifier, @PathVariable String uuid) throws Exception {
         if (!workspaceService.exists(identifier))
-            throw new Exception("Workspace not found.");
+            throw new ValidatorException("Workspace not found.");
         if (!workspaceService.getView(identifier, uuid).exists())
-            throw new Exception("Presentation not found.");
+            throw new ValidatorException("Presentation not found.");
 
         return new FileSystemResource(workspaceService.getView(identifier, uuid));
     }

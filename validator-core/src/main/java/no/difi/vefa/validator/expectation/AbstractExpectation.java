@@ -13,10 +13,15 @@ import java.util.Map;
 public abstract class AbstractExpectation implements Expectation {
 
     protected String description;
+
     protected List<String> scopes = new ArrayList<>();
+
     protected Map<String, Integer> successes = new HashMap<>();
+
     protected Map<String, Integer> warnings = new HashMap<>();
+
     protected Map<String, Integer> errors = new HashMap<>();
+
     protected Map<String, Integer> fatals = new HashMap<>();
 
     @Override
@@ -63,18 +68,22 @@ public abstract class AbstractExpectation implements Expectation {
     public void verify(Section section) {
         for (String key : fatals.keySet())
             if (fatals.get(key) > 0)
-                section.add("SYSTEM-004", "Rule '" + key + "' (FATAL) not fired " + fatals.get(key) + " time(s).", FlagType.ERROR);
+                section.add("SYSTEM-004", String.format(
+                        "Rule '%s' (FATAL) not fired %s time(s).", key, fatals.get(key)), FlagType.ERROR);
         for (String key : errors.keySet())
             if (errors.get(key) > 0)
-                section.add("SYSTEM-005", "Rule '" + key + "' (ERROR) not fired " + errors.get(key) + " time(s).", FlagType.ERROR);
+                section.add("SYSTEM-005", String.format(
+                        "Rule '%s' (ERROR) not fired %s time(s).", key, errors.get(key)), FlagType.ERROR);
         for (String key : warnings.keySet())
             if (warnings.get(key) > 0)
-                section.add("SYSTEM-006", "Rule '" + key + "' (WARNING) not fired " + warnings.get(key) + " time(s).", FlagType.ERROR);
+                section.add("SYSTEM-006", String.format(
+                        "Rule '%s' (WARNING) not fired %s time(s).", key, warnings.get(key)), FlagType.ERROR);
         for (String key : successes.keySet()) {
             if (successes.get(key) == 1)
                 section.add(key, "Rule not fired.", FlagType.SUCCESS);
             else
-                section.add("SYSTEM-009", "Rule '" + key + "' fired " + (successes.get(key) - 1) + " time(s).", FlagType.ERROR);
+                section.add("SYSTEM-009", String.format(
+                        "Rule '%s' fired %s time(s).", key, successes.get(key) - 1), FlagType.ERROR);
         }
     }
 }

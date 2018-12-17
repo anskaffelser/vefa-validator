@@ -23,11 +23,14 @@ import java.util.zip.GZIPOutputStream;
 @Service
 public class WorkspaceService {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-    private static JAXBContext jaxbContext = JAXBHelper.context(Report.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static final JAXBContext JAXB_CONTEXT =
+            JAXBHelper.context(Report.class);
 
     @Value("${workspace}")
     private String dirWorkspace;
+
     @Value("${workspace.expire}")
     private int workspaceExpire;
 
@@ -35,7 +38,6 @@ public class WorkspaceService {
         return new File(dirWorkspace, identifier);
     }
 
-    @SuppressWarnings("all")
     public String saveValidation(Validation validation) throws Exception {
         String identifier = validation.getReport().getUuid();
 
@@ -43,25 +45,19 @@ public class WorkspaceService {
             File folder = getFolder(validation.getReport().getUuid());
             folder.mkdirs();
 
-            try (
-                    OutputStream targetStream = new FileOutputStream(new File(folder, "source.xml.gz"));
-                    OutputStream outputStream = new GZIPOutputStream(targetStream);
-            ) {
+            try (OutputStream targetStream = new FileOutputStream(new File(folder, "source.xml.gz"));
+                 OutputStream outputStream = new GZIPOutputStream(targetStream)) {
                 IOUtils.copy(validation.getDocument().getInputStream(), outputStream);
             }
 
-            try (
-                    OutputStream targetStream = new FileOutputStream(new File(folder, "report.xml.gz"));
-                    OutputStream outputStream = new GZIPOutputStream(targetStream);
-            ) {
-                jaxbContext.createMarshaller().marshal(validation.getReport(), outputStream);
+            try (OutputStream targetStream = new FileOutputStream(new File(folder, "report.xml.gz"));
+                 OutputStream outputStream = new GZIPOutputStream(targetStream)) {
+                JAXB_CONTEXT.createMarshaller().marshal(validation.getReport(), outputStream);
             }
 
-            try (
-                    OutputStream targetStream = new FileOutputStream(new File(folder, "report.json.gz"));
-                    OutputStream outputStream = new GZIPOutputStream(targetStream);
-            ) {
-                objectMapper.writeValue(outputStream, validation.getReport());
+            try (OutputStream targetStream = new FileOutputStream(new File(folder, "report.json.gz"));
+                 OutputStream outputStream = new GZIPOutputStream(targetStream)) {
+                OBJECT_MAPPER.writeValue(outputStream, validation.getReport());
             }
 
             if (validation.isRenderable()) {
@@ -100,11 +96,9 @@ public class WorkspaceService {
     }
 
     public Report getReport(String identifier) throws Exception {
-        try (
-                InputStream sourceStream = new FileInputStream(getReportXml(identifier));
-                InputStream inputStream = new GZIPInputStream(sourceStream);
-        ) {
-            return jaxbContext.createUnmarshaller().unmarshal(new StreamSource(inputStream), Report.class).getValue();
+        try (InputStream sourceStream = new FileInputStream(getReportXml(identifier));
+             InputStream inputStream = new GZIPInputStream(sourceStream)) {
+            return JAXB_CONTEXT.createUnmarshaller().unmarshal(new StreamSource(inputStream), Report.class).getValue();
         }
     }
 
