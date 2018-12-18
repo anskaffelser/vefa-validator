@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
+import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
 
@@ -59,7 +59,8 @@ class ValidatorEngine implements Closeable {
      * Loading a new validator engine loading configurations from current source.
      */
     @Inject
-    public ValidatorEngine(SourceInstance sourceInstance, List<Configurations> configurations) throws ValidatorException {
+    public ValidatorEngine(SourceInstance sourceInstance, List<Configurations> configurations)
+            throws ValidatorException {
         // Load configurations from ValidatorBuilder.
         for (Configurations c : configurations)
             loadConfigurations("", c);
@@ -71,20 +72,21 @@ class ValidatorEngine implements Closeable {
                 // Matcher to find configuration files.
                 final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
 
-                Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        if (matcher.matches(file)) {
-                            String configurationSource = addResource(file.getParent());
-                            try (InputStream inputStream = Files.newInputStream(file)) {
-                                loadConfigurations(configurationSource, inputStream);
-                            } catch (ValidatorException e) {
-                                throw new IOException(e.getMessage(), e);
+                Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3,
+                        new SimpleFileVisitor<Path>() {
+                            @Override
+                            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                if (matcher.matches(file)) {
+                                    String configurationSource = addResource(file.getParent());
+                                    try (InputStream inputStream = Files.newInputStream(file)) {
+                                        loadConfigurations(configurationSource, inputStream);
+                                    } catch (ValidatorException e) {
+                                        throw new IOException(e.getMessage(), e);
+                                    }
+                                }
+                                return FileVisitResult.CONTINUE;
                             }
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+                        });
             } else {
                 for (String config : configs) {
                     Path path = sourceInstance.getFileSystem().getPath(config);
@@ -151,7 +153,8 @@ class ValidatorEngine implements Closeable {
 
             if (configuration.getStylesheet() != null) {
                 StylesheetType stylesheet = configuration.getStylesheet();
-                stylesheet.setPath(String.format("%s#%s", configurationSource, configuration.getStylesheet().getPath()));
+                stylesheet.setPath(String.format(
+                        "%s#%s", configurationSource, configuration.getStylesheet().getPath()));
                 if (stylesheet.getType() == null)
                     stylesheet.setType("xml.xslt");
 
@@ -159,12 +162,15 @@ class ValidatorEngine implements Closeable {
             }
 
             // Add by identifier if not registered or weight is higher
-            if (!identifierMap.containsKey(configuration.getIdentifier().getValue()) || identifierMap.get(configuration.getIdentifier().getValue()).getWeight() < configuration.getWeight())
+            if (!identifierMap.containsKey(configuration.getIdentifier().getValue()) ||
+                    identifierMap.get(configuration.getIdentifier().getValue()).getWeight() < configuration.getWeight())
                 identifierMap.put(configuration.getIdentifier().getValue(), configuration);
 
             if (configuration.getBuild() != null) {
-                String identifierBuild = String.format("%s#%s", configuration.getIdentifier(), configuration.getBuild());
-                if (!identifierMap.containsKey(identifierBuild) || identifierMap.get(identifierBuild).getWeight() < configuration.getWeight())
+                String identifierBuild = String.format(
+                        "%s#%s", configuration.getIdentifier(), configuration.getBuild());
+                if (!identifierMap.containsKey(identifierBuild) ||
+                        identifierMap.get(identifierBuild).getWeight() < configuration.getWeight())
                     identifierMap.put(identifierBuild, configuration);
             }
 
@@ -192,12 +198,15 @@ class ValidatorEngine implements Closeable {
             }
 
             for (DeclarationType declaration : configuration.getDeclaration()) {
-                String identifier = String.format("%s::%s", declaration.getType(), declaration.getValue());
-                if (!declarationMap.containsKey(identifier) || declarationMap.get(identifier).getWeight() < configuration.getWeight())
+                String identifier = String.format(
+                        "%s::%s", declaration.getType(), declaration.getValue());
+                if (!declarationMap.containsKey(identifier) ||
+                        declarationMap.get(identifier).getWeight() < configuration.getWeight())
                     declarationMap.put(identifier, configuration);
             }
 
-            declarationMap.put(String.format("configuration::%s", configuration.getIdentifier().getValue()), configuration);
+            declarationMap.put(String.format(
+                    "configuration::%s", configuration.getIdentifier().getValue()), configuration);
         }
     }
 

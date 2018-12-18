@@ -119,14 +119,15 @@ class ValidatorInstance implements Closeable {
      * @param document     Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
-    protected void render(StylesheetType stylesheet, Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
+    protected void render(StylesheetType stylesheet, Document document, Properties properties,
+                          OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
         try {
             renderer = rendererCache.get(stylesheet.getIdentifier());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
-            throw new ValidatorException(
-                    String.format("Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
+            throw new ValidatorException(String.format(
+                    "Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
         }
 
         renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
@@ -140,14 +141,15 @@ class ValidatorInstance implements Closeable {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    protected Section check(FileType fileType, Document document, Configuration configuration) throws ValidatorException {
+    protected Section check(FileType fileType, Document document, Configuration configuration)
+            throws ValidatorException {
         Checker checker;
         try {
             checker = checkerCache.get(fileType.getPath());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
-            throw new ValidatorException(
-                    String.format("Unable to get checker object from pool for '%s'.", configuration.getIdentifier()), e);
+            throw new ValidatorException(String.format(
+                    "Unable to get checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
         Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
@@ -170,7 +172,8 @@ class ValidatorInstance implements Closeable {
      * @param configuration Complete configuration
      * @return Result of validation.
      */
-    protected Section trigger(TriggerType triggerType, Document document, Configuration configuration) throws ValidatorException {
+    protected Section trigger(TriggerType triggerType, Document document, Configuration configuration)
+            throws ValidatorException {
         Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
         section.setFlag(FlagType.OK);
         triggerFactory.get(triggerType.getIdentifier()).check(document, section);

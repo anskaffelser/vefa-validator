@@ -27,15 +27,14 @@ public class Cli {
         CommandLineParser parser = new DefaultParser();
         final CommandLine cmd = parser.parse(options, args);
 
-        List<Path> testFolders = new ArrayList<Path>() {{
-            for (String arg : cmd.getArgs())
-                add(Paths.get(arg));
-        }};
+        List<Path> testFolders = new ArrayList<>();
+        for (String arg : cmd.getArgs())
+            testFolders.add(Paths.get(arg));
 
         String artifacts = cmd.getOptionValue("a", "https://vefa.difi.no/validator/repo/");
         List<Validation> validations;
         if (artifacts.startsWith("http"))
-             validations = Tester.perform(URI.create(artifacts), testFolders);
+            validations = Tester.perform(URI.create(artifacts), testFolders);
         else
             validations = Tester.perform(Paths.get(artifacts), testFolders);
 

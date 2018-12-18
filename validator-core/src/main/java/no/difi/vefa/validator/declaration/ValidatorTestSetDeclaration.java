@@ -40,6 +40,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
     class TestSetIterator implements Iterator<CachedFile>, Iterable<CachedFile> {
 
         private TestSet testSet;
+
         private int counter = -1;
 
         public TestSetIterator(InputStream inputStream) throws ValidatorException {

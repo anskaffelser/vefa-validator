@@ -15,7 +15,9 @@ public class XmlExpectation extends AbstractExpectation {
 
         content = content.substring(content.indexOf("<!--") + 4, content.indexOf("-->"));
 
-        for (String section : content.replaceAll("\\r", "").replaceAll("\\t", " ").replaceAll("  ", "")/*.replaceAll(" \\n", "\\n").replaceAll("\\n ", "\\n")*/.trim().split("\\n\\n")) {
+        for (String section : content.replaceAll("\\r", "").replaceAll("\\t", " ").replaceAll("  ", "")
+                /*.replaceAll(" \\n", "\\n").replaceAll("\\n ", "\\n")*/
+                .trim().split("\\n\\n")) {
             String[] parts = section.split(":", 2);
             switch (parts[0].toLowerCase()) {
                 case "content":
@@ -51,7 +53,9 @@ public class XmlExpectation extends AbstractExpectation {
     }
 
     private void extractRules(String[] parts, Map<String, Integer> target) {
-        for (String p : parts[1].replaceAll(" x ", " ").replaceAll(" * ", " ").replaceAll("None", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("times", "").replaceAll("time", "").replaceAll("  ", "").trim().split("\\n")) {
+        for (String p : parts[1].replaceAll(" x ", " ").replaceAll(" * ", " ").replaceAll("None", "")
+                .replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("times", "").replaceAll("time", "")
+                .replaceAll("  ", "").trim().split("\\n")) {
             try {
                 if (!p.trim().isEmpty()) {
                     String[] r = p.trim().split(" ");

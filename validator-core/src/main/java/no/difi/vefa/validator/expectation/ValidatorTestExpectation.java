@@ -18,11 +18,14 @@ public class ValidatorTestExpectation extends AbstractExpectation {
 
     public ValidatorTestExpectation(byte[] bytes) {
         try {
-            Test test = jaxbContext.createUnmarshaller().unmarshal(new StreamSource(new ByteArrayInputStream(bytes)), Test.class).getValue();
+            Test test = jaxbContext.createUnmarshaller().unmarshal(
+                    new StreamSource(new ByteArrayInputStream(bytes)), Test.class).getValue();
             AssertType assertType = test.getAssert();
 
             if (assertType != null) {
-                description = test.getId() == null ? assertType.getDescription() : String.format("%s) %s", test.getId(), assertType.getDescription());
+                description = test.getId() == null ?
+                        assertType.getDescription() :
+                        String.format("%s) %s", test.getId(), assertType.getDescription());
                 scopes.addAll(assertType.getScope());
 
                 for (AssertElementType a : assertType.getFatal())

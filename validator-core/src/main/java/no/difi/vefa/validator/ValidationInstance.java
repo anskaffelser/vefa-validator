@@ -45,8 +45,6 @@ class ValidationInstance implements Validation {
      */
     private Document document;
 
-    private DeclarationIdentifier declarationIdentifier;
-
     private DeclarationWrapper declaration;
 
     private List<Validation> children;
@@ -122,7 +120,7 @@ class ValidationInstance implements Validation {
         bytes = Arrays.copyOfRange(bytes, 0, length);
 
         // Use declaration implementations to detect declaration to use.
-        declarationIdentifier = validatorInstance.detect(bytes);
+        DeclarationIdentifier declarationIdentifier = validatorInstance.detect(bytes);
         declaration = declarationIdentifier.getDeclaration();
 
         if (declarationIdentifier.equals(DeclarationDetector.UNKNOWN))
@@ -239,10 +237,9 @@ class ValidationInstance implements Validation {
      * Render document to a stream.
      *
      * @param outputStream Stream to use.
-     * @throws Exception
      */
     @Override
-    public void render(OutputStream outputStream) throws Exception {
+    public void render(OutputStream outputStream) throws ValidatorException {
         render(outputStream, null);
     }
 
@@ -251,7 +248,6 @@ class ValidationInstance implements Validation {
      *
      * @param outputStream Stream to use.
      * @param properties   Extra configuration to use for this rendering.
-     * @throws ValidatorException
      */
     @Override
     public void render(OutputStream outputStream, Properties properties) throws ValidatorException {

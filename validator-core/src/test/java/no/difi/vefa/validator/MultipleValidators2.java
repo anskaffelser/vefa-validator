@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class MultipleValidators2 {
 
     @Test
-    public void simple() throws Exception{
+    public void simple() throws Exception {
         Validator validator1 = ValidatorBuilder.newValidator()
                 .setSource(new ClasspathSource("/rules/"))
                 .build();

@@ -38,7 +38,8 @@ public class Repo {
      */
     public static Artifacts generateArtifacts(Path directory, boolean writeToDisk) throws Exception {
         // Use a regular validator engine to load all artifacts in repo and calculate current configuration.
-        SourceInstance sourceInstance = new SimpleDirectorySource(directory).createInstance(ValidatorDefaults.PROPERTIES);
+        SourceInstance sourceInstance = new SimpleDirectorySource(directory)
+                .createInstance(ValidatorDefaults.PROPERTIES);
 
         // Holds the list of detected artifacts.
         final List<ArtifactType> artifactsTypes = new ArrayList<>();
@@ -47,42 +48,44 @@ public class Repo {
         final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
 
         // Loop through files in the virtual filesystem.
-        Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                // If file is a configuration file...
-                if (matcher.matches(file)) {
-                    try (InputStream inputStream = Files.newInputStream(file)) {
-                        String parentString = file.getParent().toString();
+        Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3,
+                new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        // If file is a configuration file...
+                        if (matcher.matches(file)) {
+                            try (InputStream inputStream = Files.newInputStream(file)) {
+                                String parentString = file.getParent().toString();
 
-                        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-                        // Read configuration file.
-                        Configurations configurations = unmarshaller.unmarshal(new StreamSource(inputStream), Configurations.class).getValue();
+                                // Read configuration file.
+                                Configurations configurations = unmarshaller.unmarshal(
+                                        new StreamSource(inputStream), Configurations.class).getValue();
 
-                        // New artifact
-                        ArtifactType artifactType = new ArtifactType();
-                        // Name of artifact
-                        artifactType.setName(configurations.getName());
-                        // Detect filename from recorded name as metadata may not correlate with internal name.
-                        artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
-                        // Fetch timestamp of creation.
-                        artifactType.setTimestamp(configurations.getTimestamp());
-                        // Type of artifact
-                        artifactType.setType(configurations.getType());
-                        // Add dependencies.
-                        artifactType.getDependency().addAll(configurations.getDependency());
-                        // Add artifact to list of artifacts.
-                        artifactsTypes.add(artifactType);
-                    } catch (JAXBException e) {
-                        // We are only allowed to return IOException.
-                        throw new IOException(e.getMessage(), e);
+                                // New artifact
+                                ArtifactType artifactType = new ArtifactType();
+                                // Name of artifact
+                                artifactType.setName(configurations.getName());
+                                // Detect filename from recorded name as metadata may not correlate with internal name.
+                                artifactType.setFilename(parentString.substring(parentString.lastIndexOf("/") + 1));
+                                // Fetch timestamp of creation.
+                                artifactType.setTimestamp(configurations.getTimestamp());
+                                // Type of artifact
+                                artifactType.setType(configurations.getType());
+                                // Add dependencies.
+                                artifactType.getDependency().addAll(configurations.getDependency());
+                                // Add artifact to list of artifacts.
+                                artifactsTypes.add(artifactType);
+                            } catch (JAXBException e) {
+                                // We are only allowed to return IOException.
+                                throw new IOException(e.getMessage(), e);
+                            }
+                        }
+                        // Next file, please.
+                        return FileVisitResult.CONTINUE;
                     }
-                }
-                // Next file, please.
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                });
 
         // Order by name and timestamp
         Collections.sort(artifactsTypes, new Comparator<ArtifactType>() {

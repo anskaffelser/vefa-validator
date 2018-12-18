@@ -9,6 +9,7 @@ import no.difi.xsd.vefa.validator._1.Report;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -122,7 +123,7 @@ public class WorkspaceService {
         return new File(getFolder(identifier), String.format("view-%s.html", uuid));
     }
 
-    @Scheduled(fixedDelay = 60 * 60 * 1000, initialDelay = 1000)
+    @Scheduled(fixedDelay = DateTimeConstants.MILLIS_PER_HOUR, initialDelay = DateTimeConstants.MILLIS_PER_SECOND)
     public void cleanWorkspace() {
         log.info("Cleaning workspace.");
 

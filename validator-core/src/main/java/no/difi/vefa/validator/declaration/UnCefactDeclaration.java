@@ -1,14 +1,17 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.api.Declaration;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -18,6 +21,10 @@ import java.util.regex.Pattern;
 @MetaInfServices(Declaration.class)
 public class UnCefactDeclaration extends AbstractXmlDeclaration {
 
+    private static List<String> informationElements = Arrays.asList(
+            "BusinessProcessSpecifiedDocumentContextParameter",
+            "GuidelineSpecifiedDocumentContextParameter");
+
     private static Pattern pattern = Pattern.compile("urn:un:unece:uncefact:data:standard:(.+)::(.+)");
 
     public boolean verify(byte[] content, String parent) {
@@ -25,6 +32,9 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
     }
 
     public String detect(byte[] content, String parent) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(parent.split("::")[1]);
+
         try {
             XMLEventReader xmlEventReader =
                     XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
@@ -34,18 +44,25 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
                 if (xmlEvent.isStartElement()) {
                     StartElement startElement = (StartElement) xmlEvent;
 
-                    if ("GuidelineSpecifiedDocumentContextParameter".equals(
-                            startElement.getName().getLocalPart())) {
+                    if (informationElements.contains(startElement.getName().getLocalPart())) {
                         startElement = (StartElement) xmlEventReader.nextTag();
 
                         if ("ID".equals(startElement.getName().getLocalPart())) {
                             xmlEvent = xmlEventReader.nextEvent();
 
-                            if (xmlEvent instanceof Characters)
-                                return String.format("%s::%s",
-                                        parent.split("::")[1], ((Characters) xmlEvent).getData());
+                            if (xmlEvent instanceof Characters) {
+                                stringBuilder.append("::");
+                                stringBuilder.append(((Characters) xmlEvent).getData());
+                            }
                         }
                     }
+                }
+
+                if (xmlEvent.isEndElement()) {
+                    EndElement endElement = (EndElement) xmlEvent;
+
+                    if ("ExchangedDocumentContext".equals(endElement.getName().getLocalPart()))
+                        return stringBuilder.toString();
                 }
             }
         } catch (Exception e) {
