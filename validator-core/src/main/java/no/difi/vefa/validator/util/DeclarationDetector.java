@@ -23,7 +23,7 @@ public class DeclarationDetector {
         for (Declaration declaration : ServiceLoader.load(Declaration.class)) {
             if (declaration.getClass().isAnnotationPresent(Type.class)) {
                 for (String type : declaration.getClass().getAnnotation(Type.class).value()) {
-                    wrapperMap.put(type, new DeclarationWrapper(type, declaration));
+                    wrapperMap.put(type, DeclarationWrapper.of(type, declaration));
                 }
             }
         }
@@ -42,16 +42,19 @@ public class DeclarationDetector {
         return detect(rootDeclarationWrappers, content, UNKNOWN);
     }
 
-    private DeclarationIdentifier detect(List<DeclarationWrapper> wrappers, byte[] content, DeclarationIdentifier parent) {
+    private DeclarationIdentifier detect(List<DeclarationWrapper> wrappers, byte[] content,
+                                         DeclarationIdentifier parent) {
         for (DeclarationWrapper wrapper : wrappers) {
             try {
                 if (wrapper.verify(content, parent == null ? null : parent.getIdentifier())) {
-                    List<String> identifier = wrapper.detect(content, parent == null ? null : parent.getIdentifier());
+                    List<String> identifier = wrapper.detect(content,
+                            parent == null ? null : parent.getIdentifier());
                     if (identifier == null)
                         break;
                     log.debug("Found: {} - {}", wrapper.getType(), identifier);
 
-                    return detect(wrapper.getChildren(), content, new DeclarationIdentifier(parent, wrapper, identifier));
+                    return detect(wrapper.getChildren(), content,
+                            new DeclarationIdentifier(parent, wrapper, identifier));
                 }
             } catch (ValidatorException e) {
                 log.warn(e.getMessage(), e);

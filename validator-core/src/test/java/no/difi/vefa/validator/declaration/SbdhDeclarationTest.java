@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import static org.testng.Assert.*;
@@ -26,7 +27,11 @@ public class SbdhDeclarationTest {
 
     @Test
     public void simpleSbdh() throws Exception {
-        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml"));
+        byte[] bytes;
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml")) {
+            bytes = ByteStreams.toByteArray(inputStream);
+        }
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 
@@ -38,7 +43,11 @@ public class SbdhDeclarationTest {
 
     @Test
     public void simpleSbdhOnly() throws Exception {
-        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/sbdh-only.xml"));
+        byte[] bytes;
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/sbdh-only.xml")) {
+            bytes = ByteStreams.toByteArray(inputStream);
+        }
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 

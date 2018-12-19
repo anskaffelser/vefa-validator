@@ -84,7 +84,7 @@ public class Validator implements Closeable {
      * @return Validation result.
      */
     public Validation validate(ValidationSource validationSource) {
-        return new ValidationInstance(this.validatorInstance, validationSource);
+        return ValidationInstance.of(this.validatorInstance, validationSource);
     }
 
     /**

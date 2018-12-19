@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class AsiceDeclarationTest {
 
@@ -15,7 +16,10 @@ public class AsiceDeclarationTest {
     @Test
     public void validFile() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ByteStreams.copy(getClass().getResourceAsStream("/documents/asic-cades-test-valid.asice"), byteArrayOutputStream);
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/asic-cades-test-valid.asice")) {
+            ByteStreams.copy(inputStream, byteArrayOutputStream);
+        }
 
         Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray(), null));
     }
@@ -23,7 +27,10 @@ public class AsiceDeclarationTest {
     @Test
     public void invalidFile() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ByteStreams.copy(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.zip"), byteArrayOutputStream);
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.zip")) {
+            ByteStreams.copy(inputStream, byteArrayOutputStream);
+        }
 
         Assert.assertFalse(declaration.verify(byteArrayOutputStream.toByteArray(), null));
     }
@@ -31,7 +38,10 @@ public class AsiceDeclarationTest {
     @Test
     public void simpleXmlFile() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ByteStreams.copy(getClass().getResourceAsStream("/documents/asic-xml.xml"), byteArrayOutputStream);
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/asic-xml.xml")) {
+            ByteStreams.copy(inputStream, byteArrayOutputStream);
+        }
 
         Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray(), null));
 

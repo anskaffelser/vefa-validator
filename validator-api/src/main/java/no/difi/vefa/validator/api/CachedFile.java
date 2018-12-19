@@ -15,11 +15,19 @@ public class CachedFile {
 
     private byte[] content;
 
-    public CachedFile(byte[] content) {
+    public static CachedFile of(byte[] content) {
+        return new CachedFile(content);
+    }
+
+    public static CachedFile of(String filename, byte[] content) {
+        return new CachedFile(filename, content);
+    }
+
+    private CachedFile(byte[] content) {
         this.content = content;
     }
 
-    public CachedFile(String filename, byte[] content) {
+    private CachedFile(String filename, byte[] content) {
         this(content);
         this.filename = filename;
     }

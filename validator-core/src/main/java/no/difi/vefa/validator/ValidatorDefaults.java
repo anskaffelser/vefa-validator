@@ -3,6 +3,8 @@ package no.difi.vefa.validator;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.properties.SimpleProperties;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Class to hold defaults in validator.
  */
@@ -20,12 +22,12 @@ public class ValidatorDefaults {
             .set("feature.infourl", false)
 
             // pools.checker
-            .set("pools.checker.size", 250)
-            .set("pools.checker.expire", 60 * 24)
+            .set("pools.checker.size", CheckerCacheLoader.DEFAULT_SIZE)
+            .set("pools.checker.expire", TimeUnit.DAYS.toMinutes(1))
 
             // pools.presenter
-            .set("pools.presenter.size", 250)
-            .set("pools.presenter.expire", 60 * 24)
+            .set("pools.presenter.size", RendererCacheLoader.DEFAULT_SIZE)
+            .set("pools.presenter.expire", TimeUnit.DAYS.toMinutes(1))
 
             // finish
             ;

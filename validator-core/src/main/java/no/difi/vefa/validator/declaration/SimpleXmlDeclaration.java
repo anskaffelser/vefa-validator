@@ -9,6 +9,7 @@ import java.util.List;
 public class SimpleXmlDeclaration extends AbstractXmlDeclaration {
 
     protected String namespace;
+
     protected String localName;
 
     public SimpleXmlDeclaration(String namespace, String localName) {

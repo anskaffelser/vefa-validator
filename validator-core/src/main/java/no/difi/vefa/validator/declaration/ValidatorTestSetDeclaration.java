@@ -2,7 +2,10 @@ package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.CachedFile;
+import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.DeclarationWithChildren;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Test;
@@ -85,7 +88,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 JAXB_CONTEXT.createMarshaller().marshal(test, byteArrayOutputStream);
-                return new CachedFile(byteArrayOutputStream.toByteArray());
+                return CachedFile.of(byteArrayOutputStream.toByteArray());
             } catch (JAXBException e) {
                 log.warn("Unable to marshall test object.");
             }

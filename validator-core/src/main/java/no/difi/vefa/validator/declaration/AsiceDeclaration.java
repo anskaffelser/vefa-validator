@@ -105,7 +105,7 @@ public class AsiceDeclaration extends AbstractXmlDeclaration
 
             String filename;
             while ((filename = asicReader.getNextFile()) != null) {
-                files.add(new CachedFile(filename, ByteStreams.toByteArray(asicReader.inputStream())));
+                files.add(CachedFile.of(filename, ByteStreams.toByteArray(asicReader.inputStream())));
             }
 
             return files;

@@ -49,13 +49,17 @@ class ValidationInstance implements Validation {
 
     private List<Validation> children;
 
+    public static ValidationInstance of(ValidatorInstance validatorInstance, ValidationSource validationSource) {
+        return new ValidationInstance(validatorInstance, validationSource);
+    }
+
     /**
      * Constructing new validator using validator instance and validation source containing document to validate.
      *
      * @param validatorInstance Instance of validator.
      * @param validationSource  Source to validate.
      */
-    ValidationInstance(ValidatorInstance validatorInstance, ValidationSource validationSource) {
+    private ValidationInstance(ValidatorInstance validatorInstance, ValidationSource validationSource) {
         this.validatorInstance = validatorInstance;
         this.properties = new CombinedProperties(validationSource.getProperties(), validatorInstance.getProperties());
 
@@ -216,7 +220,7 @@ class ValidationInstance implements Validation {
             if (declaration.supportsChildren() && properties.getBoolean("feature.nesting")) {
                 Iterable<CachedFile> iterable = declaration.children(document.getInputStream());
                 for (CachedFile cachedFile : iterable) {
-                    addChildValidation(new ValidationInstance(validatorInstance,
+                    addChildValidation(ValidationInstance.of(validatorInstance,
                             new ValidationSourceImpl(cachedFile.getContentStream())), cachedFile.getFilename());
                 }
             }

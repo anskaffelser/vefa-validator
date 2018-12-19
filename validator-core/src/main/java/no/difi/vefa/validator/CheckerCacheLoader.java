@@ -18,6 +18,8 @@ import java.util.List;
 @Singleton
 public class CheckerCacheLoader extends CacheLoader<String, Checker> {
 
+    public static final int DEFAULT_SIZE = 250;
+
     @Inject
     private List<CheckerFactory> factories;
 

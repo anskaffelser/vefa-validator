@@ -37,8 +37,12 @@ public class DeclarationIdentifier {
 
         List<String> result = new ArrayList<>();
 
-        for (String identifier : identifiers)
-            result.add(String.format("%s::%s", declaration.getType(), identifier));
+        for (String identifier : identifiers) {
+            if (identifier.startsWith("configuration::"))
+                result.add(identifier);
+            else
+                result.add(String.format("%s::%s", declaration.getType(), identifier));
+        }
 
         return result;
     }

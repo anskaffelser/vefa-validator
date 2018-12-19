@@ -77,7 +77,8 @@ public class Tester implements Closeable {
     }
 
     private void perform(Path path) {
-        List<File> files = new ArrayList<>(FileUtils.listFiles(path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE));
+        List<File> files = new ArrayList<>(FileUtils.listFiles(
+                path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE));
         Collections.sort(files);
 
         for (File file : files)
@@ -96,7 +97,8 @@ public class Tester implements Closeable {
             Validation validation = validator.validate(file);
             validation.getReport().setFilename(file.toString());
 
-            if ("xml.testset::http://difi.no/xsd/vefa/validator/1.0::testSet".equals(validation.getDocument().getDeclarations())) {
+            if (validation.getDocument().getDeclarations()
+                    .contains("xml.testset::http://difi.no/xsd/vefa/validator/1.0::testSet")) {
                 log.info("TestSet '{}'", file);
 
                 for (int i = 0; i < validation.getChildren().size(); i++) {
@@ -127,7 +129,8 @@ public class Tester implements Closeable {
             for (SectionType sectionType : validation.getReport().getSection())
                 for (AssertionType assertionType : sectionType.getAssertion())
                     if (assertionType.getFlag().compareTo(FlagType.EXPECTED) > 0)
-                        log.info("{}  * {} {} ({})", prefix, assertionType.getIdentifier(), assertionType.getText(), assertionType.getFlag());
+                        log.info("{}  * {} {} ({})", prefix, assertionType.getIdentifier(),
+                                assertionType.getText(), assertionType.getFlag());
         } else if (numberInSet == null) {
             log.info("Test '{}'", description);
         }

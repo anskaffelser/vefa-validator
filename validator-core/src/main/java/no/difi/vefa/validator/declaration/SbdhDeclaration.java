@@ -137,7 +137,7 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
 
         @Override
         public CachedFile next() {
-            return new CachedFile(outputStream.toByteArray());
+            return CachedFile.of(outputStream.toByteArray());
         }
 
         @Override

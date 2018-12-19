@@ -19,6 +19,8 @@ import java.util.List;
 @Singleton
 public class RendererCacheLoader extends CacheLoader<String, Renderer> {
 
+    public static final int DEFAULT_SIZE = 250;
+
     @Inject
     private ValidatorEngine validatorEngine;
 

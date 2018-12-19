@@ -29,7 +29,8 @@ public interface Validation {
     void render(OutputStream outputStream, Properties properties) throws ValidatorException;
 
     /**
-     * Returns true if validated document is renderable based upon same criteria as may be provide exception when using #render(...).
+     * Returns true if validated document is renderable based upon same criteria as may be provide
+     * exception when using #render(...).
      *
      * @return 'true' if validated document is renderable.
      */

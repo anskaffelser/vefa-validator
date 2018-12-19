@@ -28,7 +28,7 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration
 
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
 
-    private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
+    private static final byte[] STARTS_WITH = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
     public boolean verify(byte[] content, List<String> parent) {
@@ -52,7 +52,7 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration
             if (inputStream.read(buffer) != 4)
                 throw new ValidatorException("Expected minimum 4 bytes.");
 
-            if (Arrays.equals(buffer, startsWith)) {
+            if (Arrays.equals(buffer, STARTS_WITH)) {
                 outputStream.write(buffer);
                 ByteStreams.copy(inputStream, outputStream);
             } else {
@@ -81,7 +81,7 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration
 
             String filename;
             while ((filename = asicReader.getNextFile()) != null) {
-                files.add(new CachedFile(filename, ByteStreams.toByteArray(asicReader.inputStream())));
+                files.add(CachedFile.of(filename, ByteStreams.toByteArray(asicReader.inputStream())));
             }
 
             return files;

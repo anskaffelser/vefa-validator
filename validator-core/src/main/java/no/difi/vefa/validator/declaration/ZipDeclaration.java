@@ -58,7 +58,7 @@ public class ZipDeclaration implements Declaration, DeclarationWithChildren {
 
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                files.add(new CachedFile(zipEntry.getName(), ByteStreams.toByteArray(zipInputStream)));
+                files.add(CachedFile.of(zipEntry.getName(), ByteStreams.toByteArray(zipInputStream)));
             }
 
             return files;

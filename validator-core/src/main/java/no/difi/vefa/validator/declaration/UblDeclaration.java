@@ -23,10 +23,8 @@ public class UblDeclaration extends AbstractXmlDeclaration {
 
     private static final Pattern PATTERN = Pattern.compile("urn:oasis:names:specification:ubl:schema:xsd:(.+)-2::(.+)");
 
-    private static final String TC434 = "urn:cen.eu:en16931:2017";
-
     @Override
-    public boolean verify(byte[] content, List<String> parent) throws ValidatorException {
+    public boolean verify(byte[] content, List<String> parent) {
         return PATTERN.matcher(parent.get(0)).matches();
     }
 

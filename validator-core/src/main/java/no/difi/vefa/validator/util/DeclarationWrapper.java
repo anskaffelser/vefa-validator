@@ -18,7 +18,11 @@ public class DeclarationWrapper implements Declaration, DeclarationWithChildren,
 
     private List<DeclarationWrapper> children = new ArrayList<>();
 
-    public DeclarationWrapper(String type, Declaration declaration) {
+    public static DeclarationWrapper of(String type, Declaration declaration) {
+        return new DeclarationWrapper(type, declaration);
+    }
+
+    private DeclarationWrapper(String type, Declaration declaration) {
         this.type = type;
         this.declaration = declaration;
     }
