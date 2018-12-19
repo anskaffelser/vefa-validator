@@ -117,7 +117,7 @@
                                     <resource>META-INF/services/*</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>no.difi.vefa.validator.Cli</mainClass>
+                                    <mainClass>no.difi.vefa.validator.repo.Cli</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
