@@ -10,6 +10,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class AsiceTriggerTest {
 
     private Validator validator;
@@ -33,8 +36,10 @@ public class AsiceTriggerTest {
     }
 
     @Test
-    public void simpleValidAsice() {
-        Validation validation = validator.validate(getClass().getResourceAsStream("/documents/asic-cades-test-valid.asice"));
-        Assert.assertEquals(validation.getReport().getFlag(), FlagType.OK);
+    public void simpleValidAsice() throws IOException {
+        try (InputStream inputStream = getClass().getResourceAsStream("/documents/asic-cades-test-valid.asice")) {
+            Validation validation = validator.validate(inputStream);
+            Assert.assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        }
     }
 }

@@ -140,7 +140,7 @@ class ValidationInstance implements Validation {
             declaration.convert(byteArrayInputStream, convertedOutputStream);
 
             document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()),
-                    byteArrayInputStream, declarationIdentifier.getIdentifier(), expectation);
+                    byteArrayInputStream, declarationIdentifier.getFullIdentifier(), expectation);
         } else {
             document = new Document(byteArrayInputStream, declarationIdentifier.getFullIdentifier(), expectation);
         }
