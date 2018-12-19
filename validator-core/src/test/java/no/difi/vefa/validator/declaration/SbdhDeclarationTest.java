@@ -30,7 +30,7 @@ public class SbdhDeclarationTest {
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 
-        assertEquals(declarationIdentifier.getIdentifier(), "SBDH:1.0");
+        assertEquals(declarationIdentifier.getIdentifier().get(0), "SBDH:1.0");
 
         Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
         assertTrue(iterator.hasNext());
@@ -42,7 +42,7 @@ public class SbdhDeclarationTest {
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 
-        assertEquals(declarationIdentifier.getIdentifier(), "SBDH:1.0");
+        assertEquals(declarationIdentifier.getIdentifier().get(0), "SBDH:1.0");
 
         Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
         assertFalse(iterator.hasNext());

@@ -10,6 +10,7 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,12 +24,14 @@ public class EspdDeclaration extends AbstractXmlDeclaration {
     );
 
     @Override
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
-        return validParents.contains(parent);
+    public boolean verify(byte[] content, List<String> parent) throws ValidatorException {
+        return validParents.contains(parent.get(0));
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
+        List<String> results = new ArrayList<>();
+
         try {
             XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
@@ -38,12 +41,12 @@ public class EspdDeclaration extends AbstractXmlDeclaration {
                     if ("CustomizationID".equals(((StartElement) xmlEvent).getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)
-                            return String.format("%s::%s", parent, ((Characters) xmlEvent).getData());
+                            results.add(String.format("%s::%s", parent.get(0), ((Characters) xmlEvent).getData()));
                     }
                     if ("VersionID".equals(((StartElement) xmlEvent).getName().getLocalPart())) {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)
-                            return String.format("%s::%s", parent, ((Characters) xmlEvent).getData());
+                            results.add(String.format("%s::%s", parent.get(0), ((Characters) xmlEvent).getData()));
                     }
                 }
             }
@@ -51,6 +54,6 @@ public class EspdDeclaration extends AbstractXmlDeclaration {
             // No action.
         }
 
-        return parent;
+        return results.isEmpty() ? parent : results;
     }
 }

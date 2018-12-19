@@ -12,7 +12,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 @Slf4j
 @Type("xml.sbdh")
@@ -23,14 +25,14 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
             "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
 
     @Override
-    public boolean verify(byte[] content, String parent) {
-        return parent.startsWith(NAMESPACE);
+    public boolean verify(byte[] content, List<String> parent) {
+        return parent.get(0).startsWith(NAMESPACE);
     }
 
     @Override
-    public String detect(byte[] content, String parent) {
+    public List<String> detect(byte[] content, List<String> parent) {
         // Simple stupid
-        return "SBDH:1.0";
+        return Collections.singletonList("SBDH:1.0");
     }
 
     @Override

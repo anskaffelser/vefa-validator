@@ -21,7 +21,7 @@ import java.util.Iterator;
 @MetaInfServices(Declaration.class)
 public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements DeclarationWithChildren {
 
-    private static JAXBContext jaxbContext = JAXBHelper.context(TestSet.class, Test.class);
+    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(TestSet.class, Test.class);
 
     public ValidatorTestSetDeclaration() {
         super("http://difi.no/xsd/vefa/validator/1.0", "testSet");
@@ -45,7 +45,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
 
         public TestSetIterator(InputStream inputStream) throws ValidatorException {
             try {
-                testSet = jaxbContext.createUnmarshaller().unmarshal(new StreamSource(inputStream), TestSet.class).getValue();
+                testSet = JAXB_CONTEXT.createUnmarshaller().unmarshal(new StreamSource(inputStream), TestSet.class).getValue();
             } catch (JAXBException e) {
                 throw new ValidatorException(e.getMessage(), e);
             }
@@ -84,7 +84,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
                 }
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                jaxbContext.createMarshaller().marshal(test, byteArrayOutputStream);
+                JAXB_CONTEXT.createMarshaller().marshal(test, byteArrayOutputStream);
                 return new CachedFile(byteArrayOutputStream.toByteArray());
             } catch (JAXBException e) {
                 log.warn("Unable to marshall test object.");

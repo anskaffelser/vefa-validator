@@ -46,12 +46,12 @@ public class XsltRenderer implements Renderer {
             xsltTransformer.setURIResolver(new PathURIResolver(path.getParent()));
 
             // Look through default values for stylesheet.
-            for (SettingType setting : stylesheetType.getSetting()) {
-                xsltTransformer.setParameter(
-                        new QName(setting.getName()),
-                        new XdmAtomicValue(properties.getString(String.format("stylesheet.%s.%s", stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()))
-                );
-            }
+            for (SettingType setting : stylesheetType.getSetting())
+                setParameter(
+                        xsltTransformer,
+                        setting.getName(),
+                        properties.getString(String.format("stylesheet.%s.%s",
+                                stylesheetType.getIdentifier(), setting.getName()), setting.getDefaultValue()));
 
             // Use transformer to write the result to stream.
             xsltTransformer.setSource(new StreamSource(document.getInputStream()));
@@ -61,5 +61,9 @@ public class XsltRenderer implements Renderer {
         } catch (Exception e) {
             throw new ValidatorException("Unable to render document.", e);
         }
+    }
+
+    private static void setParameter(XsltTransformer transformer, String key, String value) {
+        transformer.setParameter(new QName(key), new XdmAtomicValue(value));
     }
 }

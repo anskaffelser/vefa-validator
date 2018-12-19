@@ -108,7 +108,7 @@ class ValidationInstance implements Validation {
             byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         }
 
-        document = new Document(byteArrayInputStream, null, null);
+        document = new Document(byteArrayInputStream);
 
         // Read first 10kB for detections
         byte[] bytes = new byte[10 * 1024];
@@ -140,9 +140,9 @@ class ValidationInstance implements Validation {
             declaration.convert(byteArrayInputStream, convertedOutputStream);
 
             document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()),
-                    byteArrayInputStream, declarationIdentifier.toString(), expectation);
+                    byteArrayInputStream, declarationIdentifier.getIdentifier(), expectation);
         } else {
-            document = new Document(byteArrayInputStream, declarationIdentifier.toString(), expectation);
+            document = new Document(byteArrayInputStream, declarationIdentifier.getFullIdentifier(), expectation);
         }
     }
 
@@ -152,7 +152,7 @@ class ValidationInstance implements Validation {
         report.setFlag(FlagType.FATAL);
 
         // Get configuration using declaration
-        this.configuration = validatorInstance.getConfiguration(document.getDeclaration());
+        this.configuration = validatorInstance.getConfiguration(document.getDeclarations());
 
         if (!properties.getBoolean("feature.suppress_notloaded"))
             for (String notLoaded : configuration.getNotLoaded())

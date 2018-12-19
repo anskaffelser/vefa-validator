@@ -9,11 +9,12 @@ public class ConvertedDocumentTest {
 
     @Test
     public void simple() {
-        ConvertedDocument document = new ConvertedDocument(new ByteArrayInputStream(new byte[] {}), new ByteArrayInputStream(new byte[] {}), "identifier", null);
+        ConvertedDocument document = new ConvertedDocument(new ByteArrayInputStream(new byte[] {}),
+                new ByteArrayInputStream(new byte[] {}), "identifier", null);
 
         Assert.assertNotNull(document.getInputStream());
         Assert.assertNotNull(document.getSource());
-        Assert.assertEquals(document.getDeclaration(), "identifier");
+        Assert.assertEquals(document.getDeclarations().get(0), "identifier");
         Assert.assertNull(document.getExpectation());
     }
 

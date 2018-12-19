@@ -1,6 +1,8 @@
 package no.difi.vefa.validator.api;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Representation of validation document.
@@ -15,12 +17,16 @@ public class Document {
     /**
      * Declaration identifier used to recognize rules.
      */
-    private String declaration;
+    private List<String> declarations;
 
     /**
      * Expectations when performing validation of triggered rules.
      */
     private Expectation expectation;
+
+    public Document(ByteArrayInputStream inputStream) {
+        this(inputStream, (String) null, null);
+    }
 
     /**
      * @param inputStream InputStream containing the document used during validation.
@@ -28,8 +34,17 @@ public class Document {
      * @param expectation Expectations when performing validation of triggered rules.
      */
     public Document(ByteArrayInputStream inputStream, String declaration, Expectation expectation)  {
+        this(inputStream, Collections.singletonList(declaration), expectation);
+    }
+
+    /**
+     * @param inputStream InputStream containing the document used during validation.
+     * @param declarations Declaration identifiers used to recognize rules.
+     * @param expectation Expectations when performing validation of triggered rules.
+     */
+    public Document(ByteArrayInputStream inputStream, List<String> declarations, Expectation expectation)  {
         this.byteArrayInputStream = inputStream;
-        this.declaration = declaration;
+        this.declarations = declarations;
         this.expectation = expectation;
     }
 
@@ -38,8 +53,8 @@ public class Document {
      *
      * @return Declaration
      */
-    public String getDeclaration() {
-        return declaration;
+    public List<String> getDeclarations() {
+        return declarations;
     }
 
     /**

@@ -29,7 +29,7 @@ public class UblDeclarationTest {
     public void validNormal() throws Exception {
         String s = docStart + " xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">" +
                 "<CustomizationID>customization</CustomizationID><ProfileID>profile</ProfileID></Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class UblDeclarationTest {
                 "<cbc:CustomizationID>customization</cbc:CustomizationID>" +
                 "<cbc:ProfileID>profile</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class UblDeclarationTest {
                 "<ns1:CustomizationID>customization</ns1:CustomizationID>" +
                 "<ns1:ProfileID>profile</ns1:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class UblDeclarationTest {
                 "<CustomizationID   >customization</CustomizationID   >" +
                 "<ProfileID  >profile</ProfileID   >" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class UblDeclarationTest {
                 "<CustomizationID\t>customization</CustomizationID\t>" +
                 "<ProfileID\t>profile</ProfileID\t>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class UblDeclarationTest {
                 "schemeAgencyID=\"320\" " +
                 "schemeID=\"urn:oioubl:id:profileid-1.2\">Procurement-OrdSimR-BilSim-1.0</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(),
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0),
                 "Procurement-OrdSimR-BilSim-1.0#OIOUBL-2.02");
     }
 
@@ -106,7 +106,7 @@ public class UblDeclarationTest {
                 "urn:www.peppol.eu:bis:peppol4a:ver2.0</cbc:CustomizationID> " +
                 "<cbc:ProfileID>profile</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(),
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0),
                 "profile#" +
                         "urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:" +
                         "urn:www.peppol.eu:bis:peppol4a:ver2.0");
@@ -121,7 +121,7 @@ public class UblDeclarationTest {
                 "<CustomizationID>customization</CustomizationID>" +
                 "<ProfileID>profile</ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier(), "profile#customization");
+        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
     }
 
     @Test

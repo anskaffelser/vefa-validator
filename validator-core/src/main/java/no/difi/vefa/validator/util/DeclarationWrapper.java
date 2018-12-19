@@ -36,12 +36,12 @@ public class DeclarationWrapper implements Declaration, DeclarationWithChildren,
     }
 
     @Override
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
+    public boolean verify(byte[] content, List<String> parent) throws ValidatorException {
         return declaration.verify(content, parent);
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
         return declaration.detect(content, parent);
     }
 

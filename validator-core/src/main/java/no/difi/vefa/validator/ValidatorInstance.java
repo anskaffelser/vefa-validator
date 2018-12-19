@@ -90,22 +90,32 @@ class ValidatorInstance implements Closeable {
     /**
      * Return validation configuration.
      *
-     * @param declaration Fetch configuration using declaration.
+     * @param declarations Fetch configuration using declarations.
      */
-    protected Configuration getConfiguration(String declaration) throws UnknownDocumentTypeException {
-        // Check cache of configurations is ready to use.
-        if (configurationMap.containsKey(declaration))
-            return configurationMap.get(declaration);
+    protected Configuration getConfiguration(List<String> declarations) throws UnknownDocumentTypeException {
+        for (String declaration : declarations) {
+            // Check cache of configurations is ready to use.
+            if (configurationMap.containsKey(declaration))
+                return configurationMap.get(declaration);
 
-        // Create a new instance of configuration using the raw configuration.
-        Configuration configuration = new Configuration(validatorEngine.getConfigurationByDeclaration(declaration));
-        // Normalize configuration using inheritance declarations.
-        configuration.normalize(validatorEngine);
-        // Add configuration to map containing configurations ready to use.
-        configurationMap.put(declaration, configuration);
+            ConfigurationType configurationType = validatorEngine.getConfigurationByDeclaration(declaration);
 
-        // Return configuration.
-        return configuration;
+            if (configurationType != null) {
+                // Create a new instance of configuration using the raw configuration.
+                Configuration configuration = new Configuration(configurationType);
+
+                // Normalize configuration using inheritance declarations.
+                configuration.normalize(validatorEngine);
+                // Add configuration to map containing configurations ready to use.
+                configurationMap.put(declaration, configuration);
+
+                // Return configuration.
+                return configuration;
+            }
+        }
+
+        throw new UnknownDocumentTypeException(String.format(
+                "Configuration for '%s' not found.", declarations.get(0)));
     }
 
     protected DeclarationIdentifier detect(byte[] content) {

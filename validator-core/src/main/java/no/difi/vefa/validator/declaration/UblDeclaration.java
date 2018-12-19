@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.lang.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
@@ -10,6 +10,8 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -23,11 +25,15 @@ public class UblDeclaration extends AbstractXmlDeclaration {
 
     private static final String TC434 = "urn:cen.eu:en16931:2017";
 
-    public boolean verify(byte[] content, String parent) throws ValidatorException {
-        return PATTERN.matcher(parent).matches();
+    @Override
+    public boolean verify(byte[] content, List<String> parent) throws ValidatorException {
+        return PATTERN.matcher(parent.get(0)).matches();
     }
 
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    @Override
+    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
+        List<String> results = new ArrayList<>();
+
         String customizationId = null;
         String profileId = null;
 
@@ -43,9 +49,6 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                         xmlEvent = xmlEventReader.nextEvent();
                         if (xmlEvent instanceof Characters)
                             customizationId = ((Characters) xmlEvent).getData();
-
-                        if (customizationId != null && customizationId.startsWith(TC434))
-                            customizationId = String.format("%s::%s", parent.split("::")[1], customizationId);
                     }
 
                     if ("ProfileID".equals(startElement.getName().getLocalPart())) {
@@ -54,7 +57,7 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                             profileId = ((Characters) xmlEvent).getData();
 
                         // ProfileID is the last in sequence.
-                        return String.format("%s#%s", profileId, customizationId);
+                        results.add(String.format("%s#%s", profileId, customizationId));
                     }
                 }
             }
@@ -63,7 +66,14 @@ public class UblDeclaration extends AbstractXmlDeclaration {
         }
 
         if (customizationId != null)
-            return customizationId;
+            results.add(customizationId);
+
+        if (results.size() > 0) {
+            for (String identifier : new ArrayList<>(results))
+                results.add(String.format("%s::%s", parent.get(0).split("::")[1], identifier));
+
+            return results;
+        }
 
         throw new ValidatorException("Unable to find CustomizationID and ProfileID.");
     }

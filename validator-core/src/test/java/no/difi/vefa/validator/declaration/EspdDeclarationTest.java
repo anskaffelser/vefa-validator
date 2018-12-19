@@ -25,7 +25,7 @@ public class EspdDeclarationTest {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse-2.xml"));
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-        assertEquals(declarationIdentifier.getIdentifier(),
+        assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::SomeCustomization");
     }
 
@@ -34,7 +34,7 @@ public class EspdDeclarationTest {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse.xml"));
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-        assertEquals(declarationIdentifier.getIdentifier(),
+        assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::1");
     }
 
@@ -55,7 +55,7 @@ public class EspdDeclarationTest {
                 "xmlns:espd=\"urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1\">";
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
-        assertEquals(declarationIdentifier.getIdentifier(),
+        assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }
 
@@ -77,7 +77,7 @@ public class EspdDeclarationTest {
                 "<VersionID></VersionID>";
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
-        assertEquals(declarationIdentifier.getIdentifier(),
+        assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }
 
@@ -99,7 +99,7 @@ public class EspdDeclarationTest {
                 "</espd:ESPDResponse>";
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
-        assertEquals(declarationIdentifier.getIdentifier(),
+        assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }
 }

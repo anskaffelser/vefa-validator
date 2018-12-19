@@ -23,7 +23,7 @@ public class UnCefactDeclarationTest {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/uncefact-peppol.xml"));
 
         Assert.assertEquals(
-                declarationDetector.detect(bytes).getIdentifier(),
+                declarationDetector.detect(bytes).getIdentifier().get(0),
                 "CrossIndustryInvoice" +
                         "::urn:fdc:peppol.eu:2017:poacc:billing:01:1.0" +
                         "::urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0");
@@ -34,7 +34,7 @@ public class UnCefactDeclarationTest {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/uncefact-tc434.xml"));
 
         Assert.assertEquals(
-                declarationDetector.detect(bytes).getIdentifier(),
+                declarationDetector.detect(bytes).getIdentifier().get(0),
                 "CrossIndustryInvoice::urn:cen.eu:en16931:2017");
     }
 
@@ -43,7 +43,7 @@ public class UnCefactDeclarationTest {
         byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/uncefact-simple.xml"));
 
         Assert.assertEquals(
-                declarationDetector.detect(bytes).getIdentifier(),
+                declarationDetector.detect(bytes).getIdentifier().get(0),
                 "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100::CrossIndustryInvoice");
     }
 }

@@ -224,14 +224,13 @@ class ValidatorEngine implements Closeable {
      * Fetch raw configuration by using document declaration.
      *
      * @param declaration Document declaration.
-     * @return Configuration
-     * @throws UnknownDocumentTypeException Thrown if no configuration is found for the document declaration.
+     * @return Configuration if found
      */
-    public ConfigurationType getConfigurationByDeclaration(String declaration) throws UnknownDocumentTypeException {
-        if (!declarationMap.containsKey(declaration))
-            throw new UnknownDocumentTypeException(String.format("Configuration for '%s' not found", declaration));
+    public ConfigurationType getConfigurationByDeclaration(String declaration) {
+        if (declarationMap.containsKey(declaration))
+            return declarationMap.get(declaration);
 
-        return declarationMap.get(declaration);
+        return null;
     }
 
     /**

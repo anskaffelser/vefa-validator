@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,7 +34,7 @@ public class AsiceDeclaration extends AbstractXmlDeclaration
     private static final byte[] startsWith = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
-    public boolean verify(byte[] content, String parent) {
+    public boolean verify(byte[] content, List<String> parent) {
         if (Arrays.equals(startsWith, Arrays.copyOfRange(content, 0, 4))) {
             if (content[28] != 0)
                 return false;
@@ -59,8 +60,8 @@ public class AsiceDeclaration extends AbstractXmlDeclaration
     }
 
     @Override
-    public String detect(byte[] content, String parent) {
-        return MIME;
+    public List<String> detect(byte[] content, List<String> parent) {
+        return Collections.singletonList(MIME);
     }
 
     @Override

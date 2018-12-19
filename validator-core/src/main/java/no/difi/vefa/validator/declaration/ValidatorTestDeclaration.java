@@ -2,7 +2,9 @@ package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.api.DeclarationWithConverter;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
@@ -25,29 +27,34 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Type("xml.test")
 @MetaInfServices(Declaration.class)
 public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
 
-    private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
+    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+
+    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Test.class);
 
     public ValidatorTestDeclaration() {
         super("http://difi.no/xsd/vefa/validator/1.0", "test");
     }
 
     @Override
-    public String detect(byte[] content, String parent) throws ValidatorException {
+    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
         try {
             XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(new ByteArrayInputStream(content));
 
             do {
-                if (source.getEventType() == XMLStreamConstants.START_ELEMENT && source.getNamespaceURI().equals(namespace))
+                if (source.getEventType() == XMLStreamConstants.START_ELEMENT
+                        && source.getNamespaceURI().equals(namespace))
                     for (int i = 0; i < source.getAttributeCount(); i++)
                         if (source.getAttributeName(i).toString().equals("configuration"))
-                            return String.format("configuration::%s", source.getAttributeValue(i));
+                            return Collections.singletonList(String.format(
+                                    "configuration::%s", source.getAttributeValue(i)));
             } while (source.hasNext() && source.next() > 0);
         } catch (XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);
@@ -66,7 +73,7 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
             Test test = convertInputStream(inputStream);
 
             if (test.getAny() instanceof Node) {
-                Transformer transformer = transformerFactory.newTransformer();
+                Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.transform(new DOMSource((Node) test.getAny()), new StreamResult(outputStream));
             }
@@ -76,6 +83,6 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     }
 
     private Test convertInputStream(InputStream inputStream) throws JAXBException {
-        return jaxbContext.createUnmarshaller().unmarshal(new StreamSource(inputStream), Test.class).getValue();
+        return JAXB_CONTEXT.createUnmarshaller().unmarshal(new StreamSource(inputStream), Test.class).getValue();
     }
 }

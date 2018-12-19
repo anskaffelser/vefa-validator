@@ -11,6 +11,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -27,13 +28,15 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
 
     private static Pattern pattern = Pattern.compile("urn:un:unece:uncefact:data:standard:(.+)::(.+)");
 
-    public boolean verify(byte[] content, String parent) {
-        return pattern.matcher(parent).matches();
+    @Override
+    public boolean verify(byte[] content, List<String> parent) {
+        return pattern.matcher(parent.get(0)).matches();
     }
 
-    public String detect(byte[] content, String parent) {
+    @Override
+    public List<String> detect(byte[] content, List<String> parent) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(parent.split("::")[1]);
+        stringBuilder.append(parent.get(0).split("::")[1]);
 
         try {
             XMLEventReader xmlEventReader =
@@ -62,7 +65,7 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
                     EndElement endElement = (EndElement) xmlEvent;
 
                     if ("ExchangedDocumentContext".equals(endElement.getName().getLocalPart()))
-                        return stringBuilder.toString();
+                        return Collections.singletonList(stringBuilder.toString());
                 }
             }
         } catch (Exception e) {
