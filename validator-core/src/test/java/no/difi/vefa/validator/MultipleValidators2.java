@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class MultipleValidators2 {
 
     @Test
-    public void simple() throws Exception {
+    public void simple() {
         Validator validator1 = ValidatorBuilder.newValidator()
                 .setSource(new ClasspathSource("/rules/"))
                 .build();
@@ -18,7 +18,7 @@ public class MultipleValidators2 {
                 .setSource(new ClasspathSource("/rules/"))
                 .build();
 
-        Assert.assertFalse(validator1 == validator2);
+        Assert.assertNotSame(validator1, validator2);
 
         validator1.close();
         validator2.close();

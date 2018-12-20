@@ -61,7 +61,7 @@
     </licenses>
 
     <properties>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <tiles.version>3.0.8</tiles.version>
         <spring.security.version>4.1.5.RELEASE</spring.security.version>
     </properties>
