@@ -13,9 +13,11 @@ import org.kohsuke.MetaInfServices;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,8 +29,6 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration
     private static final String NAMESPACE = "urn:etsi.org:specification:02918:v1.2.1::asic";
 
     private static final String MIME = "application/vnd.etsi.asic-e+zip";
-
-    private static final byte[] STARTS_WITH = new byte[]{0x50, 0x4B, 0x03, 0x04};
 
     @Override
     public boolean verify(byte[] content, List<String> parent) {
@@ -48,26 +48,16 @@ public class AsiceXmlDeclaration extends AbstractXmlDeclaration
     @Override
     public void convert(InputStream inputStream, OutputStream outputStream) throws ValidatorException {
         try {
-            byte[] buffer = new byte[4];
-            if (inputStream.read(buffer) != 4)
-                throw new ValidatorException("Expected minimum 4 bytes.");
+            XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(inputStream);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            if (Arrays.equals(buffer, STARTS_WITH)) {
-                outputStream.write(buffer);
-                ByteStreams.copy(inputStream, outputStream);
-            } else {
-                XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(
-                        new SequenceInputStream(new ByteArrayInputStream(buffer), inputStream));
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            do {
+                if (source.getEventType() == XMLStreamConstants.CHARACTERS)
+                    byteArrayOutputStream.write(source.getText().getBytes());
+            } while (source.hasNext() && source.next() > 0);
 
-                do {
-                    if (source.getEventType() == XMLStreamConstants.CHARACTERS)
-                        byteArrayOutputStream.write(source.getText().getBytes());
-                } while (source.hasNext() && source.next() > 0);
-
-                outputStream.write(BaseEncoding.base64().decode(
-                        CharMatcher.whitespace().removeFrom(byteArrayOutputStream.toString())));
-            }
+            outputStream.write(BaseEncoding.base64().decode(
+                    CharMatcher.whitespace().removeFrom(byteArrayOutputStream.toString())));
         } catch (IOException | XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);
         }

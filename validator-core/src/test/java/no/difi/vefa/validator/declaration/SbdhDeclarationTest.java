@@ -4,6 +4,9 @@ import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import no.difi.vefa.validator.api.CachedFile;
+import no.difi.vefa.validator.module.SaxonModule;
+import no.difi.vefa.validator.module.SbdhModule;
+import no.difi.vefa.validator.module.ValidatorModule;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
 import org.testng.annotations.BeforeClass;
@@ -22,7 +25,8 @@ public class SbdhDeclarationTest {
 
     @BeforeClass
     public void beforeClass() {
-        Guice.createInjector().injectMembers(this);
+        Guice.createInjector(new SaxonModule(), new SbdhModule(), new ValidatorModule())
+                .injectMembers(this);
     }
 
     @Test
@@ -35,7 +39,7 @@ public class SbdhDeclarationTest {
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 
-        assertEquals(declarationIdentifier.getIdentifier().get(0), "SBDH:1.0");
+        assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
 
         Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
         assertTrue(iterator.hasNext());
@@ -51,7 +55,7 @@ public class SbdhDeclarationTest {
 
         DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
 
-        assertEquals(declarationIdentifier.getIdentifier().get(0), "SBDH:1.0");
+        assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
 
         Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
         assertFalse(iterator.hasNext());

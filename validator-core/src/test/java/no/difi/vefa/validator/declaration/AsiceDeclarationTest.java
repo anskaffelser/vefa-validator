@@ -8,10 +8,13 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Collections;
 
 public class AsiceDeclarationTest {
 
     private AsiceDeclaration declaration = new AsiceDeclaration();
+
+    private AsiceXmlDeclaration xmlDeclaration = new AsiceXmlDeclaration();
 
     @Test
     public void validFile() throws Exception {
@@ -43,10 +46,11 @@ public class AsiceDeclarationTest {
             ByteStreams.copy(inputStream, byteArrayOutputStream);
         }
 
-        Assert.assertTrue(declaration.verify(byteArrayOutputStream.toByteArray(), null));
+        Assert.assertTrue(xmlDeclaration.verify(byteArrayOutputStream.toByteArray(),
+                Collections.singletonList("urn:etsi.org:specification:02918:v1.2.1::asic")));
 
         ByteArrayOutputStream converted = new ByteArrayOutputStream();
-        declaration.convert(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), converted);
+        xmlDeclaration.convert(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), converted);
 
         AsicVerifierFactory.newFactory().verify(new ByteArrayInputStream(converted.toByteArray()));
     }

@@ -1,19 +1,25 @@
 package no.difi.vefa.validator.declaration;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.name.Named;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.CachedFile;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
+import no.difi.vefa.validator.lang.ValidatorException;
 import org.kohsuke.MetaInfServices;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +30,13 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
     private static final String NAMESPACE =
             "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader";
 
+    @Inject
+    @Named("sbdh-extractor")
+    private Provider<XsltExecutable> extractor;
+
+    @Inject
+    private Processor processor;
+
     @Override
     public boolean verify(byte[] content, List<String> parent) {
         return parent.get(0).startsWith(NAMESPACE);
@@ -31,118 +44,26 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
 
     @Override
     public List<String> detect(byte[] content, List<String> parent) {
-        // Simple stupid
-        return Collections.singletonList("SBDH:1.0");
+        return Arrays.asList(parent.get(0), "SBDH:1.0");
     }
 
     @Override
-    public Iterable<CachedFile> children(InputStream inputStream) {
-        return new SbdhIterator(inputStream);
-    }
+    public Iterable<CachedFile> children(InputStream inputStream) throws ValidatorException {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    private class SbdhIterator implements Iterable<CachedFile>, Iterator<CachedFile> {
+            XsltTransformer xsltTransformer = extractor.get().load();
+            xsltTransformer.setSource(new StreamSource(inputStream));
+            xsltTransformer.setDestination(processor.newSerializer(baos));
+            xsltTransformer.transform();
+            xsltTransformer.close();
 
-        private InputStream inputStream;
+            if (baos.size() <= 38)
+                return Collections.emptyList();
 
-        private ByteArrayOutputStream outputStream;
-
-        public SbdhIterator(InputStream inputStream) {
-            this.inputStream = inputStream;
-        }
-
-        @Override
-        public Iterator<CachedFile> iterator() {
-            return this;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (inputStream == null)
-                return false;
-
-            try {
-                outputStream = new ByteArrayOutputStream();
-
-                XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(inputStream);
-                XMLStreamWriter target = XML_OUTPUT_FACTORY.createXMLStreamWriter(outputStream, source.getEncoding());
-
-                boolean payload = false;
-                boolean written = false;
-
-                do {
-                    switch (source.getEventType()) {
-                        case XMLStreamReader.START_DOCUMENT:
-                            target.writeStartDocument(source.getEncoding(), source.getVersion());
-                            break;
-
-                        case XMLStreamConstants.END_DOCUMENT:
-                            target.writeEndDocument();
-                            break;
-
-                        case XMLStreamConstants.START_ELEMENT:
-                            payload = !source.getNamespaceURI()
-                                    .equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
-
-                            if (payload) {
-                                written = true;
-                                target.writeStartElement(source.getPrefix(), source.getLocalName(), source.getNamespaceURI());
-
-                                for (int i = 0; i < source.getAttributeCount(); i++)
-                                    target.writeAttribute(source.getAttributeLocalName(i), source.getAttributeValue(i));
-                                for (int i = 0; i < source.getNamespaceCount(); i++)
-                                    target.writeNamespace(source.getNamespacePrefix(i), source.getNamespaceURI(i));
-                            }
-                            break;
-
-                        case XMLStreamConstants.END_ELEMENT:
-                            payload = !source.getNamespaceURI()
-                                    .equals("http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader");
-
-                            if (payload) {
-                                written = true;
-                                target.writeEndElement();
-                            }
-                            break;
-
-                        case XMLStreamConstants.CHARACTERS:
-                            if (payload) {
-                                written = true;
-                                target.writeCharacters(source.getText());
-                            }
-                            break;
-
-                        case XMLStreamConstants.CDATA:
-                            if (payload) {
-                                written = true;
-                                target.writeCData(source.getText());
-                            }
-                            break;
-                    }
-
-                    target.flush();
-
-                } while (source.hasNext() && source.next() > 0);
-
-                target.close();
-                source.close();
-
-                if (!written)
-                    outputStream = null;
-            } catch (Exception e) {
-                log.warn(e.getMessage(), e);
-            }
-            inputStream = null;
-            return outputStream != null;
-        }
-
-        @Override
-        public CachedFile next() {
-            return CachedFile.of(outputStream.toByteArray());
-        }
-
-        @Override
-        public void remove() {
-            // No action
+            return Collections.singletonList(CachedFile.of(baos.toByteArray()));
+        } catch (SaxonApiException e) {
+            throw new ValidatorException("Unable to extract SBDH content.", e);
         }
     }
 }

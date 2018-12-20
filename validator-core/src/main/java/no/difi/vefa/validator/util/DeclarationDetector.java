@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.util;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
@@ -17,10 +18,11 @@ public class DeclarationDetector {
 
     private List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
 
-    public DeclarationDetector() {
+    @Inject
+    public DeclarationDetector(List<Declaration> declarations) {
         Map<String, DeclarationWrapper> wrapperMap = new HashMap<>();
 
-        for (Declaration declaration : ServiceLoader.load(Declaration.class)) {
+        for (Declaration declaration : declarations) {
             if (declaration.getClass().isAnnotationPresent(Type.class)) {
                 for (String type : declaration.getClass().getAnnotation(Type.class).value()) {
                     wrapperMap.put(type, DeclarationWrapper.of(type, declaration));

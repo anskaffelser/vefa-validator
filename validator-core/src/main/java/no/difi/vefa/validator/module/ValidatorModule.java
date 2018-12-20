@@ -2,10 +2,7 @@ package no.difi.vefa.validator.module;
 
 import com.google.common.collect.Lists;
 import com.google.inject.*;
-import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.api.ConfigurationProvider;
-import no.difi.vefa.validator.api.RendererFactory;
-import no.difi.vefa.validator.api.Trigger;
+import no.difi.vefa.validator.api.*;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import org.kohsuke.MetaInfServices;
 
@@ -51,6 +48,17 @@ public class ValidatorModule extends AbstractModule {
             injector.injectMembers(trigger);
 
         return Collections.unmodifiableList(triggers);
+    }
+
+    @Provides
+    @Singleton
+    public List<Declaration> getDeclarations(Injector injector) {
+        List<Declaration> declarations = Lists.newArrayList(ServiceLoader.load(Declaration.class));
+
+        for (Declaration declaration : declarations)
+            injector.injectMembers(declaration);
+
+        return Collections.unmodifiableList(declarations);
     }
 
     @Provides
