@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.repo.source;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.source.AbstractSourceInstance;
@@ -34,7 +35,9 @@ class SimpleDirectorySourceInstance extends AbstractSourceInstance {
                 for (File file : FileUtils.listFiles(directory.toFile(), new RegexFileFilter(".*\\.asice"), TrueFileFilter.INSTANCE)) {
                     // Load validation artifact to memory.
                     log.info(String.format("Loading: %s", file));
-                    unpackContainer(ASIC_READER_FACTORY.open(file), file.getName());
+                    try (AsicReader asicReader = ASIC_READER_FACTORY.open(file)) {
+                        unpackContainer(asicReader, file.getName());
+                    }
                 }
             } catch (Exception e) {
                 // Log and throw ValidatorException.

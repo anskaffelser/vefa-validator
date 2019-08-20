@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.source;
 
+import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
@@ -36,8 +37,9 @@ class ClasspathSourceInstance extends AbstractSourceInstance {
         for (ArtifactType artifact : artifactsType.getArtifact()) {
             String artifactUri = location + artifact.getFilename();
             logger.info(String.format("Fetching %s", artifactUri));
-            try (InputStream inputStream = getClass().getResourceAsStream(artifactUri)) {
-                unpackContainer(ASIC_READER_FACTORY.open(inputStream), artifact.getFilename());
+            try (InputStream inputStream = getClass().getResourceAsStream(artifactUri);
+                 AsicReader asicReader = ASIC_READER_FACTORY.open(inputStream)) {
+                unpackContainer(asicReader, artifact.getFilename());
             }
         }
     }

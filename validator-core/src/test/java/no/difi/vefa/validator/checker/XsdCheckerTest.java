@@ -7,6 +7,6 @@ public class XsdCheckerTest {
 
     @Test(expectedExceptions = ValidatorException.class)
     public void simpleTriggerException() throws Exception {
-        new XsdCheckerFactory().prepare(null);
+        new XsdCheckerFactory().prepare(null, null);
     }
 }

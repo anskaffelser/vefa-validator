@@ -4,9 +4,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.api.RendererFactory;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
@@ -36,7 +36,7 @@ public class RendererCacheLoader extends CacheLoader<String, Renderer> {
                 for (String extension : factory.getClass().getAnnotation(Type.class).value()) {
                     if (stylesheetType.getPath().toLowerCase().endsWith(extension)) {
                         log.debug("Renderer '{}'", key);
-                        return factory.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()));
+                        return factory.prepare(stylesheetType, validatorEngine.getResource(stylesheetType.getPath()), stylesheetType.getPath().split("#")[1]);
                     }
                 }
             }

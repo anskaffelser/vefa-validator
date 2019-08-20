@@ -7,6 +7,6 @@ public class SchematronXsltCheckerTest {
 
     @Test(expectedExceptions = ValidatorException.class)
     public void simpleTriggerException() throws Exception {
-        new SchematronXsltCheckerFactory().prepare(null);
+        new SchematronXsltCheckerFactory().prepare(null, null);
     }
 }

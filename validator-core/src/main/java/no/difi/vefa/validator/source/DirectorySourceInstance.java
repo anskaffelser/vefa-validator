@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.source;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
@@ -23,7 +24,6 @@ class DirectorySourceInstance extends AbstractSourceInstance {
      * Constructor, loads validation artifacts into memory.
      *
      * @param directories Directories containing validation artifacts.
-     * @throws ValidatorException
      */
     public DirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
         // Call #AbstractSourceInstance().
@@ -53,7 +53,9 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         // Load validation artifact to memory.
                         Path artifactPath = directory.resolve(artifact.getFilename());
                         log.info("Loading {}", artifactPath);
-                        unpackContainer(ASIC_READER_FACTORY.open(artifactPath), artifact.getFilename());
+                        try (AsicReader asicReader = ASIC_READER_FACTORY.open(artifactPath)) {
+                            unpackContainer(asicReader, artifact.getFilename());
+                        }
                     }
                 } else {
                     // Detect all ASiC-E-files in the directory.
@@ -61,7 +63,9 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         for (Path path : directoryStream) {
                             if (path.toString().endsWith(".asice")) {
                                 log.info("Loading: {}", path);
-                                unpackContainer(ASIC_READER_FACTORY.open(path), path.getFileName().toString());
+                                try (AsicReader asicReader = ASIC_READER_FACTORY.open(path)) {
+                                    unpackContainer(asicReader, path.getFileName().toString());
+                                }
                             }
                         }
                     }

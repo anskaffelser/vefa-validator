@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import net.sf.saxon.s9api.*;
+import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.annotation.Type;
@@ -37,8 +38,8 @@ public class SchematronCheckerFactory implements CheckerFactory {
     private Injector injector;
 
     @Override
-    public Checker prepare(Path path) throws ValidatorException {
-        try (InputStream inputStream = Files.newInputStream(path)) {
+    public Checker prepare(ArtifactHolder artifactHolder, String path) throws ValidatorException {
+        try (InputStream inputStream = artifactHolder.getInputStream(path)) {
             XdmDestination destination = new XdmDestination();
 
             XsltTransformer xsltTransformer = schematronCompiler.get().load();

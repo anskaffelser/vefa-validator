@@ -2,33 +2,19 @@ package no.difi.vefa.validator.util;
 
 import org.w3c.dom.ls.LSInput;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-public class PathLSInput implements LSInput {
+public class HolderLSInput implements LSInput {
 
-    private String publicId;
+    private String file;
 
-    private String sysId;
+    private byte[] content;
 
-    private Path file;
-
-    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-    public PathLSInput(Path file, String publicId, String sysId) {
-        this.publicId = publicId;
-        this.sysId = sysId;
-        this.file = file;
-
-        try {
-            Files.copy(file, outputStream);
-        } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+    public HolderLSInput(byte[] content, String path) {
+        this.content = content;
+        this.file = path;
     }
 
     @Override
@@ -43,7 +29,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public InputStream getByteStream() {
-        return null;
+        return new ByteArrayInputStream(content);
     }
 
     @Override
@@ -53,7 +39,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public String getStringData() {
-        return outputStream.toString();
+        return new String(content);
     }
 
     @Override
@@ -63,7 +49,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public String getSystemId() {
-        return sysId;
+        return String.format("holder:%s", file);
     }
 
     @Override
@@ -73,7 +59,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public String getPublicId() {
-        return publicId;
+        return String.format("holder:%s", file);
     }
 
     @Override
@@ -83,7 +69,7 @@ public class PathLSInput implements LSInput {
 
     @Override
     public String getBaseURI() {
-        return file.toString();
+        return file;
     }
 
     @Override

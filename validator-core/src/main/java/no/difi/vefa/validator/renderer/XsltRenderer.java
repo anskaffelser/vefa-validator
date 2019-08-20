@@ -1,17 +1,17 @@
 package no.difi.vefa.validator.renderer;
 
 import net.sf.saxon.s9api.*;
+import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Renderer;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.PathURIResolver;
+import no.difi.vefa.validator.util.HolderURIResolver;
 import no.difi.xsd.vefa.validator._1.SettingType;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.OutputStream;
-import java.nio.file.Path;
 
 /**
  * Defines presenter for templates defined by XSLT.
@@ -25,12 +25,15 @@ public class XsltRenderer implements Renderer {
      */
     private StylesheetType stylesheetType;
 
-    private Path path;
+    private ArtifactHolder artifactHolder;
+
+    private String path;
 
     private Processor processor;
 
-    public XsltRenderer(XsltExecutable xsltExecutable, StylesheetType stylesheetType, Path path, Processor processor) {
+    public XsltRenderer(XsltExecutable xsltExecutable, StylesheetType stylesheetType, ArtifactHolder artifactHolder, String path, Processor processor) {
         this.xsltExecutable = xsltExecutable;
+        this.artifactHolder = artifactHolder;
         this.stylesheetType = stylesheetType;
         this.path = path;
         this.processor = processor;
@@ -43,7 +46,7 @@ public class XsltRenderer implements Renderer {
     public void render(Document document, Properties properties, OutputStream outputStream) throws ValidatorException {
         try {
             XsltTransformer xsltTransformer = xsltExecutable.load();
-            xsltTransformer.setURIResolver(new PathURIResolver(path.getParent()));
+            xsltTransformer.setURIResolver(new HolderURIResolver(artifactHolder, path));
 
             // Look through default values for stylesheet.
             for (SettingType setting : stylesheetType.getSetting())

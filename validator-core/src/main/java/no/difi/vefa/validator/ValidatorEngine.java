@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
@@ -15,8 +16,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
@@ -31,8 +30,6 @@ class ValidatorEngine implements Closeable {
      * JAXBContext
      */
     private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Configurations.class);
-
-    private Map<String, Path> configurationSourceMap = new HashMap<>();
 
     /**
      * Map containing raw configurations indexed by both 'identifier' and 'identifier#build'.
@@ -54,6 +51,8 @@ class ValidatorEngine implements Closeable {
      */
     private List<PackageType> packages = new ArrayList<>();
 
+    private Map<String, ArtifactHolder> content = new HashMap<>();
+
     /**
      * Loading a new validator engine loading configurations from current source.
      */
@@ -65,31 +64,16 @@ class ValidatorEngine implements Closeable {
             loadConfigurations("", c);
 
         try {
-            List<String> configs = sourceInstance.getConfigs();
-            if (configs == null) {
-
-                // Matcher to find configuration files.
-                final PathMatcher matcher = sourceInstance.getFileSystem().getPathMatcher("glob:**/config*.xml");
-
-                Files.walkFileTree(sourceInstance.getFileSystem().getPath("/"), new HashSet<FileVisitOption>(), 3,
-                        new SimpleFileVisitor<Path>() {
-                            @Override
-                            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                if (matcher.matches(file)) {
-                                    String configurationSource = addResource(file.getParent());
-                                    try (InputStream inputStream = Files.newInputStream(file)) {
-                                        loadConfigurations(configurationSource, inputStream);
-                                    } catch (ValidatorException e) {
-                                        throw new IOException(e.getMessage(), e);
-                                    }
-                                }
-                                return FileVisitResult.CONTINUE;
-                            }
-                        });
-            } else {
-                for (String config : configs) {
-                    Path path = sourceInstance.getFileSystem().getPath(config);
-                    loadConfigurations(addResource(path.getParent()), Files.newInputStream(path));
+            for (Map.Entry<String, ArtifactHolder> entry : sourceInstance.getContent().entrySet()) {
+                for (String filename : entry.getValue().getFilenames()) {
+                    if (filename.startsWith("config") && filename.endsWith(".xml")) {
+                        try (InputStream inputStream = entry.getValue().getInputStream(filename)) {
+                            content.put(entry.getKey(), entry.getValue());
+                            loadConfigurations(entry.getKey(), inputStream);
+                        } catch (ValidatorException e) {
+                            throw new IOException(e.getMessage(), e);
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
@@ -256,20 +240,13 @@ class ValidatorEngine implements Closeable {
         return packages;
     }
 
-    private String addResource(Path source) {
-        String identifier = source.toString();
-        configurationSourceMap.put(identifier, source);
-        return identifier;
-    }
-
-    public Path getResource(String resource) throws IOException {
+    public ArtifactHolder getResource(String resource) throws IOException {
         String[] parts = resource.split("#", 2);
-        return configurationSourceMap.get(parts[0]).resolve(parts[1]);
+        return content.get(parts[0]);
     }
 
     @Override
     public void close() throws IOException {
-        // TODO if (sourceInstance instanceof Closeable)
-        //     ((Closeable) sourceInstance).close();
+        // No action.
     }
 }

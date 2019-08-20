@@ -4,17 +4,16 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XsltCompiler;
+import no.difi.vefa.validator.annotation.Type;
+import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * @author erlend
@@ -30,8 +29,8 @@ public class SchematronXsltCheckerFactory implements CheckerFactory {
     private Injector injector;
 
     @Override
-    public Checker prepare(Path path) throws ValidatorException {
-        try (InputStream inputStream = Files.newInputStream(path)) {
+    public Checker prepare(ArtifactHolder artifactHolder, String path) throws ValidatorException {
+        try (InputStream inputStream = artifactHolder.getInputStream(path)) {
             XsltCompiler xsltCompiler = processor.newXsltCompiler();
             xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
 
