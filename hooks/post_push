@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo
+env | sort
+echo
+
+if [ $SOURCE_BRANCH = "master" ]; then
+  exit
+fi
+
+docker tag $DOCKER_REPO:$DOCKER_TAG $DOCKER_REPO:latest
+docker push $DOCKER_REPO:latest
