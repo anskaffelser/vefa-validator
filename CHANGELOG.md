@@ -1,12 +1,13 @@
 # Changelog
 
-## Release after next release
+## Next release
 
 * Remove deprecated methods in ValidatorBuilder.
 
 
-## Next release
+## 2.1.0
 
+* Support for PEPPOL BIS/EHF Billing 3.0.
 * Changed visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
 * Allow multiple directories when using DirectorySource and SimpleDirectorySource.
 * Refactored ValidatorBuilder to use ValidatorPlugin to declare functionality.

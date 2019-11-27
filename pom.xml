@@ -9,17 +9,17 @@
 
     <name>VEFA Validator :: Parent</name>
     <description>Parent project for VEFA Validator.</description>
-    <url>https://github.com/difi/vefa-validator</url>
+    <url>https://github.com/anskaffelser/vefa-validator</url>
 
     <scm>
         <tag>HEAD</tag>
-        <url>https://github.com/difi/vefa-validator</url>
-        <connection>scm:git:https://github.com/difi/vefa-validator.git</connection>
-        <developerConnection>scm:git:git@github.com:difi/vefa-validator.git</developerConnection>
+        <url>https://github.com/anskaffelser/vefa-validator</url>
+        <connection>scm:git:https://github.com/anskaffelser/vefa-validator.git</connection>
+        <developerConnection>scm:git:git@github.com:anskaffelser/vefa-validator.git</developerConnection>
     </scm>
 
     <issueManagement>
-        <url>https://github.com/difi/vefa-validator/issues</url>
+        <url>https://github.com/anskaffelser/vefa-validator/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -353,12 +353,5 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
-    <!-- <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories> -->
 
 </project>
