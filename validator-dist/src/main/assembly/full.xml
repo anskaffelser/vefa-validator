@@ -7,7 +7,7 @@
     <fileSets>
         <fileSet>
             <directory>src/main/assembly/full</directory>
-            <outputDirectory>/vefa-validator</outputDirectory>
+            <outputDirectory>vefa-validator</outputDirectory>
             <excludes>
                 <exclude>*/**/.gitkeep</exclude>
                 <exclude>*/**/.gitignore</exclude>
@@ -16,7 +16,7 @@
     </fileSets>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/vefa-validator/lib</outputDirectory>
+            <outputDirectory>vefa-validator/lib</outputDirectory>
         </dependencySet>
     </dependencySets>
 </assembly>
