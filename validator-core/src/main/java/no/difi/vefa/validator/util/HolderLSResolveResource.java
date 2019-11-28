@@ -26,7 +26,7 @@ public class HolderLSResolveResource implements LSResourceResolver {
         else
             target = Paths.get(baseURI.substring(7)).getParent().resolve(systemId);
 
-        String newPath = ("/" + target.toString().replaceAll("\\\\", "/")).replaceAll("/(.+?)/\\.\\.", "").substring(1);
+        String newPath = ("/" + target.toString().replaceAll("\\\\", "/")).replaceAll("/([^/]+?)/\\.\\.", "").substring(1);
 
         return new HolderLSInput(artifactHolder.get(newPath), newPath);
     }
