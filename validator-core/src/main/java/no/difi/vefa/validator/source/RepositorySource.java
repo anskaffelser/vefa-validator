@@ -5,13 +5,16 @@ import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Defines a repository as source for validation artifacts.
  */
 public class RepositorySource extends AbstractSource {
 
-    private URI rootUri;
+    private List<URI> rootUri;
 
     public static RepositorySource forTest() {
         return create("https://test-vefa.difi.no/validator/repo/");
@@ -21,6 +24,10 @@ public class RepositorySource extends AbstractSource {
         return create("https://vefa.difi.no/validator/repo/");
     }
 
+    public static RepositorySource of(String... uris) {
+        return new RepositorySource(uris);
+    }
+
     static RepositorySource create(String uri) {
         return new RepositorySource(uri);
     }
@@ -28,10 +35,12 @@ public class RepositorySource extends AbstractSource {
     /**
      * Helper method to allow using string when initiating the new source.
      *
-     * @param uri Uri used to fetch validation artifacts.
+     * @param uris Uri used to fetch validation artifacts.
      */
-    public RepositorySource(String uri) {
-        this(URI.create(uri));
+    public RepositorySource(String... uris) {
+        rootUri = new ArrayList<>();
+        for (String uri : uris)
+            rootUri.add(URI.create(uri));
     }
 
     /**
@@ -39,8 +48,12 @@ public class RepositorySource extends AbstractSource {
      *
      * @param uri Uri used to fetch validation artifacts.
      */
-    public RepositorySource(URI uri) {
-        this.rootUri = uri;
+    public RepositorySource(URI... uri) {
+        this.rootUri = Arrays.asList(uri);
+    }
+
+    public RepositorySource(List<URI> uris) {
+        this.rootUri = uris;
     }
 
     @Override
