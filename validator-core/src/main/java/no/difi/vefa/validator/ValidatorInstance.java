@@ -16,6 +16,7 @@ import no.difi.xsd.vefa.validator._1.*;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -118,8 +119,8 @@ class ValidatorInstance implements Closeable {
                 "Configuration for '%s' not found.", declarations.get(0)));
     }
 
-    protected DeclarationIdentifier detect(byte[] content) {
-        return declarationDetector.detect(content);
+    protected DeclarationIdentifier detect(InputStream contentStream) throws IOException {
+        return declarationDetector.detect(contentStream);
     }
 
     /**

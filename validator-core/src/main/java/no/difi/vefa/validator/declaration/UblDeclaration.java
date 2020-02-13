@@ -10,7 +10,10 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -29,14 +32,14 @@ public class UblDeclaration extends AbstractXmlDeclaration {
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
+    public List<String> detect(InputStream streamContent, List<String> parent) throws ValidatorException {
         List<String> results = new ArrayList<>();
 
         String customizationId = null;
         String profileId = null;
 
         try {
-            XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
+            XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(streamContent);
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
@@ -57,6 +60,10 @@ public class UblDeclaration extends AbstractXmlDeclaration {
                         // ProfileID is the last in sequence.
                         results.add(String.format("%s#%s", profileId, customizationId));
                     }
+                }
+                //We found what we're looking for. Break.
+                if(profileId!= null && customizationId!= null){
+                    break;
                 }
             }
         } catch (Exception e) {

@@ -44,7 +44,7 @@ public class AsiceDeclaration extends AbstractXmlDeclaration
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) {
+    public List<String> detect(InputStream contentStream, List<String> parent) {
         return Collections.singletonList(MIME);
     }
 

@@ -10,6 +10,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+
 public class DeclarationDetectorTest {
 
     @Inject
@@ -23,8 +26,9 @@ public class DeclarationDetectorTest {
 
     @Test
     public void simple() throws Exception {
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml")));
 
+        InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
+        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
         Assert.assertEquals(declarationIdentifier.getDeclaration().getType(), "xml.ubl");
         Assert.assertEquals(declarationIdentifier.getIdentifier().get(0), "urn:www.cenbii.eu:profile:bii05:ver2.0#urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0:extended:urn:www.difi.no:ehf:faktura:ver2.0");
         Assert.assertNotNull(declarationIdentifier.getParent());

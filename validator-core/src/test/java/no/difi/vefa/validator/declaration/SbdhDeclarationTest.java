@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.declaration;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import no.difi.vefa.validator.api.CachedFile;
@@ -12,10 +11,12 @@ import no.difi.vefa.validator.util.DeclarationIdentifier;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import static no.difi.vefa.validator.util.StreamUtils.readAllAndReset;
 import static org.testng.Assert.*;
 
 public class SbdhDeclarationTest {
@@ -31,33 +32,23 @@ public class SbdhDeclarationTest {
 
     @Test
     public void simpleSbdh() throws Exception {
-        byte[] bytes;
 
-        try (InputStream inputStream = getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml")) {
-            bytes = ByteStreams.toByteArray(inputStream);
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml"))) {
+            DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
+            assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
+            Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(inputStream).iterator();
+            assertTrue(iterator.hasNext());
         }
-
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-
-        assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
-
-        Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
-        assertTrue(iterator.hasNext());
     }
 
     @Test
     public void simpleSbdhOnly() throws Exception {
-        byte[] bytes;
 
-        try (InputStream inputStream = getClass().getResourceAsStream("/documents/sbdh-only.xml")) {
-            bytes = ByteStreams.toByteArray(inputStream);
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/sbdh-only.xml"))) {
+            DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
+            assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
+            Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(inputStream).iterator();
+            assertFalse(iterator.hasNext());
         }
-
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-
-        assertEquals(declarationIdentifier.getIdentifier().get(1), "SBDH:1.0");
-
-        Iterator<CachedFile> iterator = declarationIdentifier.getDeclaration().children(new ByteArrayInputStream(bytes)).iterator();
-        assertFalse(iterator.hasNext());
     }
 }

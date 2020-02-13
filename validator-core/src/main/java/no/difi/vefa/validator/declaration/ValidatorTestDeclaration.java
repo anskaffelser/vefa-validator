@@ -8,6 +8,7 @@ import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.StreamUtils;
 import no.difi.xsd.vefa.validator._1.Test;
 import org.kohsuke.MetaInfServices;
 import org.w3c.dom.Node;
@@ -25,6 +26,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -44,10 +46,10 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
+    public List<String> detect( InputStream contentStream, List<String> parent) throws ValidatorException {
         try {
+            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
             XMLStreamReader source = XML_INPUT_FACTORY.createXMLStreamReader(new ByteArrayInputStream(content));
-
             do {
                 if (source.getEventType() == XMLStreamConstants.START_ELEMENT
                         && source.getNamespaceURI().equals(namespace))
@@ -56,7 +58,7 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
                             return Collections.singletonList(String.format(
                                     "configuration::%s", source.getAttributeValue(i)));
             } while (source.hasNext() && source.next() > 0);
-        } catch (XMLStreamException e) {
+        } catch (IOException |XMLStreamException e) {
             throw new ValidatorException(e.getMessage(), e);
         }
         return null;

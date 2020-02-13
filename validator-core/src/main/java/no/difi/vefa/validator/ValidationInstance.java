@@ -6,10 +6,7 @@ import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.util.CombinedFlagFilterer;
-import no.difi.vefa.validator.util.DeclarationDetector;
-import no.difi.vefa.validator.util.DeclarationIdentifier;
-import no.difi.vefa.validator.util.DeclarationWrapper;
+import no.difi.vefa.validator.util.*;
 import no.difi.xsd.vefa.validator._1.*;
 
 import java.io.*;
@@ -112,19 +109,12 @@ class ValidationInstance implements Validation {
             byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         }
 
+        //To be able to reuse the stream later on.
         document = new Document(byteArrayInputStream);
-
-        // Read first 10kB for detections
-        byte[] bytes = new byte[10 * 1024];
-        int length = byteArrayInputStream.read(bytes);
-
-        if (length == -1)
-            throw new IOException("Empty file");
-
-        bytes = Arrays.copyOfRange(bytes, 0, length);
+        byteArrayInputStream.reset();
 
         // Use declaration implementations to detect declaration to use.
-        DeclarationIdentifier declarationIdentifier = validatorInstance.detect(bytes);
+        DeclarationIdentifier declarationIdentifier = validatorInstance.detect(byteArrayInputStream);
         declaration = declarationIdentifier.getDeclaration();
 
         if (declarationIdentifier.equals(DeclarationDetector.UNKNOWN))
@@ -133,6 +123,7 @@ class ValidationInstance implements Validation {
         // Detect expectation
         Expectation expectation = null;
         if (properties.getBoolean("feature.expectation")) {
+            byte[] bytes = StreamUtils.readAndReset(byteArrayInputStream, 10*1024);
             expectation = declaration.expectations(bytes);
             if (expectation != null)
                 report.setDescription(expectation.getDescription());
