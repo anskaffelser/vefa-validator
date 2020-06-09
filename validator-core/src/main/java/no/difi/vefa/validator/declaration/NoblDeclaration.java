@@ -1,7 +1,9 @@
 package no.difi.vefa.validator.declaration;
 
+import com.google.common.collect.Lists;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.util.StreamUtils;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
@@ -9,6 +11,7 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +31,7 @@ public class NoblDeclaration extends AbstractXmlDeclaration {
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) {
+    public List<String> detect(InputStream contentStream, List<String> parent) {
         List<String> results = new ArrayList<>();
 
         String type = parent.get(0).split("::")[1];
@@ -37,6 +40,7 @@ public class NoblDeclaration extends AbstractXmlDeclaration {
         stringBuilder.append(type);
 
         try {
+            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
             XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();

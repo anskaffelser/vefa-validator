@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.declaration;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import no.difi.vefa.validator.module.SaxonModule;
@@ -10,8 +9,11 @@ import no.difi.vefa.validator.util.DeclarationDetector;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static no.difi.vefa.validator.util.StreamUtils.readAllAndReset;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 
@@ -33,7 +35,10 @@ public class UblDeclarationTest {
     public void validNormal() throws Exception {
         String s = docStart + " xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">" +
                 "<CustomizationID>customization</CustomizationID><ProfileID>profile</ProfileID></Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -42,7 +47,8 @@ public class UblDeclarationTest {
                 "<cbc:CustomizationID>customization</cbc:CustomizationID>" +
                 "<cbc:ProfileID>profile</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -51,7 +57,8 @@ public class UblDeclarationTest {
                 "<ns1:CustomizationID>customization</ns1:CustomizationID>" +
                 "<ns1:ProfileID>profile</ns1:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -60,7 +67,8 @@ public class UblDeclarationTest {
                 "<CustomizationID   >customization</CustomizationID   >" +
                 "<ProfileID  >profile</ProfileID   >" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -69,7 +77,8 @@ public class UblDeclarationTest {
                 "<CustomizationID\t>customization</CustomizationID\t>" +
                 "<ProfileID\t>profile</ProfileID\t>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
@@ -78,7 +87,8 @@ public class UblDeclarationTest {
                 "<  CustomizationID>customization</CustomizationID>" +
                 "<  ProfileID>profile</ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getDeclaration().getType(), "xml");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml");
     }
 
     @Test
@@ -87,7 +97,8 @@ public class UblDeclarationTest {
                 "<\tCustomizationID>customization</CustomizationID>" +
                 "<\tProfileID>profile</ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getDeclaration().getType(), "xml");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml");
     }
 
     @Test
@@ -98,7 +109,8 @@ public class UblDeclarationTest {
                 "schemeAgencyID=\"320\" " +
                 "schemeID=\"urn:oioubl:id:profileid-1.2\">Procurement-OrdSimR-BilSim-1.0</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0),
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0),
                 "Procurement-OrdSimR-BilSim-1.0#OIOUBL-2.02");
     }
 
@@ -110,7 +122,8 @@ public class UblDeclarationTest {
                 "urn:www.peppol.eu:bis:peppol4a:ver2.0</cbc:CustomizationID> " +
                 "<cbc:ProfileID>profile</cbc:ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0),
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0),
                 "profile#" +
                         "urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:" +
                         "urn:www.peppol.eu:bis:peppol4a:ver2.0");
@@ -125,54 +138,53 @@ public class UblDeclarationTest {
                 "<CustomizationID>customization</CustomizationID>" +
                 "<ProfileID>profile</ProfileID>" +
                 "</Invoice:Invoice>";
-        assertEquals(declarationDetector.detect(s.getBytes()).getIdentifier().get(0), "profile#customization");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
+        assertEquals(declarationDetector.detect(inputStream).getIdentifier().get(0), "profile#customization");
     }
 
     @Test
     public void invalidSbdhDocument() throws Exception {
-        try (InputStream inputStream = getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml")) {
-            byte[] bytes = ByteStreams.toByteArray(inputStream);
-            assertNotEquals(declarationDetector.detect(bytes).getDeclaration().getType(), "xml.ubl");
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/peppol-bis-invoice-sbdh.xml"))) {
+            assertNotEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml.ubl");
         }
     }
 
+
     @Test
     public void validDocument() throws Exception {
-        try (InputStream inputStream = getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml")) {
-            byte[] bytes = ByteStreams.toByteArray(inputStream);
-            assertEquals(declarationDetector.detect(bytes).getDeclaration().getType(), "xml.ubl");
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"))) {
+            assertEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml.ubl");
         }
     }
 
     @Test
     public void invalidEdifact() throws Exception {
-        try (InputStream inputStream = getClass().getResourceAsStream("/documents/edifact-invoic-d-97b-un.txt")) {
-            byte[] bytes = ByteStreams.toByteArray(inputStream);
-            assertEquals(declarationDetector.detect(bytes), DeclarationDetector.UNKNOWN);
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/edifact-invoic-d-97b-un.txt"))) {
+            assertEquals(declarationDetector.detect(inputStream), DeclarationDetector.UNKNOWN);
         }
     }
 
     @Test
     public void emptyElements() throws Exception {
         String xml = "<test><CustomizationID></CustomizationID><ProfileID></ProfileID></test>";
-        assertEquals(declarationDetector.detect(xml.getBytes()), DeclarationDetector.UNKNOWN);
+        assertEquals(declarationDetector.detect(new ByteArrayInputStream(xml.getBytes())), DeclarationDetector.UNKNOWN);
     }
 
     @Test
     public void customizationOnly() throws Exception {
         String xml = "<test><CustomizationID>Test</CustomizationID></test>";
-        assertEquals(declarationDetector.detect(xml.getBytes()), DeclarationDetector.UNKNOWN);
+        assertEquals(declarationDetector.detect(new ByteArrayInputStream(xml.getBytes())), DeclarationDetector.UNKNOWN);
     }
 
     @Test
     public void incompleteDeclaration() throws Exception {
         String xml = "<test>";
-        assertEquals(declarationDetector.detect(xml.getBytes()), DeclarationDetector.UNKNOWN);
+        assertEquals(declarationDetector.detect(new ByteArrayInputStream(xml.getBytes())), DeclarationDetector.UNKNOWN);
     }
 
     @Test
     public void withoutDeclaration() throws Exception {
         String xml = "<test></test>";
-        assertEquals(declarationDetector.detect(xml.getBytes()), DeclarationDetector.UNKNOWN);
+        assertEquals(declarationDetector.detect(new ByteArrayInputStream(xml.getBytes())), DeclarationDetector.UNKNOWN);
     }
 }

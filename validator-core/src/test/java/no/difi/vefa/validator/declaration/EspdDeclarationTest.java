@@ -1,6 +1,5 @@
 package no.difi.vefa.validator.declaration;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import no.difi.vefa.validator.module.SaxonModule;
@@ -11,6 +10,11 @@ import no.difi.vefa.validator.util.DeclarationIdentifier;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import static no.difi.vefa.validator.util.StreamUtils.readAllAndReset;
 import static org.testng.Assert.assertEquals;
 
 public class EspdDeclarationTest {
@@ -26,20 +30,21 @@ public class EspdDeclarationTest {
 
     @Test
     public void simple() throws Exception {
-        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse-2.xml"));
 
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-        assertEquals(declarationIdentifier.getIdentifier().get(0),
-                "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::SomeCustomization");
+        try (InputStream inputStream =  new BufferedInputStream(getClass().getResourceAsStream("/documents/ESPDResponse-2.xml"))) {
+            DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
+            assertEquals(declarationIdentifier.getIdentifier().get(0),
+                    "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::SomeCustomization");
+        }
     }
 
     @Test
     public void simpleCustomization() throws Exception {
-        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/ESPDResponse.xml"));
-
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(bytes);
-        assertEquals(declarationIdentifier.getIdentifier().get(0),
-                "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::1");
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/ESPDResponse.xml"))) {
+            DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
+            assertEquals(declarationIdentifier.getIdentifier().get(0),
+                    "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse::1");
+        }
     }
 
     @Test
@@ -58,7 +63,7 @@ public class EspdDeclarationTest {
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
                 "xmlns:espd=\"urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1\">";
 
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
+        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(new ByteArrayInputStream(xml.getBytes()));
         assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }
@@ -80,7 +85,7 @@ public class EspdDeclarationTest {
                 "xmlns:espd=\"urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1\">" +
                 "<VersionID></VersionID>";
 
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
+        DeclarationIdentifier declarationIdentifier = declarationDetector.detect( new ByteArrayInputStream(xml.getBytes()));
         assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }
@@ -102,7 +107,7 @@ public class EspdDeclarationTest {
                 "xmlns:espd=\"urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1\">" +
                 "</espd:ESPDResponse>";
 
-        DeclarationIdentifier declarationIdentifier = declarationDetector.detect(xml.getBytes());
+        DeclarationIdentifier declarationIdentifier = declarationDetector.detect( new ByteArrayInputStream(xml.getBytes()));
         assertEquals(declarationIdentifier.getIdentifier().get(0),
                 "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse");
     }

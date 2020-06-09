@@ -45,8 +45,8 @@ public class DeclarationWrapper implements Declaration, DeclarationWithChildren,
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) throws ValidatorException {
-        return declaration.detect(content, parent);
+    public List<String> detect( InputStream contentStream, List<String> parent) throws ValidatorException {
+        return declaration.detect(contentStream, parent);
     }
 
     @Override

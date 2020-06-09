@@ -6,6 +6,7 @@ import no.difi.vefa.validator.api.CachedFile;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithChildren;
 import no.difi.vefa.validator.api.Expectation;
+import no.difi.vefa.validator.util.StreamUtils;
 import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayInputStream;
@@ -31,8 +32,10 @@ public class ZipDeclaration implements Declaration, DeclarationWithChildren {
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) {
+    public List<String> detect(InputStream contentStream, List<String> parent) {
         try {
+
+            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
             ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content));
             ZipEntry entry = zipInputStream.getNextEntry();
 

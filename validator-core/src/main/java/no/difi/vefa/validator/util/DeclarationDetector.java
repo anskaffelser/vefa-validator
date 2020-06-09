@@ -7,6 +7,8 @@ import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.lang.ValidatorException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
@@ -40,26 +42,39 @@ public class DeclarationDetector {
         }
     }
 
-    public DeclarationIdentifier detect(byte[] content) {
-        return detect(rootDeclarationWrappers, content, UNKNOWN);
+    public DeclarationIdentifier detect(InputStream contentStream) throws IOException {
+        return detect(rootDeclarationWrappers, null, contentStream, UNKNOWN);
     }
 
-    private DeclarationIdentifier detect(List<DeclarationWrapper> wrappers, byte[] content,
-                                         DeclarationIdentifier parent) {
+    private DeclarationIdentifier detect(List<DeclarationWrapper> wrappers, byte[] content, InputStream contentStream,
+                                         DeclarationIdentifier parent) throws IOException {
+
+        if (content == null) {
+            content = StreamUtils.readAndReset(contentStream, 10 * 1024);
+        }
+
         for (DeclarationWrapper wrapper : wrappers) {
             try {
                 if (wrapper.verify(content, parent == null ? null : parent.getIdentifier())) {
-                    List<String> identifier = wrapper.detect(content,
+                    contentStream.mark(0);
+                    List<String> identifier = wrapper.detect(contentStream,
                             parent == null ? null : parent.getIdentifier());
+
                     if (identifier == null)
                         break;
                     log.debug("Found: {} - {}", wrapper.getType(), identifier);
 
-                    return detect(wrapper.getChildren(), content,
+                    return detect(wrapper.getChildren(), content, contentStream,
                             new DeclarationIdentifier(parent, wrapper, identifier));
                 }
             } catch (ValidatorException e) {
                 log.warn(e.getMessage(), e);
+            } finally {
+                try {
+                    contentStream.reset();
+                } catch (IOException e) {
+                    log.warn("Couldn't reset stream!", e);
+                }
             }
         }
 

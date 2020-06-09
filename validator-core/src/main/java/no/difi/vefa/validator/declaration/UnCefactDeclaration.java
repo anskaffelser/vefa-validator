@@ -2,6 +2,7 @@ package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Declaration;
+import no.difi.vefa.validator.util.StreamUtils;
 import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
@@ -10,6 +11,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,11 +36,12 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) {
+    public List<String> detect(InputStream contentStream, List<String> parent) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(parent.get(0).split("::")[1]);
 
         try {
+            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
             XMLEventReader xmlEventReader =
                     XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
             while (xmlEventReader.hasNext()) {

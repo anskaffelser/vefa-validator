@@ -11,6 +11,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -97,6 +98,14 @@ public class Testing {
         Validation validation = validator.validate(
                 getClass().getResourceAsStream("/documents/peppol-billing-3.0.xml"));
         assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
+    }
+
+    @Test
+    public void testValidationWithLongUblExtension(){
+        Validation validation = validator.validate(
+                getClass().getResourceAsStream("/documents/peppol-billing-3.0_long_ubl_extension.xml"));
+        assertEquals(validation.getReport().getFlag(), FlagType.WARNING);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
     }
 }

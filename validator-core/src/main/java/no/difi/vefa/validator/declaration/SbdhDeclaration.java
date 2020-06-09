@@ -43,7 +43,7 @@ public class SbdhDeclaration extends AbstractXmlDeclaration implements Declarati
     }
 
     @Override
-    public List<String> detect(byte[] content, List<String> parent) {
+    public List<String> detect(InputStream contentStream, List<String> parent) {
         return Arrays.asList(parent.get(0), "SBDH:1.0");
     }
 
