@@ -2,12 +2,12 @@
 [![Docker](https://img.shields.io/docker/pulls/difi/vefa-validator.svg)](https://hub.docker.com/r/difi/vefa-validator/)
 
 
-# VEFA Validator 2.0
+# VEFA Validator 2.x
 
 ## Features
 
 * **Very easy to use.**
-* **[Much](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_001.md) [faster](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_002.md)** than the old validator.
+* **[Much](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_001.md) [faster](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_002.md)** than the 1.x version.
 * Supports **rendering documents**.
 * Very **low footprint** in your code.
 * **Pooling** of resources.
@@ -25,7 +25,7 @@ Include dependency in your pom.xml:
 <dependency>
   <groupId>no.difi.vefa</groupId>
   <artifactId>validator-core</artifactId>
-  <version>2.0.2</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -43,3 +43,16 @@ System.out.println(validation.getReport().getFlag());
 ```
 
 The validator is expensive to create, one instance should be enough.
+
+
+### New repositories
+
+Repositories referenced in the code was moved as of September 1st 2020. To switch to the new repository, adding source in the ValidatorBuilder is required. Example of how it may look like:
+
+```java
+Validator validator = ValidatorBuilder.newValidator()
+    .setSource(RepositorySource.of("https://anskaffelser.dev/repo/validator/current/"))
+    .build();
+```
+
+More information on the change and link to the new test repository may be found in the [announcment of the new repositories](https://anskaffelser.dev/service/announcement/2020-08-31-changed-urls-for-validator/).
