@@ -17,11 +17,11 @@ public class RepositorySource extends AbstractSource {
     private List<URI> rootUri;
 
     public static RepositorySource forTest() {
-        return create("https://test-vefa.difi.no/validator/repo/");
+        return create("https://anskaffelser.dev/repo/validator/draft/");
     }
 
     public static RepositorySource forProduction() {
-        return create("https://vefa.difi.no/validator/repo/");
+        return create("https://anskaffelser.dev/repo/validator/current/");
     }
 
     public static RepositorySource of(String... uris) {
