@@ -63,7 +63,7 @@
     <properties>
         <jackson.version>2.12.0</jackson.version>
         <tiles.version>3.0.8</tiles.version>
-        <spring.security.version>4.1.5.RELEASE</spring.security.version>
+        <spring.security.version>5.2.10.RELEASE</spring.security.version>
     </properties>
 
     <dependencies>
