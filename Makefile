@@ -1,6 +1,6 @@
 HOME := $(if $(HOME),$(HOME),$(shell echo $HOME))
 M2 := $(if $(M2),$(M2),$(HOME)/.m2)
-DOCKER_IMAGE := $(if $(DOCKER_IMAGE),$(DOCKER_IMAGE),maven:3.6-jdk-7-alpine)
+DOCKER_IMAGE := $(if $(DOCKER_IMAGE),$(DOCKER_IMAGE),maven:3.6-jdk-8-alpine)
 PWD := $(shell pwd)
 
 .PHONY: dist
