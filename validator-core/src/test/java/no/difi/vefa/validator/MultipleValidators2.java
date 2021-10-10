@@ -1,7 +1,7 @@
 package no.difi.vefa.validator;
 
 import no.difi.vefa.validator.source.ClasspathSource;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**

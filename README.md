@@ -7,7 +7,6 @@
 ## Features
 
 * **Very easy to use.**
-* **[Much](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_001.md) [faster](https://github.com/anskaffelser/vefa-validator/blob/master/doc/test_performance_002.md)** than the 1.x version.
 * Supports **rendering documents**.
 * Very **low footprint** in your code.
 * **Pooling** of resources.

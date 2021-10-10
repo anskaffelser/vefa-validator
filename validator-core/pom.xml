@@ -26,15 +26,15 @@
     </issueManagement>
 
     <organization>
-        <name>Norwegian Agency for Public Management and eGovernment (Difi)</name>
-        <url>http://www.difi.no/</url>
+        <name>The Norwegian Agency for Public and Financial Management (DFØ)</name>
+        <url>http://www.dfo.no/</url>
     </organization>
 
     <developers>
         <developer>
             <name>Erlend Klakegg Bergheim</name>
-            <email>erlend.klakegg.bergheim@difi.no</email>
-            <organization>Difi</organization>
+            <email>erlend.klakegg.bergheim@dfo.no</email>
+            <organization>DFØ</organization>
             <roles>
                 <role>Author</role>
             </roles>

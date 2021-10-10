@@ -3,6 +3,7 @@
 ## Next release
 
 * Remove deprecated methods in ValidatorBuilder.
+* Updated dependencies.
 
 
 ## 2.1.0

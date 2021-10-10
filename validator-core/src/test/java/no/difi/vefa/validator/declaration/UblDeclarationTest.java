@@ -6,6 +6,7 @@ import no.difi.vefa.validator.module.SaxonModule;
 import no.difi.vefa.validator.module.SbdhModule;
 import no.difi.vefa.validator.module.ValidatorModule;
 import no.difi.vefa.validator.util.DeclarationDetector;
+import no.difi.vefa.validator.util.DeclarationIdentifier;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -186,5 +187,13 @@ public class UblDeclarationTest {
     public void withoutDeclaration() throws Exception {
         String xml = "<test></test>";
         assertEquals(declarationDetector.detect(new ByteArrayInputStream(xml.getBytes())), DeclarationDetector.UNKNOWN);
+    }
+
+    @Test
+    public void eforms() throws Exception {
+        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/eforms-cn_23.xml"))) {
+            DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
+            assertEquals(declarationIdentifier.getDeclaration().getType(), "xml.ubl");
+        }
     }
 }
