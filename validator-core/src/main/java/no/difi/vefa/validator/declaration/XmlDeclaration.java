@@ -28,16 +28,15 @@ public class XmlDeclaration extends AbstractXmlDeclaration {
     public List<String> detect(InputStream contentStream, List<String> parent) throws ValidatorException {
 
         try {
-            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
+            byte[] content = StreamUtils.readAndReset(contentStream, 10 * 1024);
             String c = new String(content);
             return Collections.singletonList(String.format(
                     "%s::%s", XmlUtils.extractRootNamespace(c), XmlUtils.extractLocalName(c)));
-        }catch (IOException e){
-            new ValidationException("Couldn't detect XmlDeclaration", e);
+        } catch (IOException e) {
+            // Simply ignore
         }
 
         return null;
-
     }
 
     @Override

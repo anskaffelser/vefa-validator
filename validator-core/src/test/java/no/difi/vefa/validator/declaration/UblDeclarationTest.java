@@ -1,5 +1,6 @@
 package no.difi.vefa.validator.declaration;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import no.difi.vefa.validator.module.SaxonModule;
@@ -191,7 +192,9 @@ public class UblDeclarationTest {
 
     @Test
     public void eforms() throws Exception {
-        try (InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/documents/eforms-cn_23.xml"))) {
+        byte[] bytes = ByteStreams.toByteArray(getClass().getResourceAsStream("/documents/eforms-cn_23.xml"));
+
+        try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             DeclarationIdentifier declarationIdentifier = declarationDetector.detect(inputStream);
             assertEquals(declarationIdentifier.getDeclaration().getType(), "xml.ubl");
         }

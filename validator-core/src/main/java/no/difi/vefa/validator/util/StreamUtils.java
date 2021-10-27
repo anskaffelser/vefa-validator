@@ -17,7 +17,6 @@ public class StreamUtils {
      * @throws IOException
      */
     public static byte[] readAllAndReset(InputStream inputStream) throws IOException {
-
         byte[] bytes = ByteStreams.toByteArray(inputStream);
         inputStream.reset();
 
