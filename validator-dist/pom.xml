@@ -18,10 +18,6 @@
         </dependency>
         <dependency>
             <groupId>no.difi.vefa</groupId>
-            <artifactId>validator-repo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.difi.vefa</groupId>
             <artifactId>validator-tester</artifactId>
         </dependency>
         <!-- <dependency>
