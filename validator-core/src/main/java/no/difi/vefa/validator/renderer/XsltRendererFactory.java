@@ -19,6 +19,7 @@ import java.io.InputStream;
 /**
  * @author erlend
  */
+@Deprecated
 @MetaInfServices
 @Type({".xsl", ".xslt"})
 public class XsltRendererFactory implements RendererFactory {

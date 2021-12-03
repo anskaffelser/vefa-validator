@@ -16,6 +16,7 @@ import java.io.OutputStream;
 /**
  * Defines presenter for templates defined by XSLT.
  */
+@Deprecated
 public class XsltRenderer implements Renderer {
 
     private XsltExecutable xsltExecutable;

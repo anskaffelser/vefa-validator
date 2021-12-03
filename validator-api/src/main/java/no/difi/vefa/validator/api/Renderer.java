@@ -9,6 +9,7 @@ import java.io.OutputStream;
  *
  * The constructor must contain no parameters.
  */
+@Deprecated
 public interface Renderer {
 
     /**

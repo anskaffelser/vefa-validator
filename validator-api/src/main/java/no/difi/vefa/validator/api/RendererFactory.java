@@ -6,6 +6,7 @@ import no.difi.xsd.vefa.validator._1.StylesheetType;
 /**
  * @author erlend
  */
+@Deprecated
 public interface RendererFactory {
 
     /**

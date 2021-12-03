@@ -17,6 +17,7 @@ public interface Validation {
      * @param outputStream Stream to use.
      * @throws Exception
      */
+    @Deprecated
     void render(OutputStream outputStream) throws Exception;
 
     /**
@@ -26,6 +27,7 @@ public interface Validation {
      * @param properties Extra configuration to use for this rendering.
      * @throws ValidatorException
      */
+    @Deprecated
     void render(OutputStream outputStream, Properties properties) throws ValidatorException;
 
     /**
@@ -34,6 +36,7 @@ public interface Validation {
      *
      * @return 'true' if validated document is renderable.
      */
+    @Deprecated
     boolean isRenderable();
 
     /**

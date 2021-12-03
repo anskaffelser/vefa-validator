@@ -56,6 +56,7 @@ class ValidatorInstance implements Closeable {
     /**
      * Pool of presenters.
      */
+    @Deprecated
     @Inject
     private LoadingCache<String, Renderer> rendererCache;
 
@@ -130,6 +131,7 @@ class ValidatorInstance implements Closeable {
      * @param document     Document used for styling.
      * @param outputStream Stream for dumping of result.
      */
+    @Deprecated
     protected void render(StylesheetType stylesheet, Document document, Properties properties,
                           OutputStream outputStream) throws ValidatorException {
         Renderer renderer;
