@@ -12,8 +12,6 @@
 * **Pooling** of resources.
 * Supports **different lifecycles** of validation artifacts.
 * **[Configurable](https://github.com/anskaffelser/vefa-validator/blob/master/doc/configurations.md)** to fit multiple sizes.
-* **Nested** validation *(next version)*
-* **Tailoring individual validation** using properties *(next version)*
 
 
 ## Getting started
@@ -31,7 +29,7 @@ Include dependency in your pom.xml:
 Start validating business documents:
 
 ```java
-// Create a new validator using validation artifacts from Difi.
+// Create a new validator using validation artifacts from DFØ.
 Validator validator = ValidatorBuilder.newValidator().build();
 
 // Validate business document.
