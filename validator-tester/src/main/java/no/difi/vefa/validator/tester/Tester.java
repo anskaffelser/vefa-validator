@@ -30,7 +30,7 @@ public class Tester implements Closeable {
 
     private Validator validator;
 
-    private List<Validation> validations = new ArrayList<>();
+    private final List<Validation> validations = new ArrayList<>();
 
     private int tests;
 
@@ -109,7 +109,9 @@ public class Tester implements Closeable {
             } else {
                 append(file.toString(), validation, null);
             }
-        } catch (IOException | NullPointerException e) {
+        } catch (NullPointerException e) {
+            log.warn("File '{}' ({})", file, "Unable to parse file - please make sure it contains valid xml.");
+        } catch (IOException e) {
             log.warn("Test '{}' ({})", file, e.getMessage(), e);
         }
     }
