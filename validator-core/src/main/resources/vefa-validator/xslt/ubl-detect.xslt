@@ -31,6 +31,12 @@
                         <xsl:value-of select="concat(local-name(), '::', cbc:CustomizationID[1]/normalize-space())"/>
                     </string>
                 </xsl:if>
+                <string>
+                    <xsl:value-of select="concat(namespace-uri(), '::', local-name())"/>
+                </string>
+                <string>
+                    <xsl:value-of select="local-name()"/>
+                </string>
             </array>
         </xsl:variable>
 

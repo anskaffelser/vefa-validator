@@ -108,4 +108,11 @@ public class Testing {
         assertEquals(validation.getReport().getFlag(), FlagType.WARNING);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
     }
+
+    @Test
+    public void testValidationEmptyUbl(){
+        Validation validation = validator.validate(
+                getClass().getResourceAsStream("/documents/ubl-invoice-empty.xml"));
+        assertEquals(validation.getReport().getFlag(), FlagType.UNKNOWN);
+    }
 }

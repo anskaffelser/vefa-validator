@@ -60,6 +60,7 @@ public class UblDeclaration extends AbstractXmlDeclaration {
             throw new ValidatorException("Unable to detect UBL information.", e);
         }
 
-        return gson.fromJson(baos.toString(), List.class);
+        //noinspection unchecked
+        return  (List<String>) gson.fromJson(baos.toString(), List.class);
     }
 }
