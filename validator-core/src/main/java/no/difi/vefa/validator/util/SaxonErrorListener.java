@@ -10,24 +10,16 @@ public class SaxonErrorListener implements ErrorListener {
 
     public static SaxonErrorListener INSTANCE = new SaxonErrorListener();
 
-    private Logger log;
-
-    public SaxonErrorListener() {
-        this(LoggerFactory.getLogger(SaxonErrorListener.class));
-    }
-
-    public SaxonErrorListener(Logger log) {
-        this.log = log;
-    }
+    private static final Logger log = LoggerFactory.getLogger(SaxonErrorListener.class);
 
     @Override
-    public void warning(TransformerException exception) throws TransformerException {
+    public void warning(TransformerException exception) {
         if (exception.getMessage().contains("The expression can succeed only if the supplied value is an empty sequence."))
-            log.info(exception.getMessage(), exception);
+            log.info(exception.getMessage());
         else if (exception.getMessage().contains("will never select anything"))
-            log.info(exception.getMessage(), exception);
+            log.info(exception.getMessage());
         else
-            log.warn(exception.getMessage(), exception);
+            log.warn(exception.getMessage());
     }
 
     @Override
@@ -39,7 +31,7 @@ public class SaxonErrorListener implements ErrorListener {
     }
 
     @Override
-    public void fatalError(TransformerException exception) throws TransformerException {
+    public void fatalError(TransformerException exception) {
         log.error(exception.getMessage(), exception);
     }
 }
