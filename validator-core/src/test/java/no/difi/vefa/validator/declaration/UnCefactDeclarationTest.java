@@ -2,8 +2,6 @@ package no.difi.vefa.validator.declaration;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import no.difi.vefa.validator.module.SaxonModule;
-import no.difi.vefa.validator.module.SbdhModule;
 import no.difi.vefa.validator.module.ValidatorModule;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import org.testng.Assert;
@@ -13,8 +11,6 @@ import org.testng.annotations.Test;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import static no.difi.vefa.validator.util.StreamUtils.readAllAndReset;
-
 public class UnCefactDeclarationTest {
 
     @Inject
@@ -22,8 +18,7 @@ public class UnCefactDeclarationTest {
 
     @BeforeClass
     public void beforeClass() {
-        Guice.createInjector(new SaxonModule(), new SbdhModule(), new ValidatorModule())
-                .injectMembers(this);
+        Guice.createInjector(new ValidatorModule()).injectMembers(this);
     }
 
     @Test

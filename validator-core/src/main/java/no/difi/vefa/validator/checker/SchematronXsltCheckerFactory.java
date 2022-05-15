@@ -10,7 +10,6 @@ import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 /**
  * @author erlend
  */
-@MetaInfServices
 @Type({".xsl", ".xslt", ".svrl.xsl", ".svrl.xslt", ".sch.xslt"})
 public class SchematronXsltCheckerFactory implements CheckerFactory {
 

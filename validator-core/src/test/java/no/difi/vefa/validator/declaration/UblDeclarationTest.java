@@ -3,8 +3,6 @@ package no.difi.vefa.validator.declaration;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import no.difi.vefa.validator.module.SaxonModule;
-import no.difi.vefa.validator.module.SbdhModule;
 import no.difi.vefa.validator.module.ValidatorModule;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
@@ -15,13 +13,12 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static no.difi.vefa.validator.util.StreamUtils.readAllAndReset;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 
 public class UblDeclarationTest {
 
-    private String docStart =
+    private final String docStart =
             "<Invoice:Invoice xmlns:Invoice=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"";
 
     @Inject
@@ -29,8 +26,7 @@ public class UblDeclarationTest {
 
     @BeforeClass
     public void beforeClass() {
-        Guice.createInjector(new SaxonModule(), new SbdhModule(), new ValidatorModule())
-                .injectMembers(this);
+        Guice.createInjector(new ValidatorModule()).injectMembers(this);
     }
 
     @Test

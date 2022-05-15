@@ -7,10 +7,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.StreamUtils;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
@@ -24,7 +22,6 @@ import java.util.regex.Pattern;
  * Document declaration for OASIS Universal Business Language (UBL).
  */
 @Type("xml.ubl")
-@MetaInfServices(Declaration.class)
 public class UblDeclaration extends AbstractXmlDeclaration {
 
     private static final Pattern PATTERN = Pattern.compile("urn:oasis:names:specification:ubl:schema:xsd:(.+)-2::(.+)");

@@ -1,22 +1,17 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.StreamUtils;
 import no.difi.vefa.validator.util.XmlUtils;
-import org.kohsuke.MetaInfServices;
 
-import javax.xml.bind.ValidationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Type("xml")
-@MetaInfServices(Declaration.class)
 public class XmlDeclaration extends AbstractXmlDeclaration {
 
     @Override

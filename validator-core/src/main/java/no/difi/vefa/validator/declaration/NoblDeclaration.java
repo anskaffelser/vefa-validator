@@ -1,10 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
-import com.google.common.collect.Lists;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.util.StreamUtils;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Type("xml.nobl")
-@MetaInfServices(Declaration.class)
 public class NoblDeclaration extends AbstractXmlDeclaration {
 
     private static final Pattern PATTERN = Pattern.compile("urn:fdc:difi.no:2018:nobl:(.+)-1::(.+)");

@@ -1,9 +1,7 @@
 package no.difi.vefa.validator.declaration;
 
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.util.StreamUtils;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -21,10 +19,9 @@ import java.util.regex.Pattern;
  * Document declaration for OASIS Universal Business Language (UBL).
  */
 @Type("xml.uncefact")
-@MetaInfServices(Declaration.class)
 public class UnCefactDeclaration extends AbstractXmlDeclaration {
 
-    private static List<String> informationElements = Arrays.asList(
+    private final static List<String> informationElements = Arrays.asList(
             "BusinessProcessSpecifiedDocumentContextParameter",
             "GuidelineSpecifiedDocumentContextParameter");
 

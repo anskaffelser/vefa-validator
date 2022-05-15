@@ -1,10 +1,8 @@
 package no.difi.vefa.validator.declaration;
 
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.StreamUtils;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Characters;
@@ -18,10 +16,9 @@ import java.util.List;
 
 
 @Type("xml.espd")
-@MetaInfServices(Declaration.class)
 public class EspdDeclaration extends AbstractXmlDeclaration {
 
-    private static List<String> validParents = Arrays.asList(
+    private final static List<String> validParents = Arrays.asList(
             "urn:grow:names:specification:ubl:schema:xsd:ESPDRequest-1::ESPDRequest",
             "urn:grow:names:specification:ubl:schema:xsd:ESPDResponse-1::ESPDResponse"
     );

@@ -5,25 +5,21 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import net.sf.saxon.s9api.*;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Implementation performing step 3 (compilation) of Schematron.
  *
  * @author erlend
  */
-@MetaInfServices
 @Type(".sch")
 public class SchematronCheckerFactory implements CheckerFactory {
 

@@ -1,74 +1,98 @@
 package no.difi.vefa.validator.module;
 
-import com.google.common.collect.Lists;
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.checker.SchematronCheckerFactory;
+import no.difi.vefa.validator.checker.SchematronXsltCheckerFactory;
+import no.difi.vefa.validator.checker.XsdCheckerFactory;
+import no.difi.vefa.validator.configuration.AsiceConfigurationProvider;
+import no.difi.vefa.validator.configuration.ValidatorTestConfigurationProvider;
+import no.difi.vefa.validator.declaration.*;
+import no.difi.vefa.validator.renderer.XsltRendererFactory;
+import no.difi.vefa.validator.trigger.AsiceTrigger;
 import no.difi.xsd.vefa.validator._1.Configurations;
-import org.kohsuke.MetaInfServices;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author erlend
  */
-@MetaInfServices(Module.class)
 public class ValidatorModule extends AbstractModule {
 
-    @Provides
-    @Singleton
-    public List<CheckerFactory> getCheckerFactories(Injector injector) {
-        List<CheckerFactory> factories = Lists.newArrayList(ServiceLoader.load(CheckerFactory.class));
+    @Override
+    protected void configure() {
+        install(new CacheModule());
+        install(new PropertiesModule());
+        install(new SaxonModule());
+        install(new SbdhModule());
+        install(new SourceModule());
+        install(new SchematronModule());
 
-        for (CheckerFactory factory : factories)
-            injector.injectMembers(factory);
+        Multibinder<CheckerFactory> checkers = Multibinder.newSetBinder(binder(), CheckerFactory.class);
+        checkers.addBinding().to(SchematronCheckerFactory.class);
+        checkers.addBinding().to(SchematronXsltCheckerFactory.class);
+        checkers.addBinding().to(XsdCheckerFactory.class);
 
-        return Collections.unmodifiableList(factories);
+        Multibinder<RendererFactory> renderers = Multibinder.newSetBinder(binder(), RendererFactory.class);
+        renderers.addBinding().to(XsltRendererFactory.class);
+
+        Multibinder<Trigger> triggers = Multibinder.newSetBinder(binder(), Trigger.class);
+        triggers.addBinding().to(AsiceTrigger.class);
+
+        Multibinder<Declaration> declarations = Multibinder.newSetBinder(binder(), Declaration.class);
+        declarations.addBinding().to(AsiceDeclaration.class);
+        declarations.addBinding().to(AsiceXmlDeclaration.class);
+        declarations.addBinding().to(EspdDeclaration.class);
+        declarations.addBinding().to(NoblDeclaration.class);
+        declarations.addBinding().to(SbdhDeclaration.class);
+        declarations.addBinding().to(UblDeclaration.class);
+        declarations.addBinding().to(UnCefactDeclaration.class);
+        declarations.addBinding().to(ValidatorTestDeclaration.class);
+        declarations.addBinding().to(ValidatorTestSetDeclaration.class);
+        declarations.addBinding().to(XmlDeclaration.class);
+        declarations.addBinding().to(ZipDeclaration.class);
+
+        Multibinder<ConfigurationProvider> configurations = Multibinder.newSetBinder(binder(), ConfigurationProvider.class);
+        configurations.addBinding().to(AsiceConfigurationProvider.class);
+        configurations.addBinding().to(ValidatorTestConfigurationProvider.class);
     }
 
     @Provides
     @Singleton
-    public List<RendererFactory> getRendererFactories(Injector injector) {
-        List<RendererFactory> factories = Lists.newArrayList(ServiceLoader.load(RendererFactory.class));
-
-        for (RendererFactory factory : factories)
-            injector.injectMembers(factory);
-
-        return Collections.unmodifiableList(factories);
+    public List<CheckerFactory> getCheckerFactories(Set<CheckerFactory> factories) {
+        return Collections.unmodifiableList(new ArrayList<>(factories));
     }
 
     @Provides
     @Singleton
-    public List<Trigger> getTriggers(Injector injector) {
-        List<Trigger> triggers = Lists.newArrayList(ServiceLoader.load(Trigger.class));
-
-        for (Trigger trigger : triggers)
-            injector.injectMembers(trigger);
-
-        return Collections.unmodifiableList(triggers);
+    public List<RendererFactory> getRendererFactories(Set<RendererFactory> factories) {
+        return Collections.unmodifiableList(new ArrayList<>(factories));
     }
 
     @Provides
     @Singleton
-    public List<Declaration> getDeclarations(Injector injector) {
-        List<Declaration> declarations = Lists.newArrayList(ServiceLoader.load(Declaration.class));
-
-        for (Declaration declaration : declarations)
-            injector.injectMembers(declaration);
-
-        return Collections.unmodifiableList(declarations);
+    public List<Trigger> getTriggers(Set<Trigger> triggers) {
+        return Collections.unmodifiableList(new ArrayList<>(triggers));
     }
 
     @Provides
     @Singleton
-    public List<Configurations> getConfigurations() {
-        List<Configurations> configurations = new ArrayList<>();
+    public List<Declaration> getDeclarations(Set<Declaration> declarations) {
+        return Collections.unmodifiableList(new ArrayList<>(declarations));
+    }
 
-        for (ConfigurationProvider provider : ServiceLoader.load(ConfigurationProvider.class))
-            configurations.add(provider.getConfigurations());
-
-        return configurations;
+    @Provides
+    @Singleton
+    public List<Configurations> getConfigurations(Set<ConfigurationProvider> providers) {
+        return providers.stream()
+                .map(ConfigurationProvider::getConfigurations)
+                .collect(Collectors.toList());
     }
 }
