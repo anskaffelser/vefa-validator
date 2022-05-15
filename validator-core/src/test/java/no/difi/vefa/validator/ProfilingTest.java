@@ -12,10 +12,10 @@ import java.util.zip.GZIPInputStream;
 
 public class ProfilingTest {
 
-    private static Validator validator;
+    private Validator validator;
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public void beforeClass() throws Exception {
         validator = ValidatorBuilder.newValidator().build();
     }
 

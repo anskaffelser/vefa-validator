@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
+import java.util.Objects;
 
 public class SaxonErrorListener implements ErrorListener {
 
@@ -32,6 +33,9 @@ public class SaxonErrorListener implements ErrorListener {
 
     @Override
     public void fatalError(TransformerException exception) {
-        log.error(exception.getMessage(), exception);
+        if (Objects.nonNull(exception.getMessage()) && exception.getMessage().startsWith("Exception thrown by URIResolver"))
+            log.error(exception.getCause().getMessage());
+        else
+            log.error(exception.getMessage(), exception);
     }
 }

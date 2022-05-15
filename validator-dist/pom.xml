@@ -20,11 +20,6 @@
             <groupId>no.difi.vefa</groupId>
             <artifactId>validator-tester</artifactId>
         </dependency>
-        <!-- <dependency>
-            <groupId>no.difi.vefa</groupId>
-            <artifactId>validator-web</artifactId>
-            <classifier>classes</classifier>
-        </dependency> -->
     </dependencies>
 
     <build>
