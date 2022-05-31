@@ -22,16 +22,17 @@ public class ProfilingTest {
     @Test(enabled = false)
     public void simple() throws Exception {
         for (int i = 0; i < 2000; i++) {
-            InputStream inputStream = getClass().getResourceAsStream("/documents/huge-001.xml.gz");
-            GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
+            try (InputStream inputStream = getClass().getResourceAsStream("/documents/huge-001.xml.gz")) {
+                GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
 
-            Validation validation = validator.validate(gzipInputStream);
-            Assert.assertEquals(FlagType.ERROR, validation.getReport().getFlag());
+                Validation validation = validator.validate(gzipInputStream);
+                Assert.assertEquals(FlagType.ERROR, validation.getReport().getFlag());
 
-            gzipInputStream.close();
-            inputStream.close();
+                gzipInputStream.close();
+                inputStream.close();
 
-            System.out.println(i);
+                System.out.println(i);
+            }
         }
     }
 }

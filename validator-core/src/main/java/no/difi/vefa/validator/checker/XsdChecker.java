@@ -22,7 +22,7 @@ public class XsdChecker implements Checker {
 
     private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
 
-    private Schema schema;
+    private final Schema schema;
 
     public XsdChecker(Schema schema) {
         this.schema = schema;
