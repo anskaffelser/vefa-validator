@@ -11,7 +11,6 @@ import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.HolderURIResolver;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.xsd.vefa.validator._1.StylesheetType;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
@@ -20,7 +19,6 @@ import java.io.InputStream;
  * @author erlend
  */
 @Deprecated
-@MetaInfServices
 @Type({".xsl", ".xslt"})
 public class XsltRendererFactory implements RendererFactory {
 

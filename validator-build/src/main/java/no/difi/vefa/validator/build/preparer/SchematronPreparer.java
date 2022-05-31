@@ -7,12 +7,10 @@ import no.difi.commons.schematron.SchematronCompiler;
 import no.difi.commons.schematron.SchematronException;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Preparer;
-import org.kohsuke.MetaInfServices;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-@MetaInfServices
 @Type({".sch", ".scmt"})
 public class SchematronPreparer implements Preparer {
 

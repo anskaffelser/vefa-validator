@@ -2,7 +2,6 @@ package no.difi.vefa.validator.declaration;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.DeclarationWithConverter;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
@@ -10,7 +9,6 @@ import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.vefa.validator.util.StreamUtils;
 import no.difi.xsd.vefa.validator._1.Test;
-import org.kohsuke.MetaInfServices;
 import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
@@ -34,7 +32,6 @@ import java.util.List;
 
 @Slf4j
 @Type("xml.test")
-@MetaInfServices(Declaration.class)
 public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
 
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();

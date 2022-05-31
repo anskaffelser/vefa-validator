@@ -1,14 +1,16 @@
 package no.difi.vefa.validator;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Module;
+import com.google.inject.util.Modules;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
-import no.difi.vefa.validator.module.ConfigurationModule;
+import no.difi.vefa.validator.module.PropertiesModule;
+import no.difi.vefa.validator.module.SourceModule;
+import no.difi.vefa.validator.module.ValidatorModule;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
 
 /**
  * Builder supporting creation of validator.
@@ -63,9 +65,10 @@ public class ValidatorBuilder {
      * @return Validator ready for use.
      */
     public Validator build() {
-        List<Module> modules = Lists.newArrayList(ServiceLoader.load(Module.class));
-        modules.add(new ConfigurationModule(source, properties));
+        List<Module> modules = new ArrayList<>();
+        modules.add(new PropertiesModule(properties));
+        modules.add(new SourceModule(source));
 
-        return Guice.createInjector(modules).getInstance(Validator.class);
+        return Guice.createInjector(Modules.override(new ValidatorModule()).with(modules)).getInstance(Validator.class);
     }
 }

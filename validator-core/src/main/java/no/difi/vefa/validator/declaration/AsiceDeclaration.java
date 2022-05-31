@@ -4,9 +4,11 @@ import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicReader;
 import no.difi.asic.AsicReaderFactory;
 import no.difi.vefa.validator.annotation.Type;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.CachedFile;
+import no.difi.vefa.validator.api.DeclarationWithChildren;
+import no.difi.vefa.validator.api.DeclarationWithConverter;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.lang.ValidatorException;
-import org.kohsuke.MetaInfServices;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +21,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Type("zip.asice")
-@MetaInfServices(Declaration.class)
 public class AsiceDeclaration extends AbstractXmlDeclaration
         implements DeclarationWithChildren, DeclarationWithConverter {
 

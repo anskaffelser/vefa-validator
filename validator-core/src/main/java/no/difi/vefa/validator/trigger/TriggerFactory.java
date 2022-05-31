@@ -15,7 +15,7 @@ import java.util.Map;
 @Singleton
 public class TriggerFactory {
 
-    private Map<String, Trigger> triggers = new HashMap<>();
+    private final Map<String, Trigger> triggers = new HashMap<>();
 
     @Inject
     public TriggerFactory(List<Trigger> triggers) {

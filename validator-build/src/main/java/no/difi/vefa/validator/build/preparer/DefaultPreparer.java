@@ -4,12 +4,10 @@ import com.google.common.io.Files;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.util.PreparerProvider;
-import org.kohsuke.MetaInfServices;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-@MetaInfServices
 @Type(PreparerProvider.DEFAULT)
 public class DefaultPreparer implements Preparer {
 

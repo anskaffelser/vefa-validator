@@ -12,7 +12,6 @@ import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.vefa.validator.util.SaxonMessageListener;
-import org.kohsuke.MetaInfServices;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
@@ -22,7 +21,6 @@ import java.io.InputStream;
  *
  * @author erlend
  */
-@MetaInfServices
 @Type(".sch")
 public class SchematronCheckerFactory implements CheckerFactory {
 
