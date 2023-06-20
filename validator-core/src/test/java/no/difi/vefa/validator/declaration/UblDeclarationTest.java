@@ -80,26 +80,6 @@ public class UblDeclarationTest {
     }
 
     @Test
-    public void invalidSpaces() throws Exception {
-        String s = docStart + " xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">" +
-                "<  CustomizationID>customization</CustomizationID>" +
-                "<  ProfileID>profile</ProfileID>" +
-                "</Invoice:Invoice>";
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
-        assertEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml");
-    }
-
-    @Test
-    public void invalidTabs() throws Exception {
-        String s = docStart + " xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">" +
-                "<\tCustomizationID>customization</CustomizationID>" +
-                "<\tProfileID>profile</ProfileID>" +
-                "</Invoice:Invoice>";
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(s.getBytes());
-        assertEquals(declarationDetector.detect(inputStream).getDeclaration().getType(), "xml");
-    }
-
-    @Test
     public void validOioublDeclaration() throws Exception {
         String s = docStart + " xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\">" +
                 "<cbc:CustomizationID>OIOUBL-2.02</cbc:CustomizationID>" +

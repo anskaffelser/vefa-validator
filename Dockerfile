@@ -1,4 +1,4 @@
-FROM openjdk:8u332-slim-bullseye
+FROM eclipse-temurin:17-jre
 
 ADD target/vefa-validator /vefa-validator
 

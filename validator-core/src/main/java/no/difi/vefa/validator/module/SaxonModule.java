@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.Processor;
-import no.difi.vefa.validator.util.BlockingURIResolver;
 
 
 /**
@@ -19,7 +18,6 @@ public class SaxonModule extends AbstractModule {
     public Processor getProcessor() {
         Configuration configuration = new Configuration();
         configuration.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
-        configuration.setURIResolver(new BlockingURIResolver());
 
         return new Processor(configuration);
     }
