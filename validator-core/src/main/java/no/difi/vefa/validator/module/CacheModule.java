@@ -22,6 +22,7 @@ public class CacheModule extends AbstractModule {
     @Singleton
     public LoadingCache<String, Checker> getCheckerCache(Properties properties, CheckerCacheLoader loader) {
         return CacheBuilder.newBuilder()
+                .softValues()
                 .maximumSize(properties.getInteger("pools.checker.size"))
                 .expireAfterAccess(properties.getInteger("pools.checker.expire"), TimeUnit.MINUTES)
                 .build(loader);
@@ -31,6 +32,7 @@ public class CacheModule extends AbstractModule {
     @Singleton
     public LoadingCache<String, Renderer> getRendererCache(Properties properties, RendererCacheLoader loader) {
         return CacheBuilder.newBuilder()
+                .softValues()
                 .maximumSize(properties.getInteger("pools.presenter.size"))
                 .expireAfterAccess(properties.getInteger("pools.presenter.expire"), TimeUnit.MINUTES)
                 .build(loader);
