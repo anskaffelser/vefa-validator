@@ -3,12 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>no.difi.vefa</groupId>
-    <artifactId>validator-parent</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>validator-core</artifactId>
     <version>2.3.1-SNAPSHOT</version>
 
-    <name>VEFA Validator :: Parent</name>
-    <description>Parent project for VEFA Validator.</description>
+    <name>VEFA Validator</name>
+    <description>Complete validator for embedding in projects.</description>
     <url>https://github.com/anskaffelser/vefa-validator</url>
 
     <scm>
@@ -41,6 +40,11 @@
 
     <licenses>
         <license>
+            <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
             <name>European Union Public Licence (EUPL v.1.1)</name>
             <url>https://joinup.ec.europa.eu/community/eupl/og_page/european-union-public-licence-eupl-v11</url>
             <distribution>repo</distribution>
@@ -52,21 +56,99 @@
         </license>
     </licenses>
 
-    <modules>
-        <module>validator-api</module>
-        <module>validator-build</module>
-        <module>validator-core</module>
-        <module>validator-dist</module>
-        <module>validator-tester</module>
-    </modules>
-
     <properties>
         <java.encoding>UTF-8</java.encoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <slf4j.version>2.0.7</slf4j.version>
     </properties>
 
     <dependencies>
+        <!-- Difi commons -->
+        <dependency>
+            <groupId>no.difi.commons</groupId>
+            <artifactId>commons-asic</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+        <dependency>
+            <groupId>no.difi.commons</groupId>
+            <artifactId>commons-schematron</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+
+        <!-- Saxon -->
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>12.3</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+
+
+        <!-- Google -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.2-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- Activation -->
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>javax.activation</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JAXB -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -90,121 +172,6 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Validator -->
-            <dependency>
-                <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-api</artifactId>
-                <version>2.3.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-build</artifactId>
-                <version>2.3.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-core</artifactId>
-                <version>2.3.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.vefa</groupId>
-                <artifactId>validator-tester</artifactId>
-                <version>2.3.1-SNAPSHOT</version>
-            </dependency>
-
-            <!-- Difi commons -->
-            <dependency>
-                <groupId>no.difi.commons</groupId>
-                <artifactId>commons-asic</artifactId>
-                <version>0.9.5</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.commons</groupId>
-                <artifactId>commons-schematron</artifactId>
-                <version>0.9.5</version>
-            </dependency>
-
-            <!-- Saxon -->
-            <dependency>
-                <groupId>net.sf.saxon</groupId>
-                <artifactId>Saxon-HE</artifactId>
-                <version>12.3</version>
-            </dependency>
-
-            <!-- Logging -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.3.8</version>
-            </dependency>
-
-            <!-- Commons -->
-            <dependency>
-                <groupId>commons-cli</groupId>
-                <artifactId>commons-cli</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.13.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.16.0</version>
-            </dependency>
-
-            <!-- Google -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>32.1.2-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
-                <version>7.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.10.1</version>
-            </dependency>
-
-            <!-- Activation -->
-            <dependency>
-                <groupId>com.sun.activation</groupId>
-                <artifactId>javax.activation</artifactId>
-                <version>1.2.0</version>
-            </dependency>
-
-            <!-- JAXB -->
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -225,68 +192,114 @@
                     <encoding>${java.encoding}</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>org/oclc/**</exclude>
+                        <exclude>no/difi/xsd/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <target>2.1</target>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun.activation</groupId>
+                        <artifactId>javax.activation</artifactId>
+                        <version>1.2.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>package-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludePackageNames>org.oclc.*</excludePackageNames>
+                    <encoding>${java.encoding}</encoding>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/full.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-distribution-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../target</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/${project.build.finalName}-full</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <path>/</path>
-                    </configuration>
-                </plugin>
-                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.3</version>
-                    <executions>
-                        <execution>
-                            <id>package-javadoc</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <excludePackageNames>org.oclc.*</excludePackageNames>
-                        <encoding>${java.encoding}</encoding>
-                        <failOnError>false</failOnError>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.8</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>report</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <excludes>
-                            <exclude>org/oclc/**</exclude>
-                            <exclude>no/difi/xsd/**</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
     <profiles>
@@ -300,24 +313,6 @@
             </activation>
             <build>
                 <plugins>
-                    <!-- <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.5.2</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin> -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>

@@ -2,7 +2,7 @@
 
 The validator supports multiple configurations to make it fit the needs.
 
-Default values are defined in [ValidatorDefaults.java](https://github.com/difi/vefa-validator/blob/master/validator-core/src/main/java/no/difi/vefa/validator/ValidatorDefaults.java).
+Default values are defined in [ValidatorDefaults.java](https://github.com/difi/vefa-validator/blob/master/src/main/java/no/difi/vefa/validator/ValidatorDefaults.java).
 
 
 ## Features
