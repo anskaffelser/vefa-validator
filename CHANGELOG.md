@@ -1,6 +1,14 @@
 # Changelog
 
-## Next release
+## 3.0.0
+
+
+## 2.3.0
+
+* Soft references in caches
+
+
+## 2.2.0
 
 * Remove deprecated methods in ValidatorBuilder.
 * Updated dependencies.

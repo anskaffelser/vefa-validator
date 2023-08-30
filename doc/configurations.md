@@ -22,8 +22,3 @@ Functionality for reading first comment in files to check errors and warnings ag
 
 * **pools.checker.size** (default: 250)
 * **pools.checker.expire** (default: 1440 *minutes*)
-
-### Presenter
-
-* **pools.presenter.size** (default: 250)
-* **pools.presenter.expire** (default: 1440 *minutes*)

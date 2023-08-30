@@ -4,3 +4,4 @@ target
 /workspace
 /validator.properties
 *.html
+.DS_Store

@@ -246,6 +246,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <doclint>all,-missing</doclint>
                     <excludePackageNames>org.oclc.*</excludePackageNames>
                     <encoding>${java.encoding}</encoding>
                     <failOnError>false</failOnError>
