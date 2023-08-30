@@ -1,13 +1,13 @@
 package no.difi.vefa.validator.expectation;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.AssertElementType;
 import no.difi.xsd.vefa.validator._1.AssertType;
 import no.difi.xsd.vefa.validator._1.Test;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 

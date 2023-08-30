@@ -6,7 +6,7 @@ import no.difi.vefa.validator.lang.ValidatorException;
 
 public class ClasspathSource extends AbstractSource {
 
-    private String location;
+    private final String location;
 
     public ClasspathSource(String location) {
         this.location = location;

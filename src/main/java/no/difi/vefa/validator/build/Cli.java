@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.module.BuildModule;
@@ -13,7 +14,6 @@ import no.difi.vefa.validator.build.task.TestTask;
 import no.difi.vefa.validator.module.SaxonModule;
 import org.apache.commons.cli.*;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
 @Slf4j

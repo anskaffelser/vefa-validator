@@ -96,7 +96,6 @@
             <xs:element name="standardId" type="xs:string" minOccurs="0"/>
             <xs:element name="declaration" type="declarationType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="inherit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="stylesheet" type="stylesheetType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="file" type="fileType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="trigger" type="triggerType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="rule" type="ruleType" minOccurs="0" maxOccurs="unbounded"/>
@@ -155,16 +154,6 @@
     <xs:complexType name="messageType">
         <xs:attribute name="identifier" type="xs:string"/>
         <xs:attribute name="flag" type="flagType"/>
-    </xs:complexType>
-
-    <xs:complexType name="stylesheetType">
-        <xs:sequence>
-            <xs:element name="setting" type="settingType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="type" type="xs:string"/>
-        <xs:attribute name="identifier" type="xs:string"/>
-        <xs:attribute name="source" type="xs:string"/>
-        <xs:attribute name="path" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="settingType">

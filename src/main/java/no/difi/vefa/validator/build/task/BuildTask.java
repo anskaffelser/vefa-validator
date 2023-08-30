@@ -2,22 +2,25 @@ package no.difi.vefa.validator.build.task;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.model.Build;
-import no.difi.vefa.validator.build.util.AsicArchiver;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
+import no.difi.vefa.validator.build.util.ZipArchiver;
 import no.difi.vefa.validator.util.JAXBHelper;
-import no.difi.xsd.vefa.validator._1.*;
+import no.difi.xsd.vefa.validator._1.BuildConfigurations;
+import no.difi.xsd.vefa.validator._1.ConfigurationType;
+import no.difi.xsd.vefa.validator._1.Configurations;
+import no.difi.xsd.vefa.validator._1.FileType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,20 +76,6 @@ public class BuildTask {
                             fileType.setSource(null);
                         }
 
-                        if (configuration.getStylesheet() != null) {
-                            StylesheetType stylesheet = configuration.getStylesheet();
-                            stylesheet.setSource(stylesheet.getSource() != null ?
-                                    stylesheet.getSource() : stylesheet.getPath());
-
-                            preparerProvider.prepare(
-                                    configFolder.toPath().resolve(stylesheet.getSource()),
-                                    contentsPath.resolve(stylesheet.getPath()),
-                                    Preparer.Type.STYLESHEET
-                            );
-
-                            stylesheet.setSource(null);
-                        }
-
                         configuration.setBuild(configuration.getBuild() != null ?
                                 configuration.getBuild() : build.getSetting("build"));
                         configuration.setWeight(configuration.getWeight() != 0 ?
@@ -126,8 +115,8 @@ public class BuildTask {
             marshaller.marshal(configurations, outputStream);
         }
 
-        AsicArchiver.archive(
-                build.getTargetFolder().resolve(String.format("%s-%s.asice", build.getSetting("name"), build.getSetting("build"))),
+        ZipArchiver.archive(
+                build.getTargetFolder().resolve(String.format("%s-%s.zip", build.getSetting("name"), build.getSetting("build"))),
                 contentsPath);
 
         DirectoryCleaner.clean(contentsPath, true);

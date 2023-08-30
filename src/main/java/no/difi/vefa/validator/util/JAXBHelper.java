@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.util;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 
 public class JAXBHelper {
 

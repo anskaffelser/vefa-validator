@@ -1,6 +1,6 @@
 package no.difi.vefa.validator.source;
 
-import no.difi.asic.AsicReader;
+import jakarta.xml.bind.Unmarshaller;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
@@ -8,14 +8,13 @@ import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 
 class ClasspathSourceInstance extends AbstractSourceInstance {
 
-    private static Logger logger = LoggerFactory.getLogger(ClasspathSourceInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClasspathSourceInstance.class);
 
     public ClasspathSourceInstance(Properties properties, String location) throws ValidatorException {
         super(properties);
@@ -37,9 +36,8 @@ class ClasspathSourceInstance extends AbstractSourceInstance {
         for (ArtifactType artifact : artifactsType.getArtifact()) {
             String artifactUri = location + artifact.getFilename();
             logger.info(String.format("Fetching %s", artifactUri));
-            try (InputStream inputStream = getClass().getResourceAsStream(artifactUri);
-                 AsicReader asicReader = ASIC_READER_FACTORY.open(inputStream)) {
-                unpackContainer(asicReader, artifact.getFilename());
+            try (InputStream inputStream = getClass().getResourceAsStream(artifactUri)) {
+                unpackContainer(inputStream, artifact.getFilename());
             }
         }
     }

@@ -4,20 +4,23 @@ import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Checker;
+import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.trigger.TriggerFactory;
 import no.difi.vefa.validator.util.CombinedFlagFilterer;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentifier;
-import no.difi.xsd.vefa.validator._1.*;
+import no.difi.xsd.vefa.validator._1.ConfigurationType;
+import no.difi.xsd.vefa.validator._1.FileType;
+import no.difi.xsd.vefa.validator._1.FlagType;
+import no.difi.xsd.vefa.validator._1.PackageType;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,19 +55,6 @@ class ValidatorInstance implements Closeable {
      */
     @Inject
     private LoadingCache<String, Checker> checkerCache;
-
-    /**
-     * Pool of presenters.
-     */
-    @Deprecated
-    @Inject
-    private LoadingCache<String, Renderer> rendererCache;
-
-    /**
-     * Trigger factory.
-     */
-    @Inject
-    private TriggerFactory triggerFactory;
 
     /**
      * Normalized configurations indexed by document declarations.
@@ -124,27 +114,6 @@ class ValidatorInstance implements Closeable {
         return declarationDetector.detect(contentStream);
     }
 
-    /**
-     * Render document using stylesheet
-     *
-     * @param stylesheet   Stylesheet identifier from configuration.
-     * @param document     Document used for styling.
-     * @param outputStream Stream for dumping of result.
-     */
-    @Deprecated
-    protected void render(StylesheetType stylesheet, Document document, Properties properties,
-                          OutputStream outputStream) throws ValidatorException {
-        Renderer renderer;
-        try {
-            renderer = rendererCache.get(stylesheet.getIdentifier());
-        } catch (Exception e) {
-            log.warn(e.getMessage(), e);
-            throw new ValidatorException(String.format(
-                    "Unable to borrow presenter object from pool for '%s'.", stylesheet.getIdentifier()), e);
-        }
-
-        renderer.render(document, new CombinedProperties(properties, this.properties), outputStream);
-    }
 
     /**
      * Validate document using a file definition.
@@ -177,29 +146,10 @@ class ValidatorInstance implements Closeable {
         return section;
     }
 
-    /**
-     * Validate document using a trigger definition.
-     *
-     * @param triggerType   Trigger definition from configuration.
-     * @param document      Document to validate.
-     * @param configuration Complete configuration
-     * @return Result of validation.
-     */
-    protected Section trigger(TriggerType triggerType, Document document, Configuration configuration)
-            throws ValidatorException {
-        Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
-        section.setFlag(FlagType.OK);
-        triggerFactory.get(triggerType.getIdentifier()).check(document, section);
-        return section;
-    }
-
     @Override
     public void close() throws IOException {
         checkerCache.invalidateAll();
         checkerCache.cleanUp();
-
-        rendererCache.invalidateAll();
-        rendererCache.cleanUp();
 
         // This is last statement, allow to propagate.
         validatorEngine.close();

@@ -1,13 +1,12 @@
 package no.difi.vefa.validator.source;
 
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -53,18 +52,18 @@ class DirectorySourceInstance extends AbstractSourceInstance {
                         // Load validation artifact to memory.
                         Path artifactPath = directory.resolve(artifact.getFilename());
                         log.info("Loading {}", artifactPath);
-                        try (AsicReader asicReader = ASIC_READER_FACTORY.open(artifactPath)) {
-                            unpackContainer(asicReader, artifact.getFilename());
+                        try (InputStream inputStream = Files.newInputStream(artifactPath)) {
+                            unpackContainer(inputStream, artifact.getFilename());
                         }
                     }
                 } else {
                     // Detect all ASiC-E-files in the directory.
                     try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
                         for (Path path : directoryStream) {
-                            if (path.toString().endsWith(".asice")) {
+                            if (path.toString().endsWith(".asice") || path.toString().endsWith(".zip")) {
                                 log.info("Loading: {}", path);
-                                try (AsicReader asicReader = ASIC_READER_FACTORY.open(path)) {
-                                    unpackContainer(asicReader, path.getFileName().toString());
+                                try (InputStream inputStream = Files.newInputStream(path)) {
+                                    unpackContainer(inputStream, path.getFileName().toString());
                                 }
                             }
                         }

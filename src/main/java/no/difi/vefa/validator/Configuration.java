@@ -14,12 +14,12 @@ import java.util.Map;
  */
 class Configuration extends ConfigurationType implements FlagFilterer {
 
-    private Map<String, RuleActionType> ruleActions = new HashMap<>();
+    private final Map<String, RuleActionType> ruleActions = new HashMap<>();
 
     /**
      * List of resources not found during normalization of object.
      */
-    private List<String> notLoaded = new ArrayList<>();
+    private final List<String> notLoaded = new ArrayList<>();
 
     /**
      * Create new configuration based on configuration from XML.
@@ -53,7 +53,6 @@ class Configuration extends ConfigurationType implements FlagFilterer {
             List<FileType> files = Lists.newArrayList();
             List<TriggerType> triggers = Lists.newArrayList();
             List<String> inherits = Lists.newArrayList();
-            StylesheetType stylesheet = null;
 
             for (String inherit : getInherit()) {
                 ConfigurationType inherited = engine.getConfiguration(inherit);
@@ -62,8 +61,6 @@ class Configuration extends ConfigurationType implements FlagFilterer {
                     files.addAll(inherited.getFile());
                     triggers.addAll(inherited.getTrigger());
                     inherits.addAll(inherited.getInherit());
-                    if (inherited.getStylesheet() != null)
-                        stylesheet = inherited.getStylesheet();
                 } else {
                     notLoaded.add(inherit);
                 }
@@ -77,9 +74,6 @@ class Configuration extends ConfigurationType implements FlagFilterer {
             this.file = files;
             this.trigger = triggers;
             this.inherit = inherits;
-
-            if (getStylesheet() == null)
-                setStylesheet(stylesheet);
         }
 
         for (RuleType ruleType : this.getRule())

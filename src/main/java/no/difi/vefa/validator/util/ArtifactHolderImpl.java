@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.util;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.ArtifactHolder;
 
 import java.io.ByteArrayInputStream;
@@ -19,20 +18,6 @@ import java.util.zip.ZipInputStream;
 public class ArtifactHolderImpl implements ArtifactHolder {
 
     private Map<String, byte[]> content;
-
-    public static ArtifactHolder load(AsicReader asicReader) throws IOException {
-        Map<String, byte[]> content = new HashMap<>();
-
-        String filename;
-        while ((filename = asicReader.getNextFile()) != null) {
-            content.put(filename, ByteStreams.toByteArray(asicReader.inputStream()));
-        }
-
-        // Close asice-file
-        asicReader.close();
-
-        return new ArtifactHolderImpl(content);
-    }
 
     public static ArtifactHolder load(InputStream inputStream) throws IOException {
         Map<String, byte[]> content = new HashMap<>();

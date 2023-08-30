@@ -2,6 +2,9 @@ package no.difi.vefa.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.SourceInstance;
@@ -9,9 +12,6 @@ import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
@@ -40,11 +40,6 @@ class ValidatorEngine implements Closeable {
      * Map containing raw configurations indexed by document declaration.
      */
     private Map<String, ConfigurationType> declarationMap = new HashMap<>();
-
-    /**
-     * Stylesheet declarations found in configurations indexed by identifier of stylesheet declaration.
-     */
-    private Map<String, StylesheetType> stylesheetMap = new HashMap<>();
 
     /**
      * List of package declarations detected.
@@ -134,16 +129,6 @@ class ValidatorEngine implements Closeable {
                 triggerType.setBuild(configuration.getBuild());
             }
 
-            if (configuration.getStylesheet() != null) {
-                StylesheetType stylesheet = configuration.getStylesheet();
-                stylesheet.setPath(String.format(
-                        "%s#%s", configurationSource, configuration.getStylesheet().getPath()));
-                if (stylesheet.getType() == null)
-                    stylesheet.setType("xml.xslt");
-
-                stylesheetMap.put(stylesheet.getIdentifier(), stylesheet);
-            }
-
             // Add by identifier if not registered or weight is higher
             if (!identifierMap.containsKey(configuration.getIdentifier().getValue()) ||
                     identifierMap.get(configuration.getIdentifier().getValue()).getWeight() < configuration.getWeight())
@@ -214,21 +199,6 @@ class ValidatorEngine implements Closeable {
             return declarationMap.get(declaration);
 
         return null;
-    }
-
-    /**
-     * Fetch stylesheet declaration using stylesheet identifier (not necessarily the same as configuration
-     * identifier containing stylesheet declaration).
-     *
-     * @param identifier Stylesheet identifier.
-     * @return Stylesheet declaration.
-     * @throws ValidatorException Thrown if no stylesheet declaration is found for the identifier.
-     */
-    public StylesheetType getStylesheet(String identifier) throws ValidatorException {
-        if (!stylesheetMap.containsKey(identifier))
-            throw new ValidatorException(String.format("Stylesheet for identifier '%s' not found.", identifier));
-
-        return stylesheetMap.get(identifier);
     }
 
     /**

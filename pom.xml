@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>no.difi.vefa</groupId>
     <artifactId>validator-core</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <name>VEFA Validator</name>
     <description>Complete validator for embedding in projects.</description>
@@ -66,11 +67,6 @@
         <!-- Difi commons -->
         <dependency>
             <groupId>no.difi.commons</groupId>
-            <artifactId>commons-asic</artifactId>
-            <version>0.9.5</version>
-        </dependency>
-        <dependency>
-            <groupId>no.difi.commons</groupId>
             <artifactId>commons-schematron</artifactId>
             <version>0.9.5</version>
         </dependency>
@@ -91,7 +87,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.3.8</version>
+            <version>1.4.11</version>
         </dependency>
 
         <!-- Commons -->
@@ -105,7 +101,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.13.0</version>
         </dependency>
-
 
         <!-- Google -->
         <dependency>
@@ -124,42 +119,34 @@
             <version>2.10.1</version>
         </dependency>
 
-        <!-- Activation -->
-        <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
-            <version>1.2.0</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- JAXB -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>2.3.0</version>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.3.1</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.3</version>
         </dependency>
 
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.5.1</version>
+            <version>7.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.11.0</version>
+            <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -195,7 +182,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.10</version>
                 <executions>
                     <execution>
                         <goals>
@@ -220,26 +207,22 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>1.6</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>xjc</id>
+                        <id>xsd</id>
                         <goals>
                             <goal>xjc</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <target>2.1</target>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.activation</groupId>
-                        <artifactId>javax.activation</artifactId>
-                        <version>1.2.0</version>
-                    </dependency>
-                </dependencies>
+                <!-- <configuration>
+                    <addGeneratedAnnotation>true</addGeneratedAnnotation>
+                    <verbose>true</verbose>
+                    <sources>
+                        <source>src/main/xsd</source>
+                    </sources>
+                </configuration> -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

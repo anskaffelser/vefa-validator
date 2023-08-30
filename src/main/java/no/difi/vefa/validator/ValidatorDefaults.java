@@ -25,10 +25,6 @@ public class ValidatorDefaults {
             .set("pools.checker.size", CheckerCacheLoader.DEFAULT_SIZE)
             .set("pools.checker.expire", TimeUnit.DAYS.toMinutes(1))
 
-            // pools.presenter
-            .set("pools.presenter.size", RendererCacheLoader.DEFAULT_SIZE)
-            .set("pools.presenter.expire", TimeUnit.DAYS.toMinutes(1))
-
             // finish
             ;
 

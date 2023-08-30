@@ -7,7 +7,10 @@ import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
 import no.difi.vefa.validator.util.*;
-import no.difi.xsd.vefa.validator._1.*;
+import no.difi.xsd.vefa.validator._1.AssertionType;
+import no.difi.xsd.vefa.validator._1.FileType;
+import no.difi.xsd.vefa.validator._1.FlagType;
+import no.difi.xsd.vefa.validator._1.Report;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,21 +23,21 @@ import java.util.UUID;
 @Slf4j
 class ValidationInstance implements Validation {
 
-    private ValidatorInstance validatorInstance;
+    private final ValidatorInstance validatorInstance;
 
-    private Properties properties;
+    private final Properties properties;
 
     private Configuration configuration;
 
     /**
      * Final report.
      */
-    private Report report;
+    private final Report report;
 
     /**
      * Section used to gather problems during validation.
      */
-    private Section section = new Section(new CombinedFlagFilterer());
+    private final Section section = new Section(new CombinedFlagFilterer());
 
     /**
      * Document subject to validation.
@@ -122,7 +125,7 @@ class ValidationInstance implements Validation {
         // Detect expectation
         Expectation expectation = null;
         if (properties.getBoolean("feature.expectation")) {
-            byte[] bytes = StreamUtils.readAndReset(byteArrayInputStream, 10*1024);
+            byte[] bytes = StreamUtils.readAndReset(byteArrayInputStream, 10 * 1024);
             expectation = declaration.expectations(bytes);
             if (expectation != null)
                 report.setDescription(expectation.getDescription());
@@ -182,20 +185,6 @@ class ValidationInstance implements Validation {
                 break;
         }
 
-        for (TriggerType triggerType : configuration.getTrigger()) {
-            try {
-                Section section = validatorInstance.trigger(triggerType, document, configuration);
-                section.setConfiguration(triggerType.getConfiguration());
-                section.setBuild(triggerType.getBuild());
-                report.getSection().add(section);
-
-                if (section.getFlag().compareTo(getReport().getFlag()) > 0)
-                    getReport().setFlag(section.getFlag());
-            } catch (ValidatorException e) {
-                this.section.add("SYSTEM-010", e.getMessage(), FlagType.ERROR);
-            }
-        }
-
         if (document.getExpectation() != null)
             document.getExpectation().verify(section);
 
@@ -225,48 +214,6 @@ class ValidationInstance implements Validation {
         if (children == null)
             children = new ArrayList<>();
         children.add(validation);
-    }
-
-    /**
-     * Render document to a stream.
-     *
-     * @param outputStream Stream to use.
-     */
-    @Override
-    public void render(OutputStream outputStream) throws ValidatorException {
-        render(outputStream, null);
-    }
-
-    /**
-     * Render document to a stream, allows for extra configuration.
-     *
-     * @param outputStream Stream to use.
-     * @param properties   Extra configuration to use for this rendering.
-     */
-    @Override
-    public void render(OutputStream outputStream, Properties properties) throws ValidatorException {
-        if (getReport().getFlag().equals(FlagType.FATAL))
-            throw new ValidatorException(String.format(
-                    "Status '%s' is not supported for rendering.", getReport().getFlag()));
-        if (configuration == null)
-            throw new ValidatorException("Configuration was not detected, configuration is need for rendering.");
-        if (configuration.getStylesheet() == null)
-            throw new ValidatorException("No stylesheet is defined for document type.");
-
-        validatorInstance.render(configuration.getStylesheet(), document, properties, outputStream);
-    }
-
-    /**
-     * Returns true if validated document is renderable based upon same criteria as may be provide
-     * exception when using #render(...).
-     *
-     * @return 'true' if validated document is renderable.
-     */
-    @Override
-    public boolean isRenderable() {
-        return configuration != null
-                && configuration.getStylesheet() != null
-                && !getReport().getFlag().equals(FlagType.FATAL);
     }
 
     /**
