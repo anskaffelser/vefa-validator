@@ -1,4 +1,4 @@
-package no.difi.vefa.validator.dist;
+package no.difi.vefa.validator;
 
 import lombok.extern.slf4j.Slf4j;
 
