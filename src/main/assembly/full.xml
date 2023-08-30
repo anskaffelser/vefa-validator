@@ -17,6 +17,14 @@
     <dependencySets>
         <dependencySet>
             <outputDirectory>vefa-validator/lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>vefa-validator/lib</outputDirectory>
+            <scope>provided</scope>
+            <includes>
+                <include>ch.qos.logback:*</include>
+            </includes>
         </dependencySet>
     </dependencySets>
 </assembly>
