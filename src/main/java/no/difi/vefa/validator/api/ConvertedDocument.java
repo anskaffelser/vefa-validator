@@ -12,7 +12,7 @@ public class ConvertedDocument extends Document {
     /**
      * Holding the original document.
      */
-    private ByteArrayInputStream source;
+    private final ByteArrayInputStream source;
 
     /**
      * @param inputStream InputStream containing the document used during validation.

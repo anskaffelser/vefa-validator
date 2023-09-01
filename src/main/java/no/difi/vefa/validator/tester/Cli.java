@@ -31,7 +31,7 @@ public class Cli {
         for (String arg : cmd.getArgs())
             testFolders.add(Paths.get(arg));
 
-        String artifacts = cmd.getOptionValue("a", "https://vefa.difi.no/validator/repo/");
+        String artifacts = cmd.getOptionValue("a", "https://anskaffelser.dev/repo/validator/current/");
         List<Validation> validations;
         if (artifacts.startsWith("http"))
             validations = Tester.perform(URI.create(artifacts), testFolders);

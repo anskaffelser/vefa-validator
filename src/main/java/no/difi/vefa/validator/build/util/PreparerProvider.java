@@ -23,7 +23,7 @@ public class PreparerProvider {
 
     public static final String DEFAULT = "#DEFAULT";
 
-    private Map<String, Preparer> preparerMap = new HashMap<>();
+    private final Map<String, Preparer> preparerMap = new HashMap<>();
 
     @Inject
     public PreparerProvider(List<Preparer> preparers) {
@@ -39,7 +39,7 @@ public class PreparerProvider {
 
     public void prepare(final Path source, final Path target, final Preparer.Type type) throws IOException {
         if (Preparer.Type.INCLUDE.equals(type) && Files.isDirectory(source)) {
-            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(source, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
                     String filename = path.toString().substring(source.toString().length() + 1);

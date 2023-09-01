@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class SaxonErrorListener implements ErrorListener {
 
-    public static SaxonErrorListener INSTANCE = new SaxonErrorListener();
+    public static final SaxonErrorListener INSTANCE = new SaxonErrorListener();
 
     private static final Logger log = LoggerFactory.getLogger(SaxonErrorListener.class);
 

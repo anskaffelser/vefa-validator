@@ -31,7 +31,7 @@
     <developers>
         <developer>
             <name>Erlend Klakegg Bergheim</name>
-            <email>erlend.klakegg.bergheim@dfo.no</email>
+            <email>erlendklakegg.bergheim@dfo.no</email>
             <organization>DFØ</organization>
             <roles>
                 <role>Author</role>
@@ -63,7 +63,7 @@
     </properties>
 
     <dependencies>
-        <!-- Difi commons -->
+        <!-- Schematron -->
         <dependency>
             <groupId>no.difi.commons</groupId>
             <artifactId>commons-schematron</artifactId>
@@ -120,12 +120,14 @@
             <version>2.13.0</version>
         </dependency>
 
-        <!-- Google -->
+        <!-- Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>32.1.2-jre</version>
         </dependency>
+
+        <!-- Guice -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
@@ -138,6 +140,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -231,6 +235,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <encoding>${java.encoding}</encoding>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

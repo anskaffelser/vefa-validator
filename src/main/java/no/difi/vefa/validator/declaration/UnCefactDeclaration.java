@@ -25,7 +25,7 @@ public class UnCefactDeclaration extends AbstractXmlDeclaration {
             "BusinessProcessSpecifiedDocumentContextParameter",
             "GuidelineSpecifiedDocumentContextParameter");
 
-    private static Pattern pattern = Pattern.compile("urn:un:unece:uncefact:data:standard:(.+)::(.+)");
+    private static final Pattern pattern = Pattern.compile("urn:un:unece:uncefact:data:standard:(.+)::(.+)");
 
     @Override
     public boolean verify(byte[] content, List<String> parent) {

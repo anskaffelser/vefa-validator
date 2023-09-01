@@ -11,7 +11,7 @@ import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
-import no.difi.vefa.validator.build.util.ZipArchiver;
+import no.difi.vefa.validator.util.ZipArchiver;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.BuildConfigurations;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
@@ -101,9 +101,9 @@ public class BuildTask {
                         build.addTestFolder(".".equals(testFolder) ?
                                 configFolder : new File(configFolder, testFolder));
 
-                    log.info("Loading '{}'", file.toString());
+                    log.info("Loading '{}'", file);
                 } catch (JAXBException e) {
-                    log.warn("Loading failed for '{}'", file.toString(), e);
+                    log.warn("Loading failed for '{}'", file, e);
                 }
             }
         }

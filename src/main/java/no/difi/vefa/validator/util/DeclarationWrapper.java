@@ -12,11 +12,11 @@ import java.util.List;
 @Slf4j
 public class DeclarationWrapper implements Declaration, DeclarationWithChildren, DeclarationWithConverter {
 
-    private String type;
+    private final String type;
 
-    private Declaration declaration;
+    private final Declaration declaration;
 
-    private List<DeclarationWrapper> children = new ArrayList<>();
+    private final List<DeclarationWrapper> children = new ArrayList<>();
 
     public static DeclarationWrapper of(String type, Declaration declaration) {
         return new DeclarationWrapper(type, declaration);

@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 @Slf4j
 public class ValidatorTestExpectation extends AbstractExpectation {
 
-    private static JAXBContext jaxbContext = JAXBHelper.context(Test.class);
+    private static final JAXBContext jaxbContext = JAXBHelper.context(Test.class);
 
     public ValidatorTestExpectation(byte[] bytes) {
         try {

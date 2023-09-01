@@ -3,6 +3,7 @@ package no.difi.vefa.validator;
 import com.google.common.cache.CacheLoader;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Checker;
@@ -27,7 +28,8 @@ public class CheckerCacheLoader extends CacheLoader<String, Checker> {
     private ValidatorEngine validatorEngine;
 
     @Override
-    public Checker load(String key) throws Exception {
+    @NonNull
+    public Checker load(@NonNull String key) throws Exception {
         try {
             for (CheckerFactory factory : factories) {
                 for (String extension : factory.getClass().getAnnotation(Type.class).value()) {

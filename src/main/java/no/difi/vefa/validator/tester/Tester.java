@@ -11,15 +11,16 @@ import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Tester implements Closeable {
 
     private int failed;
 
-    public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) {
+    public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) throws IOException {
         try (Tester tester = new Tester(artifactsPath)) {
             for (Path path : testPaths)
                 tester.perform(path);
@@ -44,7 +45,7 @@ public class Tester implements Closeable {
         }
     }
 
-    public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) {
+    public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) throws IOException {
         try (Tester tester = new Tester(artifactsUri)) {
             for (Path path : testPaths)
                 tester.perform(path);
@@ -76,9 +77,19 @@ public class Tester implements Closeable {
                 .build();
     }
 
-    private void perform(Path path) {
-        List<File> files = new ArrayList<>(FileUtils.listFiles(
-                path.toFile(), new WildcardFileFilter("*.xml"), TrueFileFilter.INSTANCE));
+    private void perform(Path path) throws IOException {
+        List<File> files = new ArrayList<>();
+
+        Files.walkFileTree(path, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                if (file.endsWith(".xml"))
+                    files.add(file.toFile());
+
+                return super.visitFile(file, attrs);
+            }
+        });
+
         Collections.sort(files);
 
         for (File file : files)

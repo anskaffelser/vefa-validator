@@ -18,7 +18,7 @@ public class DeclarationDetector {
     public static final DeclarationIdentifier UNKNOWN =
             new DeclarationIdentifier(null, null, Collections.singletonList("unknown"));
 
-    private List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
+    private final List<DeclarationWrapper> rootDeclarationWrappers = new ArrayList<>();
 
     @Inject
     public DeclarationDetector(List<Declaration> declarations) {

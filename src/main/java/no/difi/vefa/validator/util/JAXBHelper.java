@@ -4,7 +4,7 @@ import jakarta.xml.bind.JAXBContext;
 
 public class JAXBHelper {
 
-    public static JAXBContext context(Class... classes) {
+    public static JAXBContext context(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (Exception e) {

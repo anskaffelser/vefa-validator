@@ -9,9 +9,9 @@ import java.nio.file.Paths;
 
 public class HolderLSResolveResource implements LSResourceResolver {
 
-    private ArtifactHolder artifactHolder;
+    private final ArtifactHolder artifactHolder;
 
-    private Path rootPath;
+    private final Path rootPath;
 
     public HolderLSResolveResource(ArtifactHolder artifactHolder, String rootPath) {
         this.artifactHolder = artifactHolder;

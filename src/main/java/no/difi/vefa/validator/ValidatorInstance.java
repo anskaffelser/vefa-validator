@@ -59,14 +59,14 @@ class ValidatorInstance implements Closeable {
     /**
      * Normalized configurations indexed by document declarations.
      */
-    private Map<String, Configuration> configurationMap = new HashMap<>();
+    private final Map<String, Configuration> configurationMap = new HashMap<>();
 
     /**
      * List of packages supported by validator.
      *
      * @return List of packages.
      */
-    protected List<PackageType> getPackages() {
+    protected final List<PackageType> getPackages() {
         return validatorEngine.getPackages();
     }
 
@@ -75,7 +75,7 @@ class ValidatorInstance implements Closeable {
      *
      * @return Current properties.
      */
-    protected Properties getProperties() {
+    protected final Properties getProperties() {
         return properties;
     }
 

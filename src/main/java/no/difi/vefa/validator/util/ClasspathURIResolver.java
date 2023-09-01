@@ -9,7 +9,7 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class ClasspathURIResolver implements URIResolver {
 
-    private String path;
+    private final String path;
 
     public ClasspathURIResolver(String path) {
         this.path = path;

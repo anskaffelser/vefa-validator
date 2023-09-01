@@ -13,7 +13,7 @@ public class CachedFile {
 
     private String filename;
 
-    private byte[] content;
+    private final byte[] content;
 
     public static CachedFile of(byte[] content) {
         return new CachedFile(content);

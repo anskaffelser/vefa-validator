@@ -5,7 +5,7 @@ import no.difi.xsd.vefa.validator._1.AssertionType;
 
 public class CombinedFlagFilterer implements FlagFilterer {
 
-    private FlagFilterer[] flagFilterers;
+    private final FlagFilterer[] flagFilterers;
 
     public CombinedFlagFilterer(FlagFilterer... flagFilterers) {
         this.flagFilterers = flagFilterers;

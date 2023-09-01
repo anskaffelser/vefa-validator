@@ -1,4 +1,4 @@
-package no.difi.vefa.validator.build.util;
+package no.difi.vefa.validator.util;
 
 import com.google.common.io.ByteStreams;
 
@@ -16,9 +16,9 @@ import java.util.zip.ZipOutputStream;
 /**
  * @author erlend
  */
-public class ZipArchiver {
+public interface ZipArchiver {
 
-    public static void archive(Path target, Path directory) throws IOException {
+    static void archive(Path target, Path directory) throws IOException {
         try (OutputStream outputStream = Files.newOutputStream(target);
              ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)) {
             Files.walkFileTree(directory.toAbsolutePath(), new SimpleFileVisitor<Path>() {

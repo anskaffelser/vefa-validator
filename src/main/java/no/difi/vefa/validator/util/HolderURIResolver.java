@@ -10,9 +10,9 @@ import java.nio.file.Paths;
 
 public class HolderURIResolver implements URIResolver {
 
-    private ArtifactHolder artifactHolder;
+    private final ArtifactHolder artifactHolder;
 
-    private Path rootPath;
+    private final Path rootPath;
 
     public HolderURIResolver(ArtifactHolder artifactHolder, String rootPath) {
         this.artifactHolder = artifactHolder;

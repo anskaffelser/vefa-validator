@@ -16,7 +16,10 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class handles all raw configurations detected in source of validation artifacts and preserves links
@@ -34,19 +37,19 @@ class ValidatorEngine implements Closeable {
     /**
      * Map containing raw configurations indexed by both 'identifier' and 'identifier#build'.
      */
-    private Map<String, ConfigurationType> identifierMap = new HashMap<>();
+    private final Map<String, ConfigurationType> identifierMap = new HashMap<>();
 
     /**
      * Map containing raw configurations indexed by document declaration.
      */
-    private Map<String, ConfigurationType> declarationMap = new HashMap<>();
+    private final Map<String, ConfigurationType> declarationMap = new HashMap<>();
 
     /**
      * List of package declarations detected.
      */
-    private List<PackageType> packages = new ArrayList<>();
+    private final List<PackageType> packages = new ArrayList<>();
 
-    private Map<String, ArtifactHolder> content = new HashMap<>();
+    private final Map<String, ArtifactHolder> content = new HashMap<>();
 
     /**
      * Loading a new validator engine loading configurations from current source.
@@ -77,12 +80,7 @@ class ValidatorEngine implements Closeable {
         }
 
         // Simply sort packages by value.
-        Collections.sort(packages, new Comparator<PackageType>() {
-            @Override
-            public int compare(PackageType o1, PackageType o2) {
-                return o1.getValue().compareToIgnoreCase(o2.getValue());
-            }
-        });
+        packages.sort((o1, o2) -> o1.getValue().compareToIgnoreCase(o2.getValue()));
     }
 
     /**
@@ -210,7 +208,7 @@ class ValidatorEngine implements Closeable {
         return packages;
     }
 
-    public ArtifactHolder getResource(String resource) throws IOException {
+    public ArtifactHolder getResource(String resource) {
         String[] parts = resource.split("#", 2);
         return content.get(parts[0]);
     }

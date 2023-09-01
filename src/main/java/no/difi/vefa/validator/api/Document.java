@@ -12,17 +12,17 @@ public class Document {
     /**
      * Document as #ByteArrayInputStream.
      */
-    private ByteArrayInputStream byteArrayInputStream;
+    private final ByteArrayInputStream byteArrayInputStream;
 
     /**
      * Declaration identifier used to recognize rules.
      */
-    private List<String> declarations;
+    private final List<String> declarations;
 
     /**
      * Expectations when performing validation of triggered rules.
      */
-    private Expectation expectation;
+    private final Expectation expectation;
 
     public Document(ByteArrayInputStream inputStream) {
         this(inputStream, (String) null, null);

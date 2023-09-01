@@ -17,7 +17,7 @@ import java.util.zip.ZipInputStream;
  */
 public class ArtifactHolderImpl implements ArtifactHolder {
 
-    private Map<String, byte[]> content;
+    private final Map<String, byte[]> content;
 
     public static ArtifactHolder load(InputStream inputStream) throws IOException {
         Map<String, byte[]> content = new HashMap<>();

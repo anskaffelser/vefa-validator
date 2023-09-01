@@ -56,9 +56,4 @@ public class XmlUtilsTest {
         Assert.assertNull(XmlUtils.extractRootNamespace("<simple></simple>"));
         Assert.assertEquals(XmlUtils.extractLocalName("<simple></simple>"), "simple");
     }
-
-    @Test
-    public void simpleConstrictor() {
-        new XmlUtils();
-    }
 }

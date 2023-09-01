@@ -6,11 +6,11 @@ import java.util.List;
 
 public class DeclarationIdentifier {
 
-    private DeclarationIdentifier parent;
+    private final DeclarationIdentifier parent;
 
-    private DeclarationWrapper declaration;
+    private final DeclarationWrapper declaration;
 
-    private List<String> identifiers;
+    private final List<String> identifiers;
 
     public DeclarationIdentifier(DeclarationIdentifier parent, DeclarationWrapper declaration,
                                  List<String> identifiers) {

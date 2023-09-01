@@ -8,9 +8,9 @@ import java.io.Reader;
 
 public class HolderLSInput implements LSInput {
 
-    private String file;
+    private final String file;
 
-    private byte[] content;
+    private final byte[] content;
 
     public HolderLSInput(byte[] content, String path) {
         this.content = content;

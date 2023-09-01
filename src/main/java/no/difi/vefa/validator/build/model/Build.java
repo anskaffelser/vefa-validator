@@ -13,16 +13,16 @@ import java.util.*;
 @Getter
 public class Build {
 
-    private Map<String, String> setting = new HashMap<>();
+    private final Map<String, String> setting = new HashMap<>();
 
-    private Path projectPath;
-    private Path[] sourcePath;
-    private Path targetFolder;
+    private final Path projectPath;
+    private final Path[] sourcePath;
+    private final Path targetFolder;
 
     private Configurations configurations;
 
-    private List<Path> testFolders = new ArrayList<>();
-    private List<Validation> testValidations = new ArrayList<>();
+    private final List<Path> testFolders = new ArrayList<>();
+    private final List<Validation> testValidations = new ArrayList<>();
 
     public static Build of(String arg, CommandLine cmd) {
         Build build = new Build(Paths.get(arg),

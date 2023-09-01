@@ -10,7 +10,7 @@ import java.util.List;
 public class Section extends SectionType {
 
     @XmlTransient
-    private FlagFilterer flagFilterer;
+    private final FlagFilterer flagFilterer;
 
     /**
      * Initiate section.

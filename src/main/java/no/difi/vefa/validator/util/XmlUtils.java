@@ -3,18 +3,18 @@ package no.difi.vefa.validator.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class XmlUtils {
+public interface XmlUtils {
 
-    private static final Pattern ROOT_TAG_PATTERN = Pattern.compile(
+    Pattern ROOT_TAG_PATTERN = Pattern.compile(
             "<(?!http[s]{0,1}://)(\\w*:{0,1}[^<?|^<!^]*?)>", Pattern.MULTILINE);
 
-    private static final Pattern NAMESPACE_PATTERN = Pattern.compile(
+    Pattern NAMESPACE_PATTERN = Pattern.compile(
             "xmlns:{0,1}([A-Za-z0-9\\-]*)\\w*=\\w*[\"']{1}(.+?)[\"']{1}", Pattern.MULTILINE);
 
-    private static final Pattern COMMENTS_PATTERN =
+    Pattern COMMENTS_PATTERN =
             Pattern.compile("<!--(.+?)-->", Pattern.MULTILINE);
 
-    public static String extractRootNamespace(String xmlContent) {
+    static String extractRootNamespace(String xmlContent) {
         Matcher matcher = ROOT_TAG_PATTERN.matcher(removeComments(xmlContent));
         if (matcher.find()) {
             String rootElement = matcher.group(1).trim().replace("\n", " ").replace("\r", "").replace("\t", " ");
@@ -35,7 +35,7 @@ public class XmlUtils {
         return null;
     }
 
-    public static String extractLocalName(String xmlContent) {
+    static String extractLocalName(String xmlContent) {
         Matcher matcher = ROOT_TAG_PATTERN.matcher(removeComments(xmlContent));
         if (matcher.find()) {
             String rootElement = matcher.group(1).trim().replace("\n", " ").replace("\r", "").replace("\t", " ");
@@ -47,11 +47,7 @@ public class XmlUtils {
         return null;
     }
 
-    public static String removeComments(String xmlContent) {
+    static String removeComments(String xmlContent) {
         return COMMENTS_PATTERN.matcher(xmlContent).replaceAll("");
-    }
-
-    XmlUtils() {
-
     }
 }

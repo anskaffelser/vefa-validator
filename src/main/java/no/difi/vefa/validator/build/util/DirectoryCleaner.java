@@ -12,9 +12,9 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
-    private Path path;
+    private final Path path;
 
-    private boolean deleteRoot;
+    private final boolean deleteRoot;
 
     public static void clean(Path path, boolean deleteRoot) throws IOException {
         Files.walkFileTree(path, new DirectoryCleaner(path, deleteRoot));
