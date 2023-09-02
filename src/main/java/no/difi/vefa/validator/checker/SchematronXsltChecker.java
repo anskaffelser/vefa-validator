@@ -13,7 +13,7 @@ import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.vefa.validator.util.SaxonMessageListener;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -25,7 +25,7 @@ import java.io.ByteArrayOutputStream;
 @Slf4j
 public class SchematronXsltChecker implements Checker {
 
-    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(SectionType.class);
+    private static final JAXBContext JAXB_CONTEXT = JaxbUtils.context(SectionType.class);
 
     private final Processor processor;
 
@@ -51,7 +51,7 @@ public class SchematronXsltChecker implements Checker {
 
             schematron.setErrorListener(SaxonErrorListener.INSTANCE);
             schematron.setMessageListener(SaxonMessageListener.INSTANCE);
-            schematron.setSource(new StreamSource(document.getInputStream()));
+            schematron.setSource(new StreamSource(document.asInputStream()));
             schematron.setDestination(parser);
 
             parser.setErrorListener(SaxonErrorListener.INSTANCE);

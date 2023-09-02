@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.source;
 
 import no.difi.vefa.validator.api.Properties;
+import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
 
@@ -12,9 +13,9 @@ import java.util.List;
 /**
  * Defines a repository as source for validation artifacts.
  */
-public class RepositorySource extends AbstractSource {
+public class RepositorySource implements Source {
 
-    private List<URI> rootUri;
+    private final List<URI> rootUri;
 
     public static RepositorySource forTest() {
         return create("https://anskaffelser.dev/repo/validator/draft/");

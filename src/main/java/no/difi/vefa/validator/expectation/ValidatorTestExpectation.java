@@ -3,23 +3,23 @@ package no.difi.vefa.validator.expectation;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1.AssertElementType;
 import no.difi.xsd.vefa.validator._1.AssertType;
 import no.difi.xsd.vefa.validator._1.Test;
 
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
 
 @Slf4j
 public class ValidatorTestExpectation extends AbstractExpectation {
 
-    private static final JAXBContext jaxbContext = JAXBHelper.context(Test.class);
+    private static final JAXBContext jaxbContext = JaxbUtils.context(Test.class);
 
-    public ValidatorTestExpectation(byte[] bytes) {
+    public ValidatorTestExpectation(Document document) {
         try {
             Test test = jaxbContext.createUnmarshaller().unmarshal(
-                    new StreamSource(new ByteArrayInputStream(bytes)), Test.class).getValue();
+                    new StreamSource(document.asInputStream()), Test.class).getValue();
             AssertType assertType = test.getAssert();
 
             if (assertType != null) {

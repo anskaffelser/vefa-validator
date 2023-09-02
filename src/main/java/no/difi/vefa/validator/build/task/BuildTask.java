@@ -12,7 +12,7 @@ import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
 import no.difi.vefa.validator.util.ZipArchiver;
-import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1.BuildConfigurations;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
@@ -33,7 +33,7 @@ import java.nio.file.Path;
 public class BuildTask {
 
     private static final JAXBContext JAXB_CONTEXT =
-            JAXBHelper.context(Configurations.class, BuildConfigurations.class);
+            JaxbUtils.context(Configurations.class, BuildConfigurations.class);
 
     @Inject
     private PreparerProvider preparerProvider;

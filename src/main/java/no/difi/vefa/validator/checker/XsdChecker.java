@@ -32,7 +32,7 @@ public class XsdChecker implements Checker {
     public void check(Document document, Section section) {
         section.setTitle("XSD validation");
 
-        Source xmlFile = new StreamSource(document.getInputStream());
+        Source xmlFile = new StreamSource(document.asInputStream());
 
         long tsStart = System.currentTimeMillis();
         try {
@@ -43,7 +43,7 @@ public class XsdChecker implements Checker {
             if (humanMessage.startsWith("cvc-complex-type.2.4.")) {
                 try {
                     XMLStreamReader xmlStreamReader =
-                            XML_INPUT_FACTORY.createXMLStreamReader(document.getInputStream());
+                            XML_INPUT_FACTORY.createXMLStreamReader(document.asInputStream());
 
                     // Go to root element.
                     while (xmlStreamReader.hasNext()

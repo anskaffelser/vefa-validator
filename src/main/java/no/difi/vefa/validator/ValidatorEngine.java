@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1.*;
 
 import javax.xml.transform.stream.StreamSource;
@@ -32,7 +32,7 @@ class ValidatorEngine implements Closeable {
     /**
      * JAXBContext
      */
-    private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Configurations.class);
+    private static final JAXBContext JAXB_CONTEXT = JaxbUtils.context(Configurations.class);
 
     /**
      * Map containing raw configurations indexed by both 'identifier' and 'identifier#build'.

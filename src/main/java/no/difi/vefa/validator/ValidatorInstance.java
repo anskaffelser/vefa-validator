@@ -12,7 +12,7 @@ import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.CombinedFlagFilterer;
 import no.difi.vefa.validator.util.DeclarationDetector;
-import no.difi.vefa.validator.util.DeclarationIdentifier;
+import no.difi.vefa.validator.util.DeclarationIdentification;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -20,7 +20,6 @@ import no.difi.xsd.vefa.validator._1.PackageType;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,8 +109,8 @@ class ValidatorInstance implements Closeable {
                 "Configuration for '%s' not found.", declarations.get(0)));
     }
 
-    protected DeclarationIdentifier detect(InputStream contentStream) throws IOException {
-        return declarationDetector.detect(contentStream);
+    protected DeclarationIdentification detect(Document document) throws IOException {
+        return declarationDetector.detect(document);
     }
 
 

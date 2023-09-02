@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.SourceInstance;
-import no.difi.vefa.validator.util.ArtifactHolderImpl;
-import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 
 import java.io.Closeable;
@@ -20,7 +19,7 @@ import java.util.Map;
 public abstract class AbstractSourceInstance implements SourceInstance, Closeable {
 
     protected static final JAXBContext JAXB_CONTEXT =
-            JAXBHelper.context(Artifacts.class);
+            JaxbUtils.context(Artifacts.class);
 
     protected Properties properties;
 
@@ -31,7 +30,7 @@ public abstract class AbstractSourceInstance implements SourceInstance, Closeabl
     }
 
     protected void unpackContainer(InputStream inputStream, String targetName) throws IOException {
-        content.put(targetName, ArtifactHolderImpl.load(inputStream));
+        content.put(targetName, ArtifactHolder.of(inputStream));
     }
 
     @Override

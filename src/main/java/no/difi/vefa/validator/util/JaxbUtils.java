@@ -2,9 +2,9 @@ package no.difi.vefa.validator.util;
 
 import jakarta.xml.bind.JAXBContext;
 
-public class JAXBHelper {
+public interface JaxbUtils {
 
-    public static JAXBContext context(Class<?>... classes) {
+    static JAXBContext context(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (Exception e) {

@@ -19,7 +19,7 @@ public class Testing {
     private static Validator validator;
 
     @BeforeClass
-    public void beforeClass() throws Exception {
+    public void beforeClass() {
         validator = ValidatorBuilder
                 .newValidator()
                 .setProperties(new SimpleProperties()
@@ -29,13 +29,13 @@ public class Testing {
     }
 
     @AfterClass
-    public void afterClass() throws Exception {
+    public void afterClass() {
         validator.close();
         validator = null;
     }
 
     @Test
-    public void simpleError() throws Exception {
+    public void simpleError() {
         Validation validation = validator.validate(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"));
 
         for (SectionType sectionType : validation.getReport().getSection()) {
@@ -55,7 +55,7 @@ public class Testing {
     }
 
     @Test
-    public void simpleOk() throws Exception {
+    public void simpleOk() {
         Validation validation = validator.validate(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
 
         for (SectionType sectionType : validation.getReport().getSection()) {
@@ -74,33 +74,37 @@ public class Testing {
 
     @Test
     public void simpleValidatorTest() {
-        Validation validation = validator.validate(
+        var  validation = validator.validate(
                 getClass().getResourceAsStream("/documents/NOGOV-T10-R014.xml"),
                 new SimpleProperties().set("feature.nesting", true));
+
         assertEquals(validation.getReport().getFlag(), FlagType.OK);
         assertEquals(validation.getChildren().size(), 3);
     }
 
     @Test
     public void billing3Test() {
-        Validation validation = validator.validate(
+        var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/peppol-billing-3.0.xml"));
+
         assertEquals(validation.getReport().getFlag(), FlagType.OK);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
     }
 
     @Test
     public void testValidationWithLongUblExtension() {
-        Validation validation = validator.validate(
+        var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/peppol-billing-3.0_long_ubl_extension.xml"));
+
         assertEquals(validation.getReport().getFlag(), FlagType.WARNING);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
     }
 
     @Test
     public void testValidationEmptyUbl() {
-        Validation validation = validator.validate(
+        var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/ubl-invoice-empty.xml"));
+
         assertEquals(validation.getReport().getFlag(), FlagType.UNKNOWN);
     }
 }

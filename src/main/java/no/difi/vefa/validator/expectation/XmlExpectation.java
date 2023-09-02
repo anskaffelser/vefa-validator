@@ -1,6 +1,7 @@
 package no.difi.vefa.validator.expectation;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.Document;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +9,9 @@ import java.util.Map;
 @Slf4j
 public class XmlExpectation extends AbstractExpectation {
 
-    public XmlExpectation(byte[] bytes) {
-        String content = new String(bytes);
+    public XmlExpectation(Document document) {
+        var content = document.toString();
+
         if (!content.contains("<!--") || !content.contains("-->"))
             return;
 

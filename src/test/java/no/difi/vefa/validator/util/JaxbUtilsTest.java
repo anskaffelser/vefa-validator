@@ -4,21 +4,16 @@ import no.difi.xsd.vefa.validator._1.Configurations;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class JAXBHelperTest {
-
-    @Test
-    public void simpleContructor() {
-        new JAXBHelper();
-    }
+public class JaxbUtilsTest {
 
     @Test
     public void simpleSuccess() {
-        Assert.assertNotNull(JAXBHelper.context(Configurations.class));
+        Assert.assertNotNull(JaxbUtils.context(Configurations.class));
     }
 
     @Test(expectedExceptions = RuntimeException.class)
     @SuppressWarnings("all")
     public void simpleError() {
-        JAXBHelper.context(null);
+        JaxbUtils.context(null);
     }
 }

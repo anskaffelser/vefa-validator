@@ -1,18 +1,19 @@
 package no.difi.vefa.validator;
 
-import com.google.common.io.ByteStreams;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.util.*;
+import no.difi.vefa.validator.util.CombinedFlagFilterer;
+import no.difi.vefa.validator.util.DeclarationIdentification;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.Report;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,8 +45,6 @@ class ValidationInstance implements Validation {
      */
     private Document document;
 
-    private DeclarationWrapper declaration;
-
     private List<Validation> children;
 
     public static ValidationInstance of(ValidatorInstance validatorInstance, ValidationSource validationSource) {
@@ -70,9 +69,9 @@ class ValidationInstance implements Validation {
         this.section.setFlag(FlagType.OK);
 
         try {
-            loadDocument(validationSource.getInputStream());
+            var di = loadDocument(validationSource.getInputStream());
             loadConfiguration();
-            nestedValidation();
+            nestedValidation(di);
 
             if (configuration != null)
                 validate();
@@ -99,48 +98,32 @@ class ValidationInstance implements Validation {
         }
     }
 
-    private void loadDocument(InputStream inputStream) throws ValidatorException, IOException {
-        ByteArrayInputStream byteArrayInputStream;
-        if (inputStream instanceof ByteArrayInputStream) {
-            // Use stream as-is.
-            byteArrayInputStream = (ByteArrayInputStream) inputStream;
-        } else {
-            // Convert stream to ByteArrayOutputStream
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ByteStreams.copy(inputStream, byteArrayOutputStream);
-            byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        }
-
-        //To be able to reuse the stream later on.
-        document = new Document(byteArrayInputStream);
-        byteArrayInputStream.reset();
+    private DeclarationIdentification loadDocument(InputStream inputStream) throws ValidatorException, IOException {
+        // Read content to memory
+        document = Document.of(inputStream);
 
         // Use declaration implementations to detect declaration to use.
-        DeclarationIdentifier declarationIdentifier = validatorInstance.detect(byteArrayInputStream);
-        declaration = declarationIdentifier.getDeclaration();
+        DeclarationIdentification declarationIdentifier = validatorInstance.detect(document);
 
-        if (declarationIdentifier.equals(DeclarationDetector.UNKNOWN))
+        if (declarationIdentifier.equals(DeclarationIdentification.UNKNOWN))
             throw new UnknownDocumentTypeException("Unable to detect type of content.");
 
         // Detect expectation
         Expectation expectation = null;
         if (properties.getBoolean("feature.expectation")) {
-            byte[] bytes = StreamUtils.readAndReset(byteArrayInputStream, 10 * 1024);
-            expectation = declaration.expectations(bytes);
+            expectation = declarationIdentifier.expectations(document);
+
             if (expectation != null)
                 report.setDescription(expectation.getDescription());
         }
 
-        if (declaration.supportsConverter()) {
-            ByteArrayOutputStream convertedOutputStream = new ByteArrayOutputStream();
-            byteArrayInputStream.reset();
-            declaration.convert(byteArrayInputStream, convertedOutputStream);
-
-            document = new ConvertedDocument(new ByteArrayInputStream(convertedOutputStream.toByteArray()),
-                    byteArrayInputStream, declarationIdentifier.getFullIdentifier(), expectation);
+        if (declarationIdentifier.hasConverted()) {
+            document = declarationIdentifier.getConverted().update(declarationIdentifier.getFullIdentifier(), expectation);
         } else {
-            document = new Document(byteArrayInputStream, declarationIdentifier.getFullIdentifier(), expectation);
+            document = document.update(declarationIdentifier.getFullIdentifier(), expectation);
         }
+
+        return declarationIdentifier;
     }
 
     private void loadConfiguration() throws UnknownDocumentTypeException {
@@ -194,21 +177,18 @@ class ValidationInstance implements Validation {
     /**
      * Handling nested validation.
      */
-    private void nestedValidation() throws ValidatorException {
+    private void nestedValidation(DeclarationIdentification declarationIdentification) throws ValidatorException {
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
-            if (declaration.supportsChildren() && properties.getBoolean("feature.nesting")) {
-                Iterable<CachedFile> iterable = declaration.children(document.getInputStream());
-                for (CachedFile cachedFile : iterable) {
-                    addChildValidation(ValidationInstance.of(validatorInstance,
-                            new ValidationSourceImpl(cachedFile.getContentStream())), cachedFile.getFilename());
+            if (declarationIdentification.hasChildren() && properties.getBoolean("feature.nesting")) {
+                for (Document child : declarationIdentification.getChildren()) {
+                    addChildValidation(ValidationInstance.of(validatorInstance, new ValidationSourceImpl(child.asInputStream())));
                 }
             }
         }
     }
 
-    private void addChildValidation(Validation validation, String filename) {
+    private void addChildValidation(Validation validation) {
         Report childReport = validation.getReport();
-        childReport.setFilename(filename);
         report.getReport().add(childReport);
 
         if (children == null)
