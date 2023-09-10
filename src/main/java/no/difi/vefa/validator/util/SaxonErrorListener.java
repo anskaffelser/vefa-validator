@@ -1,17 +1,13 @@
 package no.difi.vefa.validator.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import java.util.Objects;
 
-public class SaxonErrorListener implements ErrorListener {
-
-    public static final SaxonErrorListener INSTANCE = new SaxonErrorListener();
-
-    private static final Logger log = LoggerFactory.getLogger(SaxonErrorListener.class);
+@Slf4j
+class SaxonErrorListener implements ErrorListener {
 
     @Override
     public void warning(TransformerException exception) {

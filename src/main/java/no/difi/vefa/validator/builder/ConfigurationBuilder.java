@@ -3,7 +3,6 @@ package no.difi.vefa.validator.builder;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.DeclarationType;
 import no.difi.xsd.vefa.validator._1.IdentifierType;
-import no.difi.xsd.vefa.validator._1.TriggerType;
 
 public class ConfigurationBuilder {
 
@@ -41,14 +40,6 @@ public class ConfigurationBuilder {
         declarationType.setType(type);
         declarationType.setValue(value);
         configuration.getDeclaration().add(declarationType);
-        return this;
-    }
-
-    public ConfigurationBuilder trigger(String identifier) {
-        TriggerType trigger = new TriggerType();
-        trigger.setIdentifier(identifier);
-
-        configuration.getTrigger().add(trigger);
         return this;
     }
 

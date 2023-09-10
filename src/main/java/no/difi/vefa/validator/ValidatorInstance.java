@@ -10,7 +10,6 @@ import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.CombinedFlagFilterer;
 import no.difi.vefa.validator.util.DeclarationDetector;
 import no.difi.vefa.validator.util.DeclarationIdentification;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
@@ -133,7 +132,7 @@ class ValidatorInstance implements Closeable {
                     "Unable to get checker object from pool for '%s'.", configuration.getIdentifier()), e);
         }
 
-        Section section = new Section(new CombinedFlagFilterer(configuration, document.getExpectation()));
+        Section section = new Section(document.getExpectation());
         section.setFlag(FlagType.OK);
 
         if (properties.getBoolean("feature.infourl"))

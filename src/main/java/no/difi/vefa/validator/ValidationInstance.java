@@ -5,7 +5,6 @@ import no.difi.vefa.validator.api.*;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.util.CombinedFlagFilterer;
 import no.difi.vefa.validator.util.DeclarationIdentification;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
@@ -13,7 +12,6 @@ import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.Report;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +36,7 @@ class ValidationInstance implements Validation {
     /**
      * Section used to gather problems during validation.
      */
-    private final Section section = new Section(new CombinedFlagFilterer());
+    private final Section section = new Section(FlagFilterer.DEFAULT);
 
     /**
      * Document subject to validation.
@@ -47,19 +45,20 @@ class ValidationInstance implements Validation {
 
     private List<Validation> children;
 
-    public static ValidationInstance of(ValidatorInstance validatorInstance, ValidationSource validationSource) {
-        return new ValidationInstance(validatorInstance, validationSource);
+    public static ValidationInstance of(ValidatorInstance validatorInstance, Document document, Properties properties) {
+        return new ValidationInstance(validatorInstance, document, properties);
     }
 
     /**
      * Constructing new validator using validator instance and validation source containing document to validate.
      *
      * @param validatorInstance Instance of validator.
-     * @param validationSource  Source to validate.
+     * @param document  Source to validate.
+     * @param properties Properties for validation
      */
-    private ValidationInstance(ValidatorInstance validatorInstance, ValidationSource validationSource) {
+    private ValidationInstance(ValidatorInstance validatorInstance, Document document, Properties properties) {
         this.validatorInstance = validatorInstance;
-        this.properties = new CombinedProperties(validationSource.getProperties(), validatorInstance.getProperties());
+        this.properties = new CombinedProperties(properties, validatorInstance.getProperties());
 
         this.report = new Report();
         this.report.setUuid(UUID.randomUUID().toString());
@@ -69,7 +68,7 @@ class ValidationInstance implements Validation {
         this.section.setFlag(FlagType.OK);
 
         try {
-            var di = loadDocument(validationSource.getInputStream());
+            var di = loadDocument(document);
             loadConfiguration();
             nestedValidation(di);
 
@@ -98,10 +97,7 @@ class ValidationInstance implements Validation {
         }
     }
 
-    private DeclarationIdentification loadDocument(InputStream inputStream) throws ValidatorException, IOException {
-        // Read content to memory
-        document = Document.of(inputStream);
-
+    private DeclarationIdentification loadDocument(Document document) throws ValidatorException, IOException {
         // Use declaration implementations to detect declaration to use.
         DeclarationIdentification declarationIdentifier = validatorInstance.detect(document);
 
@@ -118,9 +114,9 @@ class ValidationInstance implements Validation {
         }
 
         if (declarationIdentifier.hasConverted()) {
-            document = declarationIdentifier.getConverted().update(declarationIdentifier.getFullIdentifier(), expectation);
+            this.document = declarationIdentifier.getConverted().update(declarationIdentifier.getFullIdentifier(), expectation);
         } else {
-            document = document.update(declarationIdentifier.getFullIdentifier(), expectation);
+            this.document = document.update(declarationIdentifier.getFullIdentifier(), expectation);
         }
 
         return declarationIdentifier;
@@ -181,7 +177,7 @@ class ValidationInstance implements Validation {
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
             if (declarationIdentification.hasChildren() && properties.getBoolean("feature.nesting")) {
                 for (Document child : declarationIdentification.getChildren()) {
-                    addChildValidation(ValidationInstance.of(validatorInstance, new ValidationSourceImpl(child.asInputStream())));
+                    addChildValidation(ValidationInstance.of(validatorInstance, child, null));
                 }
             }
         }

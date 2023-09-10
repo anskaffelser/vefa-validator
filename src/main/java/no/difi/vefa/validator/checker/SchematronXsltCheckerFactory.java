@@ -9,7 +9,7 @@ import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.SaxonErrorListener;
+import no.difi.vefa.validator.util.SaxonUtils;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class SchematronXsltCheckerFactory implements CheckerFactory {
     public Checker prepare(ArtifactHolder artifactHolder, String path) throws ValidatorException {
         try (InputStream inputStream = artifactHolder.getInputStream(path)) {
             XsltCompiler xsltCompiler = processor.newXsltCompiler();
-            xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
+            xsltCompiler.setErrorListener(SaxonUtils.ERROR_LISTENER);
 
             Checker checker = new SchematronXsltChecker(processor, xsltCompiler.compile(new StreamSource(inputStream)));
             injector.injectMembers(checker);

@@ -9,7 +9,6 @@ public interface Preparer {
 
     enum Type {
         FILE,
-        STYLESHEET,
         INCLUDE
     }
 }

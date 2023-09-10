@@ -3,9 +3,9 @@ package no.difi.vefa.validator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.api.ValidationSource;
 import no.difi.xsd.vefa.validator._1.PackageType;
 
 import java.io.Closeable;
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -37,7 +36,6 @@ public class Validator implements Closeable {
      *
      * @param file File to validate.
      * @return Validation result.
-     * @throws IOException
      */
     public Validation validate(File file) throws IOException {
         return validate(file.toPath());
@@ -48,7 +46,6 @@ public class Validator implements Closeable {
      *
      * @param file File to validate.
      * @return Validation result.
-     * @throws IOException
      */
     public Validation validate(Path file) throws IOException {
         try (InputStream inputStream = Files.newInputStream(file)) {
@@ -62,8 +59,8 @@ public class Validator implements Closeable {
      * @param inputStream Stream containing content.
      * @return Validation result.
      */
-    public Validation validate(InputStream inputStream) {
-        return validate(new ValidationSourceImpl(inputStream));
+    public Validation validate(InputStream inputStream) throws IOException {
+        return validate(inputStream, null);
     }
 
     /**
@@ -73,29 +70,8 @@ public class Validator implements Closeable {
      * @param properties  Properties used for individual validation.
      * @return Validation result.
      */
-    public Validation validate(InputStream inputStream, Properties properties) {
-        return validate(new ValidationSourceImpl(inputStream, properties));
-    }
-
-    /**
-     * Validate content of packaged stream.
-     *
-     * @param validationSource Package containing source.
-     * @return Validation result.
-     */
-    public Validation validate(ValidationSource validationSource) {
-        return ValidationInstance.of(this.validatorInstance, validationSource);
-    }
-
-    /**
-     * Validate file from filePath string
-     *
-     * @param filePath string representing filePath
-     * @return Validation result
-     * @throws IOException
-     */
-    public Validation validate(String filePath) throws IOException {
-        return validate(Paths.get(filePath));
+    public Validation validate(InputStream inputStream, Properties properties) throws IOException {
+        return ValidationInstance.of(this.validatorInstance, Document.of(inputStream), properties);
     }
 
     /**

@@ -1,5 +1,7 @@
 package no.difi.vefa.validator.build.task;
 
+import com.google.common.io.MoreFiles;
+import com.google.common.io.RecursiveDeleteOption;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import jakarta.xml.bind.JAXBContext;
@@ -9,10 +11,9 @@ import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.model.Build;
-import no.difi.vefa.validator.build.util.DirectoryCleaner;
 import no.difi.vefa.validator.build.util.PreparerProvider;
-import no.difi.vefa.validator.util.ZipArchiver;
 import no.difi.vefa.validator.util.JaxbUtils;
+import no.difi.vefa.validator.util.ZipArchiver;
 import no.difi.xsd.vefa.validator._1.BuildConfigurations;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
@@ -42,7 +43,7 @@ public class BuildTask {
         Path contentsPath = build.getTargetFolder().resolve("contents");
 
         if (Files.exists(build.getTargetFolder()))
-            DirectoryCleaner.clean(build.getTargetFolder(), false);
+            MoreFiles.deleteDirectoryContents(build.getTargetFolder(), RecursiveDeleteOption.ALLOW_INSECURE);
         Files.createDirectories(contentsPath);
 
         Configurations configurations = build.getConfigurations();
@@ -119,6 +120,6 @@ public class BuildTask {
                 build.getTargetFolder().resolve(String.format("%s-%s.zip", build.getSetting("name"), build.getSetting("build"))),
                 contentsPath);
 
-        DirectoryCleaner.clean(contentsPath, true);
+        MoreFiles.deleteRecursively(contentsPath, RecursiveDeleteOption.ALLOW_INSECURE);
     }
 }

@@ -30,8 +30,6 @@ public class DeclarationDetector {
             transformer.setDestination(detector.getProcessor().newSerializer(baos));
             transformer.transform();
 
-            System.out.println(baos);
-
             return DeclarationIdentification.of(baos);
         } catch (SaxonApiException e) {
             return DeclarationIdentification.UNKNOWN;

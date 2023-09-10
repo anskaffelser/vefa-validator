@@ -14,8 +14,7 @@ import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JaxbUtils;
-import no.difi.vefa.validator.util.SaxonErrorListener;
-import no.difi.vefa.validator.util.SaxonMessageListener;
+import no.difi.vefa.validator.util.SaxonUtils;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
 import javax.xml.transform.stream.StreamSource;
@@ -49,13 +48,13 @@ public class SchematronXsltChecker implements Checker {
             XsltTransformer parser = this.parser.get().load();
             XsltTransformer schematron = xsltExecutable.load();
 
-            schematron.setErrorListener(SaxonErrorListener.INSTANCE);
-            schematron.setMessageListener(SaxonMessageListener.INSTANCE);
+            schematron.setErrorListener(SaxonUtils.ERROR_LISTENER);
+            schematron.setMessageHandler(SaxonUtils.MESSAGE_HANDLER);
             schematron.setSource(new StreamSource(document.asInputStream()));
             schematron.setDestination(parser);
 
-            parser.setErrorListener(SaxonErrorListener.INSTANCE);
-            parser.setMessageListener(SaxonMessageListener.INSTANCE);
+            parser.setErrorListener(SaxonUtils.ERROR_LISTENER);
+            parser.setMessageHandler(SaxonUtils.MESSAGE_HANDLER);
             parser.setDestination(processor.newSerializer(baos));
 
             schematron.transform();

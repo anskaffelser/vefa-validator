@@ -14,8 +14,6 @@ public class Section extends SectionType {
 
     /**
      * Initiate section.
-     *
-     * @param flagFilterer
      */
     public Section(FlagFilterer flagFilterer) {
         this.flagFilterer = flagFilterer;
@@ -69,12 +67,7 @@ public class Section extends SectionType {
         if (assertion.getLocationFriendly() == null)
             assertion.setLocationFriendly(assertion.getLocation());
 
-
-        if (getInfoUrl() != null)
-            assertion.setInfoUrl(getInfoUrl().replace("{}", assertion.getIdentifier()));
-
         if (assertion.getFlag() != null) {
-
             if (assertion.getFlag().compareTo(getFlag()) > 0)
                 setFlag(assertion.getFlag());
 

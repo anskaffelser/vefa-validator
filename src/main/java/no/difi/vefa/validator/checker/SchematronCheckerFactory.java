@@ -10,8 +10,7 @@ import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.SaxonErrorListener;
-import no.difi.vefa.validator.util.SaxonMessageListener;
+import no.difi.vefa.validator.util.SaxonUtils;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
@@ -40,14 +39,14 @@ public class SchematronCheckerFactory implements CheckerFactory {
             XdmDestination destination = new XdmDestination();
 
             XsltTransformer xsltTransformer = schematronCompiler.get().load();
-            xsltTransformer.setErrorListener(SaxonErrorListener.INSTANCE);
-            xsltTransformer.setMessageListener(SaxonMessageListener.INSTANCE);
+            xsltTransformer.setErrorListener(SaxonUtils.ERROR_LISTENER);
+            xsltTransformer.setMessageHandler(SaxonUtils.MESSAGE_HANDLER);
             xsltTransformer.setSource(new StreamSource(inputStream));
             xsltTransformer.setDestination(destination);
             xsltTransformer.transform();
 
             XsltCompiler xsltCompiler = processor.newXsltCompiler();
-            xsltCompiler.setErrorListener(SaxonErrorListener.INSTANCE);
+            xsltCompiler.setErrorListener(SaxonUtils.ERROR_LISTENER);
 
             Checker checker = new SchematronXsltChecker(processor, xsltCompiler.compile(destination.getXdmNode().asSource()));
             injector.injectMembers(checker);

@@ -13,7 +13,6 @@ public class ConfigurationBuilderTest {
                 .title("Test")
                 .standardId("test#test")
                 .weight(-10L)
-                .trigger("test")
                 .build("unit-test")
                 .build();
 
@@ -21,8 +20,6 @@ public class ConfigurationBuilderTest {
         Assert.assertEquals(cfg.getTitle(), "Test");
         Assert.assertEquals(cfg.getStandardId(), "test#test");
         Assert.assertEquals(cfg.getWeight(), -10L);
-        Assert.assertEquals(cfg.getTrigger().size(), 1);
-        Assert.assertEquals(cfg.getTrigger().get(0).getIdentifier(), "test");
         Assert.assertEquals(cfg.getBuild(), "unit-test");
     }
 

@@ -7,7 +7,7 @@ import no.difi.vefa.validator.api.Properties;
  */
 public class CombinedProperties extends AbstractProperties {
 
-    private Properties[] properties;
+    private final Properties[] properties;
 
     /**
      * Allow combination of configs, the most specific first.

@@ -11,10 +11,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
 import static org.testng.Assert.assertEquals;
 
 @Slf4j
-public class Testing {
+public class SimpleTest {
 
     private static Validator validator;
 
@@ -35,7 +37,7 @@ public class Testing {
     }
 
     @Test
-    public void simpleError() {
+    public void simpleError() throws IOException {
         Validation validation = validator.validate(getClass().getResourceAsStream("/documents/T10-hode-feilkoder.xml"));
 
         for (SectionType sectionType : validation.getReport().getSection()) {
@@ -55,7 +57,7 @@ public class Testing {
     }
 
     @Test
-    public void simpleOk() {
+    public void simpleOk() throws IOException {
         Validation validation = validator.validate(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
 
         for (SectionType sectionType : validation.getReport().getSection()) {
@@ -65,7 +67,7 @@ public class Testing {
                         "- [%s] %s (%s)", assertion.getIdentifier(), assertion.getText(), assertion.getFlag()));
         }
 
-        assertEquals(validation.getReport().getFlag(), FlagType.OK);
+        assertEquals(validation.getReport().getFlag(), FlagType.WARNING);
         assertEquals(validation.getDocument().getDeclarations().get(0), "xml.ubl::urn:www.cenbii.eu:profile:bii05:ver2.0#" +
                 "urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:" +
                 "urn:www.peppol.eu:bis:peppol5a:ver2.0:extended:" +
@@ -73,8 +75,8 @@ public class Testing {
     }
 
     @Test
-    public void simpleValidatorTest() {
-        var  validation = validator.validate(
+    public void simpleValidatorTest() throws IOException {
+        var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/NOGOV-T10-R014.xml"),
                 new SimpleProperties().set("feature.nesting", true));
 
@@ -83,7 +85,7 @@ public class Testing {
     }
 
     @Test
-    public void billing3Test() {
+    public void billing3Test() throws IOException {
         var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/peppol-billing-3.0.xml"));
 
@@ -92,7 +94,7 @@ public class Testing {
     }
 
     @Test
-    public void testValidationWithLongUblExtension() {
+    public void testValidationWithLongUblExtension() throws IOException {
         var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/peppol-billing-3.0_long_ubl_extension.xml"));
 
@@ -101,7 +103,7 @@ public class Testing {
     }
 
     @Test
-    public void testValidationEmptyUbl() {
+    public void testValidationEmptyUbl() throws IOException {
         var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/ubl-invoice-empty.xml"));
 

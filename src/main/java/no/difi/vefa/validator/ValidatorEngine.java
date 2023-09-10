@@ -122,11 +122,6 @@ class ValidatorEngine implements Closeable {
                 fileType.setBuild(configuration.getBuild());
             }
 
-            for (TriggerType triggerType : configuration.getTrigger()) {
-                triggerType.setConfiguration(configuration.getIdentifier().getValue());
-                triggerType.setBuild(configuration.getBuild());
-            }
-
             // Add by identifier if not registered or weight is higher
             if (!identifierMap.containsKey(configuration.getIdentifier().getValue()) ||
                     identifierMap.get(configuration.getIdentifier().getValue()).getWeight() < configuration.getWeight())
