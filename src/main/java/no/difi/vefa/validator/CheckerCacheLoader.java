@@ -5,12 +5,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author erlend
@@ -19,26 +18,22 @@ import java.util.List;
 @Singleton
 public class CheckerCacheLoader extends CacheLoader<String, Checker> {
 
-    public static final int DEFAULT_SIZE = 250;
-
     @Inject
-    private List<CheckerFactory> factories;
+    private Map<String, CheckerFactory> factories;
 
     @Inject
     private ValidatorEngine validatorEngine;
 
     @Override
     @NonNull
-    public Checker load(@NonNull String key) throws Exception {
+    public Checker load(@NonNull String key) throws ValidatorException {
         try {
-            for (CheckerFactory factory : factories) {
-                for (String extension : factory.getClass().getAnnotation(Type.class).value()) {
-                    if (key.toLowerCase().endsWith(extension)) {
-                        return factory.prepare(validatorEngine.getResource(key), key.split("#")[1]);
-                    }
+            for (var entry : factories.entrySet()) {
+                if (key.toLowerCase().endsWith(entry.getKey())) {
+                    return entry.getValue().prepare(validatorEngine.getResource(key), key.split("#")[1]);
                 }
             }
-        } catch (Exception e) {
+        } catch (ValidatorException e) {
             throw new ValidatorException(String.format("Unable to load checker for '%s'.", key), e);
         }
 

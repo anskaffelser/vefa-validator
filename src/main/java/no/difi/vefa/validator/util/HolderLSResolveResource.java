@@ -1,30 +1,23 @@
 package no.difi.vefa.validator.util;
 
-import no.difi.vefa.validator.api.ArtifactHolder;
+import no.difi.vefa.validator.model.ArtifactHolder;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class HolderLSResolveResource implements LSResourceResolver {
 
     private final ArtifactHolder artifactHolder;
 
-    private final Path rootPath;
 
-    public HolderLSResolveResource(ArtifactHolder artifactHolder, String rootPath) {
+    public HolderLSResolveResource(ArtifactHolder artifactHolder) {
         this.artifactHolder = artifactHolder;
-        this.rootPath = Paths.get(rootPath).getParent();
     }
 
     @Override
     public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-        Path target;
-        if (baseURI == null)
-            target = rootPath.resolve(systemId);
-        else
-            target = Paths.get(baseURI.substring(7)).getParent().resolve(systemId);
+        var target = Paths.get(baseURI.substring(7)).getParent().resolve(systemId);
 
         String newPath = ("/" + target.toString().replaceAll("\\\\", "/")).replaceAll("/([^/]+?)/\\.\\.", "").substring(1);
 

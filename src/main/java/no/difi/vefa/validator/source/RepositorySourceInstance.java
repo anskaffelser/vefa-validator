@@ -2,7 +2,6 @@ package no.difi.vefa.validator.source;
 
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -14,9 +13,7 @@ import java.util.List;
 @Slf4j
 class RepositorySourceInstance extends AbstractSourceInstance {
 
-    public RepositorySourceInstance(Properties properties, List<URI> rootUris) throws ValidatorException {
-        super(properties);
-
+    public RepositorySourceInstance(List<URI> rootUris) throws ValidatorException {
         try {
             for (URI rootUri : rootUris) {
                 Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();

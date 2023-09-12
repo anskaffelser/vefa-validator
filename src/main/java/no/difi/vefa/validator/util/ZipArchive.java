@@ -16,7 +16,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * @author erlend
  */
-public interface ZipArchiver {
+public interface ZipArchive {
 
     static void archive(Path target, Path directory) throws IOException {
         try (OutputStream outputStream = Files.newOutputStream(target);

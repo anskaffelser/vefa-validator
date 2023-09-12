@@ -2,7 +2,7 @@ package no.difi.vefa.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.properties.SimpleProperties;
+import no.difi.vefa.validator.model.Prop;
 import no.difi.vefa.validator.source.ClasspathSource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -24,8 +24,7 @@ public class SimpleTest {
     public void beforeClass() {
         validator = ValidatorBuilder
                 .newValidator()
-                .setProperties(new SimpleProperties()
-                        .set("feature.expectation", true))
+                .setProperties(Prop.of("feature.expectation", true))
                 .setSource(new ClasspathSource("/rules/"))
                 .build();
     }
@@ -78,7 +77,7 @@ public class SimpleTest {
     public void simpleValidatorTest() throws IOException {
         var validation = validator.validate(
                 getClass().getResourceAsStream("/documents/NOGOV-T10-R014.xml"),
-                new SimpleProperties().set("feature.nesting", true));
+                Prop.of("feature.nesting", true));
 
         assertEquals(validation.getReport().getFlag(), FlagType.OK);
         assertEquals(validation.getChildren().size(), 3);

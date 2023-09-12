@@ -2,7 +2,6 @@ package no.difi.vefa.validator.source;
 
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -24,10 +23,7 @@ class DirectorySourceInstance extends AbstractSourceInstance {
      *
      * @param directories Directories containing validation artifacts.
      */
-    public DirectorySourceInstance(Properties properties, Path... directories) throws ValidatorException {
-        // Call #AbstractSourceInstance().
-        super(properties);
-
+    public DirectorySourceInstance(Path... directories) throws ValidatorException {
         try {
             for (Path directory : directories) {
                 log.info("Directory: {}", directory);

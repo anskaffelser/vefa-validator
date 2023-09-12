@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.checker;
 
 import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.api.Section;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;

@@ -1,5 +1,6 @@
-package no.difi.vefa.validator.api;
+package no.difi.vefa.validator.model;
 
+import no.difi.vefa.validator.model.Document;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

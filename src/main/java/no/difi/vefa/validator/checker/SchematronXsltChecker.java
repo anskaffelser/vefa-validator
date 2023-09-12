@@ -6,11 +6,10 @@ import com.google.inject.name.Named;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.api.Section;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JaxbUtils;
@@ -26,16 +25,13 @@ public class SchematronXsltChecker implements Checker {
 
     private static final JAXBContext JAXB_CONTEXT = JaxbUtils.context(SectionType.class);
 
-    private final Processor processor;
-
     private final XsltExecutable xsltExecutable;
 
     @Inject
     @Named("schematron-svrl-parser")
     private Provider<XsltExecutable> parser;
 
-    public SchematronXsltChecker(Processor processor, XsltExecutable xsltExecutable) {
-        this.processor = processor;
+    public SchematronXsltChecker(XsltExecutable xsltExecutable) {
         this.xsltExecutable = xsltExecutable;
     }
 
@@ -55,7 +51,7 @@ public class SchematronXsltChecker implements Checker {
 
             parser.setErrorListener(SaxonUtils.ERROR_LISTENER);
             parser.setMessageHandler(SaxonUtils.MESSAGE_HANDLER);
-            parser.setDestination(processor.newSerializer(baos));
+            parser.setDestination(xsltExecutable.getProcessor().newSerializer(baos));
 
             schematron.transform();
 

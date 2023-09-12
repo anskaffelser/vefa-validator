@@ -3,8 +3,8 @@ package no.difi.vefa.validator;
 import com.google.inject.Guice;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.model.Prop;
 import no.difi.vefa.validator.module.PropertiesModule;
 import no.difi.vefa.validator.module.SourceModule;
 import no.difi.vefa.validator.module.ValidatorModule;
@@ -19,7 +19,7 @@ public class ValidatorBuilder {
 
     private Source source;
 
-    private Properties properties;
+    private Prop[] props;
 
     /**
      * Initiate creation of a new validator. Loads default plugins.
@@ -40,11 +40,11 @@ public class ValidatorBuilder {
     /**
      * Defines configuration to use for validator.
      *
-     * @param properties Configuration
+     * @param props Configuration
      * @return Builder object
      */
-    public ValidatorBuilder setProperties(Properties properties) {
-        this.properties = properties;
+    public ValidatorBuilder setProperties(Prop... props) {
+        this.props = props;
         return this;
     }
 
@@ -66,7 +66,7 @@ public class ValidatorBuilder {
      */
     public Validator build() {
         List<Module> modules = new ArrayList<>();
-        modules.add(new PropertiesModule(properties));
+        modules.add(PropertiesModule.with(props));
         modules.add(new SourceModule(source));
 
         return Guice.createInjector(Modules.override(new ValidatorModule()).with(modules)).getInstance(Validator.class);

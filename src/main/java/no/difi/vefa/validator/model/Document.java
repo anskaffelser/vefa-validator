@@ -1,8 +1,9 @@
-package no.difi.vefa.validator.api;
+package no.difi.vefa.validator.model;
 
 import com.google.common.io.ByteStreams;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import org.w3c.dom.Node;
 
@@ -48,6 +49,9 @@ public class Document {
 
     public static Document ofResource(String resource) throws IOException {
         try (var inputStream = Document.class.getResourceAsStream(resource)) {
+            if (inputStream == null)
+                throw new IOException(String.format("Resource '%s' not found.", resource));
+
             return of(inputStream);
         }
     }

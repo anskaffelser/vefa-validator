@@ -4,6 +4,7 @@ import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
 import no.difi.xsd.vefa.validator._1.PackageType;
 
+@Deprecated
 public class ConfigurationsBuilder {
 
     private final Configurations configurations = new Configurations();

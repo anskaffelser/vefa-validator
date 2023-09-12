@@ -4,6 +4,7 @@ import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.DeclarationType;
 import no.difi.xsd.vefa.validator._1.IdentifierType;
 
+@Deprecated
 public class ConfigurationBuilder {
 
     private final ConfigurationType configuration = new ConfigurationType();

@@ -3,16 +3,15 @@ package no.difi.vefa.validator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Document;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.model.Document;
+import no.difi.vefa.validator.model.Prop;
 import no.difi.xsd.vefa.validator._1.PackageType;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -34,44 +33,45 @@ public class Validator implements Closeable {
     /**
      * Validate file.
      *
-     * @param file File to validate.
+     * @param file  File to validate.
+     * @param props Optional properties.
      * @return Validation result.
      */
-    public Validation validate(File file) throws IOException {
-        return validate(file.toPath());
+    public Validation validate(File file, Prop... props) throws IOException {
+        return validate(Document.of(file), props);
     }
 
     /**
      * Validate file.
      *
-     * @param file File to validate.
+     * @param file  File to validate.
+     * @param props Optional properties.
      * @return Validation result.
      */
-    public Validation validate(Path file) throws IOException {
-        try (InputStream inputStream = Files.newInputStream(file)) {
-            return validate(inputStream);
-        }
+    public Validation validate(Path file, Prop... props) throws IOException {
+        return validate(Document.of(file), props);
     }
 
     /**
      * Validate content of stream.
      *
      * @param inputStream Stream containing content.
+     * @param props       Optional properties.
      * @return Validation result.
      */
-    public Validation validate(InputStream inputStream) throws IOException {
-        return validate(inputStream, null);
+    public Validation validate(InputStream inputStream, Prop... props) throws IOException {
+        return validate(Document.of(inputStream), props);
     }
 
     /**
-     * Validate content of stream.
+     * Validate document.
      *
-     * @param inputStream Stream containing content.
-     * @param properties  Properties used for individual validation.
+     * @param document File to validate.
+     * @param props    Optional properties.
      * @return Validation result.
      */
-    public Validation validate(InputStream inputStream, Properties properties) throws IOException {
-        return ValidationInstance.of(this.validatorInstance, Document.of(inputStream), properties);
+    public Validation validate(Document document, Prop... props) {
+        return validatorInstance.validate(document, props);
     }
 
     /**
@@ -80,7 +80,7 @@ public class Validator implements Closeable {
      * @return List of packages.
      */
     public List<PackageType> getPackages() {
-        return this.validatorInstance.getPackages();
+        return validatorInstance.getPackages();
     }
 
     @Override

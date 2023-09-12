@@ -5,6 +5,7 @@ import no.difi.vefa.validator.builder.ConfigurationBuilder;
 import no.difi.vefa.validator.builder.ConfigurationsBuilder;
 import no.difi.xsd.vefa.validator._1.Configurations;
 
+@Deprecated
 public class ValidatorTestConfigurationProvider implements ConfigurationProvider {
 
     @Override

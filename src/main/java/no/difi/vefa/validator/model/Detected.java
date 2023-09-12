@@ -1,12 +1,12 @@
-package no.difi.vefa.validator.util;
+package no.difi.vefa.validator.model;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1_0.internal.IdentificationType;
 import no.difi.xsd.vefa.validator._1_0.internal.PropertyType;
 import org.w3c.dom.Node;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DeclarationIdentification {
+public class Detected {
 
-    public static final DeclarationIdentification UNKNOWN = new DeclarationIdentification();
+    public static final Detected UNKNOWN = new Detected();
 
     private static final JAXBContext JAXB = JaxbUtils.context(IdentificationType.class);
 
@@ -37,20 +37,20 @@ public class DeclarationIdentification {
 
     private final Object converted;
 
-    public static DeclarationIdentification of(ByteArrayOutputStream baos) throws ValidatorException {
+    public static Detected of(ByteArrayOutputStream baos) throws ValidatorException {
         return of(new ByteArrayInputStream(baos.toByteArray()));
     }
 
-    public static DeclarationIdentification of(InputStream inputStream) throws ValidatorException {
+    public static Detected of(InputStream inputStream) throws ValidatorException {
         try {
-            return new DeclarationIdentification(JAXB.createUnmarshaller()
+            return new Detected(JAXB.createUnmarshaller()
                     .unmarshal(new StreamSource(inputStream), IdentificationType.class).getValue());
         } catch (JAXBException e) {
             throw new ValidatorException("Unable to parse detector result.", e);
         }
     }
 
-    private DeclarationIdentification() {
+    private Detected() {
         this.type = null;
         this.identifiers = List.of("unknown");
         this.properties = Collections.emptyMap();
@@ -58,7 +58,7 @@ public class DeclarationIdentification {
         this.converted = null;
     }
 
-    private DeclarationIdentification(IdentificationType it) {
+    private Detected(IdentificationType it) {
         this.type = it.getType();
         this.identifiers = it.getId();
         this.properties = it.getProperty() == null ? Collections.emptyMap() :

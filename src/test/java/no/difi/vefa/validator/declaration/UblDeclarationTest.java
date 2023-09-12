@@ -2,10 +2,10 @@ package no.difi.vefa.validator.declaration;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.module.ValidatorModule;
-import no.difi.vefa.validator.util.DeclarationDetector;
-import no.difi.vefa.validator.util.DeclarationIdentification;
+import no.difi.vefa.validator.service.DetectorService;
+import no.difi.vefa.validator.model.Detected;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,7 +18,7 @@ public class UblDeclarationTest {
             "<Invoice:Invoice xmlns:Invoice=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"";
 
     @Inject
-    private DeclarationDetector declarationDetector;
+    private DetectorService declarationDetector;
 
     @BeforeClass
     public void beforeClass() {
@@ -133,7 +133,7 @@ public class UblDeclarationTest {
     public void invalidEdifact() throws Exception {
         var document = Document.ofResource("/documents/edifact-invoic-d-97b-un.txt");
 
-        assertEquals(declarationDetector.detect(document), DeclarationIdentification.UNKNOWN);
+        assertEquals(declarationDetector.detect(document), Detected.UNKNOWN);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class UblDeclarationTest {
     public void incompleteDeclaration() throws Exception {
         var document = Document.of("<test>");
 
-        assertEquals(declarationDetector.detect(document), DeclarationIdentification.UNKNOWN);
+        assertEquals(declarationDetector.detect(document), Detected.UNKNOWN);
     }
 
     @Test

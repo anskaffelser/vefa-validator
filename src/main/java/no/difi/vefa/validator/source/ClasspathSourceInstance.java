@@ -1,7 +1,6 @@
 package no.difi.vefa.validator.source;
 
 import jakarta.xml.bind.Unmarshaller;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
@@ -16,9 +15,7 @@ class ClasspathSourceInstance extends AbstractSourceInstance {
 
     private static final Logger logger = LoggerFactory.getLogger(ClasspathSourceInstance.class);
 
-    public ClasspathSourceInstance(Properties properties, String location) throws ValidatorException {
-        super(properties);
-
+    public ClasspathSourceInstance(String location) throws ValidatorException {
         String artifactsUri = location + "artifacts.xml";
 
         try (InputStream inputStream = getClass().getResourceAsStream(artifactsUri)) {

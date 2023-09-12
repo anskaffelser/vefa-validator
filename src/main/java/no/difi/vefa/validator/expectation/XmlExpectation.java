@@ -1,7 +1,7 @@
 package no.difi.vefa.validator.expectation;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 
 import java.util.List;
 import java.util.Map;

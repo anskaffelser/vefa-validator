@@ -19,10 +19,9 @@ public class ValidatorModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new CacheModule());
         install(new CheckerModule());
         install(new DetectorModule());
-        install(new PropertiesModule());
+        install(PropertiesModule.with());
         install(new SaxonModule());
         install(new SourceModule());
         install(new SchematronModule());

@@ -13,6 +13,6 @@ public interface Source {
      * @throws ValidatorException
      * @return Instance containing validation artifacts.
      */
-    SourceInstance createInstance(Properties properties) throws ValidatorException;
+    SourceInstance createInstance() throws ValidatorException;
 
 }

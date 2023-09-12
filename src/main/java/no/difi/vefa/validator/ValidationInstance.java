@@ -1,11 +1,16 @@
 package no.difi.vefa.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.*;
+import no.difi.vefa.validator.api.Expectation;
+import no.difi.vefa.validator.api.FlagFilterer;
+import no.difi.vefa.validator.api.Section;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.properties.CombinedProperties;
-import no.difi.vefa.validator.util.DeclarationIdentification;
+import no.difi.vefa.validator.model.Detected;
+import no.difi.vefa.validator.model.Document;
+import no.difi.vefa.validator.model.Prop;
+import no.difi.vefa.validator.model.Props;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -24,7 +29,7 @@ class ValidationInstance implements Validation {
 
     private final ValidatorInstance validatorInstance;
 
-    private final Properties properties;
+    private final Props props;
 
     private Configuration configuration;
 
@@ -45,8 +50,8 @@ class ValidationInstance implements Validation {
 
     private List<Validation> children;
 
-    public static ValidationInstance of(ValidatorInstance validatorInstance, Document document, Properties properties) {
-        return new ValidationInstance(validatorInstance, document, properties);
+    public static ValidationInstance of(ValidatorInstance validatorInstance, Document document, Prop... props) {
+        return new ValidationInstance(validatorInstance, document, props);
     }
 
     /**
@@ -54,11 +59,11 @@ class ValidationInstance implements Validation {
      *
      * @param validatorInstance Instance of validator.
      * @param document  Source to validate.
-     * @param properties Properties for validation
+     * @param props Properties for validation
      */
-    private ValidationInstance(ValidatorInstance validatorInstance, Document document, Properties properties) {
+    private ValidationInstance(ValidatorInstance validatorInstance, Document document, Prop... props) {
         this.validatorInstance = validatorInstance;
-        this.properties = new CombinedProperties(properties, validatorInstance.getProperties());
+        this.props = validatorInstance.getProps().update(props);
 
         this.report = new Report();
         this.report.setUuid(UUID.randomUUID().toString());
@@ -97,16 +102,16 @@ class ValidationInstance implements Validation {
         }
     }
 
-    private DeclarationIdentification loadDocument(Document document) throws ValidatorException, IOException {
+    private Detected loadDocument(Document document) throws ValidatorException, IOException {
         // Use declaration implementations to detect declaration to use.
-        DeclarationIdentification declarationIdentifier = validatorInstance.detect(document);
+        Detected declarationIdentifier = validatorInstance.detect(document);
 
-        if (declarationIdentifier.equals(DeclarationIdentification.UNKNOWN))
+        if (declarationIdentifier.equals(Detected.UNKNOWN))
             throw new UnknownDocumentTypeException("Unable to detect type of content.");
 
         // Detect expectation
         Expectation expectation = null;
-        if (properties.getBoolean("feature.expectation")) {
+        if (props.getBool("feature.expectation", false)) {
             expectation = declarationIdentifier.expectations(document);
 
             if (expectation != null)
@@ -130,7 +135,7 @@ class ValidationInstance implements Validation {
         // Get configuration using declaration
         this.configuration = validatorInstance.getConfiguration(document.getDeclarations());
 
-        if (!properties.getBoolean("feature.suppress_notloaded"))
+        if (!props.getBool("feature.suppress_notloaded", false))
             for (String notLoaded : configuration.getNotLoaded())
                 section.add("SYSTEM-007", String.format(
                         "Validation artifact '%s' not loaded.", notLoaded), FlagType.WARNING);
@@ -173,11 +178,11 @@ class ValidationInstance implements Validation {
     /**
      * Handling nested validation.
      */
-    private void nestedValidation(DeclarationIdentification declarationIdentification) throws ValidatorException {
+    private void nestedValidation(Detected detected) throws ValidatorException {
         if (report.getFlag().compareTo(FlagType.FATAL) < 0) {
-            if (declarationIdentification.hasChildren() && properties.getBoolean("feature.nesting")) {
-                for (Document child : declarationIdentification.getChildren()) {
-                    addChildValidation(ValidationInstance.of(validatorInstance, child, null));
+            if (detected.hasChildren() && props.getBool("feature.nesting", false)) {
+                for (Document child : detected.getChildren()) {
+                    addChildValidation(ValidationInstance.of(validatorInstance, child));
                 }
             }
         }

@@ -3,19 +3,16 @@ package no.difi.vefa.validator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.validator.api.ArtifactHolder;
 import no.difi.vefa.validator.api.SourceInstance;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.model.ArtifactHolder;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.util.JaxbUtils;
 import no.difi.xsd.vefa.validator._1.*;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +52,7 @@ class ValidatorEngine implements Closeable {
      * Loading a new validator engine loading configurations from current source.
      */
     @Inject
-    public ValidatorEngine(SourceInstance sourceInstance, List<Configurations> configurations)
-            throws ValidatorException {
+    public ValidatorEngine(SourceInstance sourceInstance, List<Configurations> configurations) throws ValidatorException {
         // Load configurations from ValidatorBuilder.
         for (Configurations c : configurations)
             loadConfigurations("", c);
@@ -65,9 +61,9 @@ class ValidatorEngine implements Closeable {
             for (Map.Entry<String, ArtifactHolder> entry : sourceInstance.getContent().entrySet()) {
                 for (String filename : entry.getValue().getFilenames()) {
                     if (filename.startsWith("config") && filename.endsWith(".xml")) {
-                        try (InputStream inputStream = entry.getValue().getInputStream(filename)) {
+                        try {
                             content.put(entry.getKey(), entry.getValue());
-                            loadConfigurations(entry.getKey(), inputStream);
+                            loadConfigurations(entry.getKey(), entry.getValue().getDocument(filename));
                         } catch (ValidatorException e) {
                             throw new IOException(e.getMessage(), e);
                         }
@@ -87,16 +83,10 @@ class ValidatorEngine implements Closeable {
      * Load configuration from stream of config.xml.
      *
      * @param configurationSource Identifier for resource.
-     * @param inputStream         Stream of config.xml.
+     * @param document            Contents of config.xml.
      */
-    private void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException {
-        try {
-            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-            loadConfigurations(configurationSource,
-                    unmarshaller.unmarshal(new StreamSource(inputStream), Configurations.class).getValue());
-        } catch (JAXBException e) {
-            throw new ValidatorException("Unable to read configurations.", e);
-        }
+    private void loadConfigurations(String configurationSource, Document document) throws ValidatorException {
+        loadConfigurations(configurationSource, document.unmarshal(JAXB_CONTEXT, Configurations.class));
     }
 
     /**

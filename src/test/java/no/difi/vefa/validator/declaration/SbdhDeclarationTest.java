@@ -2,9 +2,9 @@ package no.difi.vefa.validator.declaration;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.module.ValidatorModule;
-import no.difi.vefa.validator.util.DeclarationDetector;
+import no.difi.vefa.validator.service.DetectorService;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,7 +13,7 @@ import static org.testng.Assert.*;
 public class SbdhDeclarationTest {
 
     @Inject
-    private DeclarationDetector declarationDetector;
+    private DetectorService declarationDetector;
 
     @BeforeClass
     public void beforeClass() {

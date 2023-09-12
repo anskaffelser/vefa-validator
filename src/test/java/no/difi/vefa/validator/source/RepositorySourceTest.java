@@ -1,8 +1,6 @@
 package no.difi.vefa.validator.source;
 
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
-import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,6 +18,6 @@ public class RepositorySourceTest {
     @Test(expectedExceptions = ValidatorException.class)
     public void triggerException() throws ValidatorException {
         RepositorySource source = new RepositorySource((URI) null);
-        source.createInstance(Mockito.mock(Properties.class));
+        source.createInstance();
     }
 }

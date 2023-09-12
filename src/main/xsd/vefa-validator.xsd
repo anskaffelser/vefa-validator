@@ -125,7 +125,6 @@
         <xs:attribute name="source" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
         <xs:attribute name="build" type="xs:string"/>
-        <xs:attribute name="infoUrl" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="declarationType">
@@ -174,7 +173,6 @@
         <xs:attribute name="runtime" type="xs:string"/>
         <xs:attribute name="configuration" type="xs:string"/>
         <xs:attribute name="build" type="xs:string"/>
-        <xs:attribute name="infoUrl" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="assertionType">

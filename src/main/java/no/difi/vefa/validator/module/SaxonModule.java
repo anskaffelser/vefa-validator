@@ -6,6 +6,8 @@ import com.google.inject.Singleton;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XsltCompiler;
+import no.difi.vefa.validator.util.ContentLoader;
 
 
 /**
@@ -20,5 +22,13 @@ public class SaxonModule extends AbstractModule {
         configuration.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
 
         return new Processor(configuration);
+    }
+
+    @Provides
+    public XsltCompiler getCompiler(Processor processor, ContentLoader resourceResolver) {
+        var compiler = processor.newXsltCompiler();
+        compiler.setResourceResolver(resourceResolver);
+
+        return compiler;
     }
 }

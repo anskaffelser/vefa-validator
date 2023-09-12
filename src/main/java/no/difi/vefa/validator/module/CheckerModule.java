@@ -4,12 +4,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.checker.SchematronCheckerFactory;
 import no.difi.vefa.validator.checker.SchematronXsltCheckerFactory;
 import no.difi.vefa.validator.checker.XsdCheckerFactory;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class CheckerModule extends AbstractModule {
@@ -24,7 +27,13 @@ public class CheckerModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public List<CheckerFactory> getCheckerFactories(Set<CheckerFactory> factories) {
-        return List.copyOf(factories);
+    public Map<String, CheckerFactory> getMap(Set<CheckerFactory> factories) {
+        Map<String, CheckerFactory> result = new HashMap<>();
+
+        for (var factory : factories)
+            for (var type : factory.getClass().getAnnotation(Type.class).value())
+                result.put(type, factory);
+
+        return Collections.unmodifiableMap(result);
     }
 }

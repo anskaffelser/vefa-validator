@@ -1,35 +1,42 @@
 package no.difi.vefa.validator.tester;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.google.inject.util.Modules;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
-import no.difi.vefa.validator.ValidatorBuilder;
+import no.difi.vefa.validator.api.Source;
 import no.difi.vefa.validator.api.Validation;
-import no.difi.vefa.validator.properties.SimpleProperties;
+import no.difi.vefa.validator.model.Document;
+import no.difi.vefa.validator.model.Prop;
+import no.difi.vefa.validator.module.PropertiesModule;
+import no.difi.vefa.validator.module.SourceModule;
+import no.difi.vefa.validator.module.ValidatorModule;
+import no.difi.vefa.validator.service.TestingService;
 import no.difi.vefa.validator.source.DirectorySource;
 import no.difi.vefa.validator.source.RepositorySource;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
-import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Singleton
-public class Tester implements Closeable {
+public class Tester {
 
+    @Inject
     private Validator validator;
+
+    @Inject
+    private TestingService testingService;
 
     private final List<Validation> validations = new ArrayList<>();
 
@@ -38,63 +45,41 @@ public class Tester implements Closeable {
     private int failed;
 
     public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) throws IOException {
-        try (Tester tester = new Tester(artifactsPath)) {
-            for (Path path : testPaths)
-                tester.perform(path);
-            return tester.finish();
-        }
+        return perform(new DirectorySource(artifactsPath), testPaths);
     }
 
     public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) throws IOException {
-        try (Tester tester = new Tester(artifactsUri)) {
-            for (Path path : testPaths)
-                tester.perform(path);
-            return tester.finish();
-        }
+        return perform(new RepositorySource(artifactsUri), testPaths);
     }
 
-    private Tester(Path artifactsPath) {
-        validator = ValidatorBuilder
-                .newValidator()
-                .setProperties(new SimpleProperties()
-                        .set("feature.nesting", true)
-                        .set("feature.expectation", true)
-                        .set("feature.suppress_notloaded", true)
-                )
-                .setSource(new DirectorySource(artifactsPath))
-                .build();
+    public static List<Validation> perform(Source source, List<Path> testPaths) throws IOException {
+        Tester tester = new Tester(source);
+
+        for (Path path : testPaths)
+            tester.perform(path);
+
+        return tester.finish();
     }
 
-    private Tester(URI artifactsUri) {
-        validator = ValidatorBuilder
-                .newValidator()
-                .setProperties(new SimpleProperties()
-                        .set("feature.nesting", true)
-                        .set("feature.expectation", true)
-                        .set("feature.suppress_notloaded", true)
-                )
-                .setSource(new RepositorySource(artifactsUri))
-                .build();
+    private Tester(Source source) {
+        var modules = new ArrayList<Module>();
+        modules.add(PropertiesModule.with(
+                Prop.of("feature.nesting", true),
+                Prop.of("feature.expectation", true),
+                Prop.of("feature.suppress_notloaded", true)
+        ));
+        modules.add(new SourceModule(source));
+
+        Guice.createInjector(Modules.override(new ValidatorModule()).with(modules))
+                .injectMembers(this);
     }
 
     private void perform(Path path) throws IOException {
-        List<File> files = new ArrayList<>();
-
-        Files.walkFileTree(path, new SimpleFileVisitor<>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (file.endsWith(".xml"))
-                    files.add(file.toFile());
-
-                return super.visitFile(file, attrs);
-            }
-        });
-
-        Collections.sort(files);
-
-        for (File file : files)
-            if (!file.getName().equals("buildconfig.xml"))
-                validate(file);
+        Files.walk(path)
+                .filter(p -> p.endsWith(".xml"))
+                .filter(p -> !"buildconfig.xml".equals(p.toFile().getName()))
+                .sorted()
+                .forEach(this::validate);
     }
 
     private List<Validation> finish() {
@@ -103,9 +88,12 @@ public class Tester implements Closeable {
         return validations;
     }
 
-    private void validate(File file) {
+    private void validate(Path file) {
         try {
-            Validation validation = validator.validate(file);
+            // Load document
+            var document = Document.of(file);
+
+            Validation validation = validator.validate(document);
             validation.getReport().setFilename(file.toString());
 
             if (validation.getDocument().getDeclarations()
@@ -146,14 +134,6 @@ public class Tester implements Closeable {
                                 assertionType.getText(), assertionType.getFlag());
         } else if (numberInSet == null) {
             log.info("Test '{}'", description);
-        }
-    }
-
-    @Override
-    public void close() {
-        if (validator != null) {
-            validator.close();
-            validator = null;
         }
     }
 }

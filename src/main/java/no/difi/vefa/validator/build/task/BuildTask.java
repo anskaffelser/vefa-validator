@@ -13,7 +13,7 @@ import no.difi.vefa.validator.api.Preparer;
 import no.difi.vefa.validator.build.model.Build;
 import no.difi.vefa.validator.build.util.PreparerProvider;
 import no.difi.vefa.validator.util.JaxbUtils;
-import no.difi.vefa.validator.util.ZipArchiver;
+import no.difi.vefa.validator.util.ZipArchive;
 import no.difi.xsd.vefa.validator._1.BuildConfigurations;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.Configurations;
@@ -116,7 +116,7 @@ public class BuildTask {
             marshaller.marshal(configurations, outputStream);
         }
 
-        ZipArchiver.archive(
+        ZipArchive.archive(
                 build.getTargetFolder().resolve(String.format("%s-%s.zip", build.getSetting("name"), build.getSetting("build"))),
                 contentsPath);
 

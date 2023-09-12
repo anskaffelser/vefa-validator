@@ -36,7 +36,7 @@
 
 * Rewrite of Declaration.
 * Rewrite of Expectation.
-* no.difi.vefa.validator.api.Document.getDeclaration() returns a string, not an object.
+* no.difi.vefa.validator.model.Document.getDeclaration() returns a string, not an object.
 * Fixing methods in ValidatorBuilder returning void.
 * Adding support for Piwik in sample application. Not turned on by default.
 * Refactoring of validator-build.

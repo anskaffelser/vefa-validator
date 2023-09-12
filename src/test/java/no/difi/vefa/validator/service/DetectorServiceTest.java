@@ -1,21 +1,17 @@
-package no.difi.vefa.validator.util;
+package no.difi.vefa.validator.service;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import no.difi.vefa.validator.api.Document;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.module.ValidatorModule;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-public class DeclarationDetectorTest {
+public class DetectorServiceTest {
 
     @Inject
-    private DeclarationDetector declarationDetector;
+    private DetectorService declarationDetector;
 
     @BeforeClass
     public void beforeClass() {

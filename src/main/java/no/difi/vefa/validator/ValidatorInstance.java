@@ -1,17 +1,19 @@
 package no.difi.vefa.validator;
 
-import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
-import no.difi.vefa.validator.api.Document;
-import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.api.Section;
+import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.lang.UnknownDocumentTypeException;
 import no.difi.vefa.validator.lang.ValidatorException;
-import no.difi.vefa.validator.util.DeclarationDetector;
-import no.difi.vefa.validator.util.DeclarationIdentification;
+import no.difi.vefa.validator.model.Detected;
+import no.difi.vefa.validator.model.Document;
+import no.difi.vefa.validator.model.Prop;
+import no.difi.vefa.validator.model.Props;
+import no.difi.vefa.validator.service.CheckerService;
+import no.difi.vefa.validator.service.DetectorService;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -40,19 +42,23 @@ class ValidatorInstance implements Closeable {
      * Current validator configuration.
      */
     @Inject
-    private Properties properties;
+    private Props props;
 
     /**
      * Declarations to use.
      */
     @Inject
-    private DeclarationDetector declarationDetector;
+    private DetectorService declarationDetector;
 
     /**
      * Cache of checkers.
      */
     @Inject
-    private LoadingCache<String, Checker> checkerCache;
+    private CheckerService checkerService;
+
+    public Validation validate(Document document, Prop... props) {
+        return ValidationInstance.of(this, document, props);
+    }
 
     /**
      * Normalized configurations indexed by document declarations.
@@ -73,8 +79,8 @@ class ValidatorInstance implements Closeable {
      *
      * @return Current properties.
      */
-    protected final Properties getProperties() {
-        return properties;
+    protected final Props getProps() {
+        return props;
     }
 
     /**
@@ -108,7 +114,7 @@ class ValidatorInstance implements Closeable {
                 "Configuration for '%s' not found.", declarations.get(0)));
     }
 
-    protected DeclarationIdentification detect(Document document) throws IOException {
+    protected Detected detect(Document document) throws IOException {
         return declarationDetector.detect(document);
     }
 
@@ -125,7 +131,7 @@ class ValidatorInstance implements Closeable {
             throws ValidatorException {
         Checker checker;
         try {
-            checker = checkerCache.get(fileType.getPath());
+            checker = checkerService.get(fileType.getPath());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             throw new ValidatorException(String.format(
@@ -135,19 +141,13 @@ class ValidatorInstance implements Closeable {
         Section section = new Section(document.getExpectation());
         section.setFlag(FlagType.OK);
 
-        if (properties.getBoolean("feature.infourl"))
-            section.setInfoUrl(fileType.getInfoUrl());
-
         checker.check(document, section);
-
-        section.setInfoUrl(null);
         return section;
     }
 
     @Override
     public void close() throws IOException {
-        checkerCache.invalidateAll();
-        checkerCache.cleanUp();
+        checkerService.clear();
 
         // This is last statement, allow to propagate.
         validatorEngine.close();
