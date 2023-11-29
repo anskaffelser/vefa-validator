@@ -3,7 +3,10 @@ package no.difi.vefa.validator.model;
 import com.google.common.io.ByteStreams;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XsltExecutable;
 import no.difi.vefa.validator.api.Expectation;
+import no.difi.vefa.validator.lang.TransformationException;
 import no.difi.vefa.validator.lang.ValidatorException;
 import org.w3c.dom.Node;
 
@@ -163,6 +166,21 @@ public class Document {
         } catch (JAXBException e) {
             throw new ValidatorException("Unable to parse content.", e);
         }
+    }
+
+    public Document transform(XsltExecutable executable) throws ValidatorException {
+        var baos = new ByteArrayOutputStream();
+
+        try {
+            var transformer = executable.load();
+            transformer.setSource(new StreamSource(asInputStream()));
+            transformer.setDestination(executable.getProcessor().newSerializer(baos));
+            transformer.transform();
+        } catch (SaxonApiException e) {
+            throw new TransformationException("Unable to perform transformation.", e);
+        }
+
+        return of(baos.toByteArray());
     }
 
     public String toString() {

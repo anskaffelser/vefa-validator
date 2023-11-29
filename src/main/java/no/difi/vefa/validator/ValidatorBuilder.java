@@ -1,23 +1,19 @@
 package no.difi.vefa.validator;
 
 import com.google.inject.Guice;
-import com.google.inject.Module;
-import com.google.inject.util.Modules;
-import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.api.Repository;
 import no.difi.vefa.validator.model.Prop;
-import no.difi.vefa.validator.module.PropertiesModule;
-import no.difi.vefa.validator.module.SourceModule;
 import no.difi.vefa.validator.module.ValidatorModule;
+import no.difi.vefa.validator.util.Repositories;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * Builder supporting creation of validator.
  */
 public class ValidatorBuilder {
 
-    private Source source;
+    private Repository repository;
 
     private Prop[] props;
 
@@ -49,13 +45,13 @@ public class ValidatorBuilder {
     }
 
     /**
-     * Define source to use if other source then production repository to be used.
+     * Define repository to use.
      *
-     * @param source Source giving access to validation rules.
+     * @param repository Repository giving access to validation rules.
      * @return Builder object
      */
-    public ValidatorBuilder setSource(Source source) {
-        this.source = source;
+    public ValidatorBuilder setRepository(Repository repository) {
+        this.repository = repository;
         return this;
     }
 
@@ -65,10 +61,9 @@ public class ValidatorBuilder {
      * @return Validator ready for use.
      */
     public Validator build() {
-        List<Module> modules = new ArrayList<>();
-        modules.add(PropertiesModule.with(props));
-        modules.add(new SourceModule(source));
+        if (Objects.isNull(repository))
+            repository = Repositories.production();
 
-        return Guice.createInjector(Modules.override(new ValidatorModule()).with(modules)).getInstance(Validator.class);
+        return Guice.createInjector(new ValidatorModule(repository, props)).getInstance(Validator.class);
     }
 }

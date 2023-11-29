@@ -1,7 +1,4 @@
 /.idea
 target
 *.iml
-/workspace
-/validator.properties
-*.html
 .DS_Store

@@ -4,7 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import no.difi.vefa.validator.CheckerCacheLoader;
+import no.difi.vefa.validator.util.CheckerCacheLoader;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.model.Props;
 

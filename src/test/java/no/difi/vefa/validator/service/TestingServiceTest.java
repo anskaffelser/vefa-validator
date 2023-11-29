@@ -2,11 +2,9 @@ package no.difi.vefa.validator.service;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.util.Modules;
 import no.difi.vefa.validator.model.Document;
-import no.difi.vefa.validator.module.SourceModule;
 import no.difi.vefa.validator.module.ValidatorModule;
-import no.difi.vefa.validator.source.ClasspathSource;
+import no.difi.vefa.validator.util.Repositories;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,8 +15,7 @@ public class TestingServiceTest {
 
     @BeforeClass
     public void beforeClass() {
-        var module = Modules.override(new ValidatorModule()).with(new SourceModule(new ClasspathSource("/rules/")));
-        Guice.createInjector(module).injectMembers(this);
+        Guice.createInjector(new ValidatorModule(Repositories.classpath("/rules/"))).injectMembers(this);
     }
 
     @Test

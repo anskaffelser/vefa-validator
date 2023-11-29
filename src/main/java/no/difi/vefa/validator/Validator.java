@@ -38,7 +38,7 @@ public class Validator implements Closeable {
      * @return Validation result.
      */
     public Validation validate(File file, Prop... props) throws IOException {
-        return validate(Document.of(file), props);
+        return validate(file.toPath(), props);
     }
 
     /**

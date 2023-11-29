@@ -1,4 +1,4 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.util;
 
 import com.google.common.cache.CacheLoader;
 import com.google.inject.Inject;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.service.ConfigurationService;
 
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class CheckerCacheLoader extends CacheLoader<String, Checker> {
     private Map<String, CheckerFactory> factories;
 
     @Inject
-    private ValidatorEngine validatorEngine;
+    private ConfigurationService validatorEngine;
 
     @Override
     @NonNull

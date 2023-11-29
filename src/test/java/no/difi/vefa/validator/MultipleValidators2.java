@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.source.ClasspathSource;
+import no.difi.vefa.validator.util.Repositories;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,10 +12,10 @@ public class MultipleValidators2 {
     @Test
     public void simple() {
         Validator validator1 = ValidatorBuilder.newValidator()
-                .setSource(new ClasspathSource("/rules/"))
+                .setRepository(Repositories.classpath("/rules/"))
                 .build();
         Validator validator2 = ValidatorBuilder.newValidator()
-                .setSource(new ClasspathSource("/rules/"))
+                .setRepository(Repositories.classpath("/rules/"))
                 .build();
 
         Assert.assertNotSame(validator1, validator2);

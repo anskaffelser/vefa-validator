@@ -8,7 +8,6 @@ import net.sf.saxon.s9api.XdmDestination;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.CheckerFactory;
 import no.difi.vefa.validator.lang.ValidatorException;
@@ -20,7 +19,6 @@ import no.difi.vefa.validator.util.SaxonUtils;
  *
  * @author erlend
  */
-@Type(".sch")
 public class SchematronCheckerFactory implements CheckerFactory {
 
     @Inject
@@ -32,6 +30,11 @@ public class SchematronCheckerFactory implements CheckerFactory {
 
     @Inject
     private Injector injector;
+
+    @Override
+    public String[] types() {
+        return new String[]{".sch"};
+    }
 
     @Override
     public Checker prepare(ArtifactHolder artifactHolder, String path) throws ValidatorException {

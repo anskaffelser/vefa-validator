@@ -15,7 +15,7 @@ public class DetectorServiceTest {
 
     @BeforeClass
     public void beforeClass() {
-        Guice.createInjector(new ValidatorModule()).injectMembers(this);
+        Guice.createInjector(new ValidatorModule(null)).injectMembers(this);
     }
 
     @Test

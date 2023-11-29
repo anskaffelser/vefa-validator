@@ -1,40 +1,43 @@
 package no.difi.vefa.validator.module;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.multibindings.Multibinder;
-import no.difi.vefa.validator.api.ConfigurationProvider;
-import no.difi.vefa.validator.configuration.ValidatorTestConfigurationProvider;
-import no.difi.xsd.vefa.validator._1.Configurations;
+import com.google.inject.util.Providers;
+import no.difi.vefa.validator.api.Repository;
+import no.difi.vefa.validator.model.Prop;
+import no.difi.vefa.validator.model.Props;
+import no.difi.vefa.validator.service.ConfigurationService;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * @author erlend
  */
 public class ValidatorModule extends AbstractModule {
 
+    private final Repository repository;
+
+    private final Props props;
+
+    public ValidatorModule(Repository repository, Prop... props) {
+        this.repository = repository;
+        this.props = Props.init().update(props);
+    }
+
     @Override
     protected void configure() {
         install(new CheckerModule());
         install(new DetectorModule());
-        install(PropertiesModule.with());
         install(new SaxonModule());
-        install(new SourceModule());
         install(new SchematronModule());
+        install(new TestingModule());
 
-        Multibinder<ConfigurationProvider> configurations = Multibinder.newSetBinder(binder(), ConfigurationProvider.class);
-        configurations.addBinding().to(ValidatorTestConfigurationProvider.class);
-    }
+        bind(Props.class).toInstance(props);
 
-    @Provides
-    @Singleton
-    public List<Configurations> getConfigurations(Set<ConfigurationProvider> providers) {
-        return providers.stream()
-                .map(ConfigurationProvider::getConfigurations)
-                .collect(Collectors.toList());
+        if (Objects.isNull(repository))
+            bind(Repository.class).toProvider(Providers.of(null));
+        else
+            bind(Repository.class).toInstance(repository);
+
+        bind(ConfigurationService.class).asEagerSingleton();
     }
 }

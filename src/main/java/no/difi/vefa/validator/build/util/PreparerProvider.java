@@ -2,7 +2,6 @@ package no.difi.vefa.validator.build.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Preparer;
 
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class PreparerProvider {
     @Inject
     public PreparerProvider(List<Preparer> preparers) {
         for (Preparer preparer : preparers)
-            for (String extension : preparer.getClass().getAnnotation(Type.class).value())
+            for (String extension : preparer.types())
                 preparerMap.put(extension, preparer);
     }
 

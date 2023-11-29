@@ -1,6 +1,7 @@
-package no.difi.vefa.validator;
+package no.difi.vefa.validator.util;
 
 import com.google.common.collect.Lists;
+import no.difi.vefa.validator.service.ConfigurationService;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.FileType;
 
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Configurations found in validation artifacts are updated to this kind of object.
  */
-class Configuration extends ConfigurationType {
+public class Configuration extends ConfigurationType {
 
     /**
      * List of resources not found during normalization of object.
@@ -22,7 +23,7 @@ class Configuration extends ConfigurationType {
      *
      * @param configurationType Configuration from XML.
      */
-    Configuration(ConfigurationType configurationType) {
+    public Configuration(ConfigurationType configurationType) {
         // Copy rule
         this.setIdentifier(configurationType.getIdentifier());
         this.setTitle(configurationType.getTitle());
@@ -41,7 +42,7 @@ class Configuration extends ConfigurationType {
      *
      * @param engine ValidatiorEngine for fetching of other configurations.
      */
-    void normalize(ValidatorEngine engine) {
+    public void normalize(ConfigurationService engine) {
         while (getInherit().size() > 0) {
             List<FileType> files = Lists.newArrayList();
             List<String> inherits = Lists.newArrayList();
@@ -68,7 +69,7 @@ class Configuration extends ConfigurationType {
      *
      * @return List of identifiers.
      */
-    List<String> getNotLoaded() {
+    public List<String> getNotLoaded() {
         return notLoaded;
     }
 

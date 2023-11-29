@@ -4,19 +4,15 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.google.inject.util.Modules;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.Validator;
-import no.difi.vefa.validator.api.Source;
+import no.difi.vefa.validator.api.Repository;
 import no.difi.vefa.validator.api.Validation;
 import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.model.Prop;
-import no.difi.vefa.validator.module.PropertiesModule;
-import no.difi.vefa.validator.module.SourceModule;
 import no.difi.vefa.validator.module.ValidatorModule;
 import no.difi.vefa.validator.service.TestingService;
-import no.difi.vefa.validator.source.DirectorySource;
-import no.difi.vefa.validator.source.RepositorySource;
+import no.difi.vefa.validator.util.Repositories;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -45,15 +41,15 @@ public class Tester {
     private int failed;
 
     public static List<Validation> perform(Path artifactsPath, List<Path> testPaths) throws IOException {
-        return perform(new DirectorySource(artifactsPath), testPaths);
+        return perform(Repositories.folder(artifactsPath), testPaths);
     }
 
     public static List<Validation> perform(URI artifactsUri, List<Path> testPaths) throws IOException {
-        return perform(new RepositorySource(artifactsUri), testPaths);
+        return perform(Repositories.url(artifactsUri), testPaths);
     }
 
-    public static List<Validation> perform(Source source, List<Path> testPaths) throws IOException {
-        Tester tester = new Tester(source);
+    public static List<Validation> perform(Repository repository, List<Path> testPaths) throws IOException {
+        Tester tester = new Tester(repository);
 
         for (Path path : testPaths)
             tester.perform(path);
@@ -61,16 +57,14 @@ public class Tester {
         return tester.finish();
     }
 
-    private Tester(Source source) {
+    private Tester(Repository repository) {
         var modules = new ArrayList<Module>();
-        modules.add(PropertiesModule.with(
-                Prop.of("feature.nesting", true),
-                Prop.of("feature.expectation", true),
-                Prop.of("feature.suppress_notloaded", true)
-        ));
-        modules.add(new SourceModule(source));
 
-        Guice.createInjector(Modules.override(new ValidatorModule()).with(modules))
+        Guice.createInjector(new ValidatorModule(repository,
+                        Prop.of("feature.nesting", true),
+                        Prop.of("feature.expectation", true),
+                        Prop.of("feature.suppress_notloaded", true)
+                ))
                 .injectMembers(this);
     }
 

@@ -1,6 +1,6 @@
 package no.difi.vefa.validator;
 
-import no.difi.vefa.validator.source.ClasspathSource;
+import no.difi.vefa.validator.util.Repositories;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -16,7 +16,7 @@ public class MultipleValidators {
     @BeforeClass
     public void setUp() {
         validator = ValidatorBuilder.newValidator()
-                .setSource(new ClasspathSource("/rules/"))
+                .setRepository(Repositories.classpath("/rules/"))
                 .build();
     }
 

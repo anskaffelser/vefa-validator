@@ -8,6 +8,8 @@ import no.difi.vefa.validator.model.ArtifactHolder;
  */
 public interface CheckerFactory {
 
+    String[] types();
+
     Checker prepare(ArtifactHolder artifactHolder, String path) throws ValidatorException;
 
 }

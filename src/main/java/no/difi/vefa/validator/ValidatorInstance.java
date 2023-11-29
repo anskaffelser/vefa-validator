@@ -13,7 +13,9 @@ import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.model.Prop;
 import no.difi.vefa.validator.model.Props;
 import no.difi.vefa.validator.service.CheckerService;
+import no.difi.vefa.validator.service.ConfigurationService;
 import no.difi.vefa.validator.service.DetectorService;
+import no.difi.vefa.validator.util.Configuration;
 import no.difi.xsd.vefa.validator._1.ConfigurationType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -36,7 +38,7 @@ class ValidatorInstance implements Closeable {
      * Instance of ValidatorEngine containing all raw content needed for validation.
      */
     @Inject
-    private ValidatorEngine validatorEngine;
+    private ConfigurationService validatorEngine;
 
     /**
      * Current validator configuration.
@@ -148,8 +150,5 @@ class ValidatorInstance implements Closeable {
     @Override
     public void close() throws IOException {
         checkerService.clear();
-
-        // This is last statement, allow to propagate.
-        validatorEngine.close();
     }
 }

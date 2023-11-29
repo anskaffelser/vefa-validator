@@ -11,6 +11,7 @@ import no.difi.vefa.validator.model.Detected;
 import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.model.Prop;
 import no.difi.vefa.validator.model.Props;
+import no.difi.vefa.validator.util.Configuration;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FileType;
 import no.difi.xsd.vefa.validator._1.FlagType;
@@ -90,7 +91,7 @@ class ValidationInstance implements Validation {
         if (report.getTitle() == null)
             report.setTitle("Unknown document type");
 
-        if (section.getAssertion().size() > 0) {
+        if (!section.getAssertion().isEmpty()) {
             for (AssertionType assertionType : section.getAssertion()) {
                 if (assertionType.getFlag().compareTo(section.getFlag()) > 0)
                     section.setFlag(assertionType.getFlag());

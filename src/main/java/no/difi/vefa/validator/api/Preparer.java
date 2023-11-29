@@ -5,6 +5,8 @@ import java.nio.file.Path;
 
 public interface Preparer {
 
+    String[] types();
+
     void prepare(Path source, Path target, Type type) throws IOException;
 
     enum Type {

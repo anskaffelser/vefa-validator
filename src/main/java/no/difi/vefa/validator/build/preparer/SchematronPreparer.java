@@ -5,13 +5,11 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import no.difi.commons.schematron.SchematronCompiler;
 import no.difi.commons.schematron.SchematronException;
-import no.difi.vefa.validator.annotation.Type;
 import no.difi.vefa.validator.api.Preparer;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-@Type({".sch", ".scmt"})
 public class SchematronPreparer implements Preparer {
 
     @Inject
@@ -21,6 +19,11 @@ public class SchematronPreparer implements Preparer {
     @Inject
     @Named("prepare")
     private Provider<SchematronCompiler> schematronPrepare;
+
+    @Override
+    public String[] types() {
+        return new String[]{".sch", ".scmt"};
+    }
 
     @Override
     public void prepare(Path source, Path target, Type type) throws IOException {

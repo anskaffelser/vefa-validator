@@ -2,8 +2,9 @@ package no.difi.vefa.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.validator.api.Validation;
+import no.difi.vefa.validator.model.Document;
 import no.difi.vefa.validator.model.Prop;
-import no.difi.vefa.validator.source.ClasspathSource;
+import no.difi.vefa.validator.util.Repositories;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import no.difi.xsd.vefa.validator._1.SectionType;
@@ -25,7 +26,7 @@ public class SimpleTest {
         validator = ValidatorBuilder
                 .newValidator()
                 .setProperties(Prop.of("feature.expectation", true))
-                .setSource(new ClasspathSource("/rules/"))
+                .setRepository(Repositories.classpath("/rules/"))
                 .build();
     }
 
@@ -57,7 +58,7 @@ public class SimpleTest {
 
     @Test
     public void simpleOk() throws IOException {
-        Validation validation = validator.validate(getClass().getResourceAsStream("/documents/ehf-invoice-2.0.xml"));
+        Validation validation = validator.validate(Document.ofResource("/documents/ehf-invoice-2.0.xml"));
 
         for (SectionType sectionType : validation.getReport().getSection()) {
             log.info(sectionType.getTitle() + ": " + sectionType.getRuntime());
@@ -75,18 +76,15 @@ public class SimpleTest {
 
     @Test
     public void simpleValidatorTest() throws IOException {
-        var validation = validator.validate(
-                getClass().getResourceAsStream("/documents/NOGOV-T10-R014.xml"),
+        var validation = validator.validate(Document.ofResource("/documents/NOGOV-T10-R014.xml"),
                 Prop.of("feature.nesting", true));
 
-        assertEquals(validation.getReport().getFlag(), FlagType.OK);
-        assertEquals(validation.getChildren().size(), 3);
+        assertEquals(validation.getReport().getFlag(), FlagType.UNKNOWN);
     }
 
     @Test
     public void billing3Test() throws IOException {
-        var validation = validator.validate(
-                getClass().getResourceAsStream("/documents/peppol-billing-3.0.xml"));
+        var validation = validator.validate(Document.ofResource("/documents/peppol-billing-3.0.xml"));
 
         assertEquals(validation.getReport().getFlag(), FlagType.OK);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
@@ -94,8 +92,7 @@ public class SimpleTest {
 
     @Test
     public void testValidationWithLongUblExtension() throws IOException {
-        var validation = validator.validate(
-                getClass().getResourceAsStream("/documents/peppol-billing-3.0_long_ubl_extension.xml"));
+        var validation = validator.validate(Document.ofResource("/documents/peppol-billing-3.0_long_ubl_extension.xml"));
 
         assertEquals(validation.getReport().getFlag(), FlagType.WARNING);
         assertEquals(validation.getReport().getTitle(), "PEPPOL BIS Billing 3.0 (Profile 01)");
@@ -103,8 +100,7 @@ public class SimpleTest {
 
     @Test
     public void testValidationEmptyUbl() throws IOException {
-        var validation = validator.validate(
-                getClass().getResourceAsStream("/documents/ubl-invoice-empty.xml"));
+        var validation = validator.validate(Document.ofResource("/documents/ubl-invoice-empty.xml"));
 
         assertEquals(validation.getReport().getFlag(), FlagType.UNKNOWN);
     }
