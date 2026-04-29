@@ -2,8 +2,40 @@
 
 ## Next release
 
-* Remove deprecated methods in ValidatorBuilder.
+## 2.4.0
+
+* Upgraded Java compile and runtime target from 8 to 21 (LTS).
+* Replaced `<source>`/`<target>` with `<release>` in maven-compiler-plugin for stricter cross-compilation.
+* Updated maven-compiler-plugin from 3.2 to 3.13.0.
+* Updated Dockerfile base image from `openjdk:8u332-slim-bullseye` to `eclipse-temurin:21-jre`.
+* Updated CI build matrix from `[8, 11, 17]` to `[17, 21]`; Docker image now built and pushed on JDK 21.
+* Added `validator-build/scripts/rotate-keystore.sh` for rotating the self-signed ASiC-E signing certificate.
+* Rotated expired self-signed keystore (`keystore-self-signed.jks`); fixes `Unable to verify signature` during `make validator` in rule repos such as `eforms-sdk-nor`.
+* Extended `Makefile` with `help`, `test`, `rotate_keystore`, `docker_run` and `version` targets; removed obsolete `DOCKER_CLI_EXPERIMENTAL` flag.
+* Updated Lombok `1.18.28` → `1.18.36` (Java 21 compatibility – `JCTree$JCImport.qualid` removed in Java 21).
+* Updated JaCoCo `0.8.8` → `0.8.12` (Java 21 compatibility – class file major version 65 support).
 * Updated dependencies.
+
+
+## 2.3.0
+
+* Docker base image changed from `openjdk:8u332-slim-bullseye` to `eclipse-temurin:17-jre`.
+* Checker and renderer caches now use soft references (`.softValues()`) to allow GC to reclaim memory under pressure.
+* Removed `BlockingURIResolver` from Saxon configuration.
+* Removed two UBL declaration tests for invalid whitespace in element names (`invalidSpaces`, `invalidTabs`).
+* Updated dependencies:
+  * Saxon-HE `10.8` → `12.3`
+  * Guice `5.1.0` → `7.0.0`
+  * Guava `31.1-jre` → `32.1.2-jre`
+  * SLF4J `1.7.36` → `2.0.7`
+  * Logback `1.2.11` → `1.3.8`
+  * commons-io `2.11.0` → `2.13.0`
+  * commons-codec `1.15` → `1.16.0`
+  * Gson `2.9.1` → `2.10.1`
+  * Mockito `4.5.1` → `4.11.0`
+  * Lombok `1.18.24` → `1.18.28`
+  * TestNG `7.5` → `7.5.1`
+  * Removed `commons-pool2` dependency.
 
 
 ## 2.1.0
