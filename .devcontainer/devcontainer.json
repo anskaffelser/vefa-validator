@@ -1,5 +1,5 @@
 {
-	"name": "Java 8",
+	"name": "Java 21 Dev Container",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
@@ -17,7 +17,7 @@
 		"java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
 		"java.configuration.runtimes": [{
 			"default": true,
-			"name": "JavaSE-1.8",
+			"name": "JavaSE-21",
 			"path": "/usr/local/sdkman/candidates/java/current"
 		}]
 	},

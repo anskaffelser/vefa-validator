@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/java:0-8
 
 # [Option] Install Maven
 ARG INSTALL_MAVEN="false"
-ARG MAVEN_VERSION=""
+ARG MAVEN_VERSION="3.9.15"
 # [Option] Install Gradle
 ARG INSTALL_GRADLE="false"
 ARG GRADLE_VERSION=""
