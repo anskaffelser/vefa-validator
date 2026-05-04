@@ -341,12 +341,12 @@
 
     <distributionManagement>
         <repository>
-            <id>anskaffelser</id>
+            <id>github</id>
             <name>Anskaffelser Maven repository</name>
             <url>https://maven.pkg.github.com/anskaffelser/maven</url>
         </repository>
         <snapshotRepository>
-            <id>anskaffelser</id>
+            <id>github</id>
             <name>Anskaffelser Maven repository</name>
             <url>https://maven.pkg.github.com/anskaffelser/maven</url>
         </snapshotRepository>

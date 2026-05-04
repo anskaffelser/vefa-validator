@@ -35,7 +35,7 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
-          server-id: anskaffelser 
+          server-id: github 
           # Defaults to GITHUB_ACTOR (the user who triggered the workflow)
           server-username: GITHUB_ACTOR 
           # Defaults to GITHUB_TOKEN
