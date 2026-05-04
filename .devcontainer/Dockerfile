@@ -1,9 +1,17 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.145.1/containers/java-8/.devcontainer/base.Dockerfile
 
-FROM mcr.microsoft.com/vscode/devcontainers/java:0-8
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends curl zip unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends curl zip unzip \
+    && rm -rf /var/lib/apt/lists/*
 
 # [Option] Install Maven
-ARG INSTALL_MAVEN="false"
+ARG INSTALL_MAVEN="true"
 ARG MAVEN_VERSION="3.9.15"
 # [Option] Install Gradle
 ARG INSTALL_GRADLE="false"

@@ -1,38 +1,36 @@
 {
-	"name": "Java 21 Dev Container",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"INSTALL_MAVEN": "true",
-			"INSTALL_GRADLE": "false",
-			"INSTALL_NODE": "false",
-			"NODE_VERSION": "lts/*"
-		}
-	},
+    "name": "Java 21 Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "INSTALL_MAVEN": "true",
+            "INSTALL_GRADLE": "false"
+        }
+    },
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"java.home": "/docker-java-home",
-		"java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
-		"java.configuration.runtimes": [{
-			"default": true,
-			"name": "JavaSE-21",
-			"path": "/usr/local/sdkman/candidates/java/current"
-		}]
-	},
-	
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"vscjava.vscode-java-pack"
-	]
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "java.configuration.runtimes": [
+                    {
+                        "default": true,
+                        "name": "JavaSE-21",
+                        "path": "/home/vscode/.sdkman/candidates/java/current"
+                    }
+                ],
+                "java.import.gradle.java.home": "/home/vscode/.sdkman/candidates/java/current",
+                "terminal.integrated.defaultProfile.linux": "bash"
+            },
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "vscjava.vscode-maven"
+            ]
+        }
+    },
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+    // Verify Java version on container creation
+    "postCreateCommand": "java -version && mvn -version",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "java -version",
-
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+    // Uncomment to connect as non-root user
+    // "remoteUser": "vscode"
 }
