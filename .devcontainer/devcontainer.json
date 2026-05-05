@@ -15,12 +15,12 @@
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
         "java.home": "/home/vscode/.sdkman/candidates/java/current",
-        "java.import.gradle.java.home": "/home/vscode/.sdkman/candidates/java/current",
+        "java.import.gradle.java.home": "${env:JAVA_HOME}",
         "java.configuration.runtimes": [
             {
                 "default": true,
                 "name": "JavaSE-21",
-                "path": "/home/vscode/.sdkman/candidates/java/current"
+                "path": "${env:JAVA_HOME}"
             }
         ]
     },
