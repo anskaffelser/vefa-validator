@@ -45,9 +45,9 @@ jobs:
         run: mvn -B --no-transfer-progress package
 
       - name: Publish to GitHub Packages
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
         run: mvn --batch-mode deploy
         env:
-          # This provides the token to Maven during the deploy process
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
