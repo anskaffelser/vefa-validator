@@ -2,6 +2,16 @@
 
 ## Next release
 
+## 2.4.1
+
+### chore(build): finalize namespace migration and stabilize Java 21 build
+
+* migrate modules/packages to no.dfo.anskaffelser.vefa namespace
+* align parent/module Maven coordinates and inter-module dependencies
+* fix API/core compile contract issues (Trigger/ValidatorException usage)
+* address Lombok-generated symbol compile gaps in local build flow
+* update container/devcontainer and build setup for consistent local execution
+
 ## 2.4.0
 
 * Upgraded Java compile and runtime target from 8 to 21 (LTS).
@@ -60,7 +70,7 @@
 
 * Rewrite of Declaration.
 * Rewrite of Expectation.
-* api.no.dfo.anskaffelser.vefa.validator.Document.getDeclaration() returns a string, not an object.
+* no.difi.vefa.validator.api.Document.getDeclaration() returns a string, not an object.
 * Fixing methods in ValidatorBuilder returning void.
 * Adding support for Piwik in sample application. Not turned on by default.
 * Refactoring of validator-build.
@@ -71,9 +81,9 @@
 
 ## 2.0.1
 
-* Adding annotation XmlTransient to flagFilterer in api.no.dfo.anskaffelser.vefa.validator.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
+* Adding annotation XmlTransient to flagFilterer in no.difi.vefa.validator.api.Section. [#14](https://github.com/difi/vefa-validator/issues/14)
 * XsltChecker changed name to SvrlXsltChecker.
-* Changed signature of api.no.dfo.anskaffelser.vefa.validator.Source.createInstance(...).
+* Changed signature of no.difi.vefa.validator.api.Source.createInstance(...).
 * Loading necessary modules when initiating JimFS. [#9](https://github.com/difi/vefa-validator/issues/9)
 
 
