@@ -6,10 +6,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends curl zip unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends curl zip unzip \
-    && rm -rf /var/lib/apt/lists/*
-
 # [Option] Install Maven
 ARG INSTALL_MAVEN="true"
 ARG MAVEN_VERSION="3.9.15"
