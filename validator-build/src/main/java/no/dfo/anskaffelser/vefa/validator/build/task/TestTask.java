@@ -1,0 +1,25 @@
+package no.dfo.anskaffelser.vefa.validator.build.task;
+
+import com.google.inject.Singleton;
+import no.dfo.anskaffelser.vefa.validator.build.model.Build;
+import no.dfo.anskaffelser.vefa.validator.api.Validation;
+import no.dfo.anskaffelser.vefa.validator.tester.Tester;
+import no.difi.xsd.vefa.validator._1.FlagType;
+
+/**
+ * @author erlend
+ */
+@Singleton
+public class TestTask {
+
+    public boolean perform(Build build) {
+        for (Validation validation : Tester.perform(build.getTargetFolder(), build.getTestFolders()))
+            build.addTestValidation(validation);
+
+        for (Validation validation : build.getTestValidations())
+            if (validation.getReport().getFlag().compareTo(FlagType.EXPECTED) > 0)
+                return false;
+
+        return true;
+    }
+}

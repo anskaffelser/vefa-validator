@@ -1,0 +1,67 @@
+package no.dfo.anskaffelser.vefa.validator.declaration;
+
+import no.dfo.anskaffelser.vefa.validator.annotation.Type;
+import no.dfo.anskaffelser.vefa.validator.util.StreamUtils;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+@Type("xml.nobl")
+public class NoblDeclaration extends AbstractXmlDeclaration {
+
+    private static final Pattern PATTERN = Pattern.compile("urn:fdc:difi.no:2018:nobl:(.+)-1::(.+)");
+
+    private static final List<String> FIELDS = Arrays.asList("CustomizationID", "ProfileID");
+
+    @Override
+    public boolean verify(byte[] content, List<String> parent) {
+        return PATTERN.matcher(parent.get(0)).matches();
+    }
+
+    @Override
+    public List<String> detect(InputStream contentStream, List<String> parent) {
+        List<String> results = new ArrayList<>();
+
+        String type = parent.get(0).split("::")[1];
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(type);
+
+        try {
+            byte[] content= StreamUtils.readAndReset(contentStream, 10*1024);
+            XMLEventReader xmlEventReader = XML_INPUT_FACTORY.createXMLEventReader(new ByteArrayInputStream(content));
+            while (xmlEventReader.hasNext()) {
+                XMLEvent xmlEvent = xmlEventReader.nextEvent();
+
+                if (xmlEvent.isStartElement()) {
+                    StartElement startElement = (StartElement) xmlEvent;
+
+                    if (FIELDS.contains(startElement.getName().getLocalPart())) {
+                        xmlEvent = xmlEventReader.nextEvent();
+                        if (xmlEvent instanceof Characters) {
+                            stringBuilder
+                                    .append("::")
+                                    .append(((Characters) xmlEvent).getData());
+
+                            results.add(String.format("%s::%s", type, ((Characters) xmlEvent).getData()));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // No action.
+        }
+
+        results.add(stringBuilder.toString());
+
+        return results;
+    }
+}

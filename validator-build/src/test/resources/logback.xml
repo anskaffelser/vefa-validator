@@ -7,8 +7,8 @@
         </encoder>
     </appender>
 
-    <logger name="no.difi.vefa" level="INFO"/>
-    <logger name="no.difi.vefa.validator.util.SaxonErrorListener" level="WARN"/>
+    <logger name="no.dfo.anskaffelser.vefa" level="INFO"/>
+    <logger name="no.dfo.anskaffelser.vefa.validator.util.SaxonErrorListener" level="WARN"/>
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />
