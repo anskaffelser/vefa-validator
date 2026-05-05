@@ -4,33 +4,27 @@
         "dockerfile": "Dockerfile",
         "args": {
             "INSTALL_MAVEN": "true",
-            "INSTALL_GRADLE": "false"
+            "MAVEN_VERSION": "3.9.15",
+            "INSTALL_GRADLE": "false",
+            "GRADLE_VERSION": "",
+            "INSTALL_NODE": "false",
+            "NODE_VERSION": "lts/*"
         }
     },
-
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "java.configuration.runtimes": [
-                    {
-                        "default": true,
-                        "name": "JavaSE-21",
-                        "path": "/home/vscode/.sdkman/candidates/java/current"
-                    }
-                ],
-                "java.import.gradle.java.home": "/home/vscode/.sdkman/candidates/java/current",
-                "terminal.integrated.defaultProfile.linux": "bash"
-            },
-            "extensions": [
-                "vscjava.vscode-java-pack",
-                "vscjava.vscode-maven"
-            ]
-        }
+    "postCreateCommand": "bash -lc 'source /home/vscode/.sdkman/bin/sdkman-init.sh && java -version && mvn -version'",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "java.home": "/home/vscode/.sdkman/candidates/java/current",
+        "java.import.gradle.java.home": "/home/vscode/.sdkman/candidates/java/current",
+        "java.configuration.runtimes": [
+            {
+                "default": true,
+                "name": "JavaSE-21",
+                "path": "/home/vscode/.sdkman/candidates/java/current"
+            }
+        ]
     },
-
-    // Verify Java version on container creation
-    "postCreateCommand": "java -version && mvn -version",
-
-    // Uncomment to connect as non-root user
-    // "remoteUser": "vscode"
+    "extensions": [
+        "vscjava.vscode-java-pack"
+    ]
 }
