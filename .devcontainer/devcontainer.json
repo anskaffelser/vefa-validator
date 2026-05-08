@@ -1,30 +1,40 @@
 {
-    "name": "Java 21 Dev Container",
+    "name": "Java 21",
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
             "INSTALL_MAVEN": "true",
             "MAVEN_VERSION": "3.9.15",
             "INSTALL_GRADLE": "false",
-            "GRADLE_VERSION": "",
             "INSTALL_NODE": "false",
             "NODE_VERSION": "lts/*"
         }
     },
-    "postCreateCommand": "bash -lc 'source /home/vscode/.sdkman/bin/sdkman-init.sh && java -version && mvn -version'",
+
+    // Set *default* container specific settings.json values on container create.
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
-        "java.home": "/home/vscode/.sdkman/candidates/java/current",
-        "java.import.gradle.java.home": "${env:JAVA_HOME}",
-        "java.configuration.runtimes": [
-            {
-                "default": true,
-                "name": "JavaSE-21",
-                "path": "${env:JAVA_HOME}"
-            }
-        ]
+        "java.home": "/usr/local/sdkman/candidates/java/current",
+        "java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
+        "java.configuration.runtimes": [{
+            "default": true,
+            "name": "JavaSE-21",
+            "path": "/usr/local/sdkman/candidates/java/current"
+        }]
     },
+
+    // Add the IDs of extensions you want installed when the container is created.
     "extensions": [
         "vscjava.vscode-java-pack"
-    ]
+    ],
+
+    // Verify toolchain after container is created.
+    "postCreateCommand": "java -version && mvn -version"
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+
+
+    // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+    // "remoteUser": "vscode"
 }
