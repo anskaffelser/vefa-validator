@@ -51,7 +51,7 @@
 ## 2.1.0
 
 * Support for PEPPOL BIS/EHF Billing 3.0.
-* Changed visibility of no.dfo.anskaffelser.vefa.validator.ValidationImpl (earlier Validation).
+* Changed visibility of no.difi.vefa.validator.ValidationImpl (earlier Validation).
 * Allow multiple directories when using DirectorySource and SimpleDirectorySource.
 * Refactored ValidatorBuilder to use ValidatorPlugin to declare functionality.
 * Nested validation for document types supporting embedded content (currently SBDH and ASiC-E).
@@ -105,10 +105,10 @@
 * Functionality for configuring validator.
 * Supporting parameters for stylesheets.
 * Better defaults in the sample application (validator-web).
-* ValidatorException is moved from no.dfo.anskaffelser.vefa.validator to no.dfo.anskaffelser.vefa.validator.api.
+* ValidatorException is moved from no.difi.vefa.validator to no.difi.vefa.validator.api.
 * Cleaner use of exceptions in exposed classes.
 * Renaming 'Presenter' and associated to 'Renderer' for better communication. 
-* Moving no.dfo.anskaffelser.vefa.validator.api to module validator-api.
+* Moving no.difi.vefa.validator.api to module validator-api.
 * More Javadoc in code.
 
 

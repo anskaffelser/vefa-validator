@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/no.dfo.anskaffelser.vefa/validator-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22no.dfo.anskaffelser.vefa%22%20AND%20validator)
+[![Maven Central](https://img.shields.io/maven-central/v/no.difi.vefa/validator-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22no.difi.vefa%22%20AND%20validator)
 [![Docker](https://img.shields.io/docker/pulls/difi/vefa-validator.svg)](https://hub.docker.com/r/difi/vefa-validator/)
 
 
@@ -25,9 +25,9 @@ Include dependency in your pom.xml:
 
 ```xml
 <dependency>
-  <groupId>no.dfo.anskaffelser.vefa</groupId>
+  <groupId>no.difi.vefa</groupId>
   <artifactId>validator-core</artifactId>
-  <version>2.4.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
