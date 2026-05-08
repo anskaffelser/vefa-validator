@@ -6,7 +6,7 @@
 
 ### chore(build): finalize namespace migration and stabilize Java 21 build
 
-* migrate modules/packages to no.dfo.anskaffelser.vefa namespace
+* migrate modules/packages to no.difi.vefa namespace
 * align parent/module Maven coordinates and inter-module dependencies
 * fix API/core compile contract issues (Trigger/ValidatorException usage)
 * address Lombok-generated symbol compile gaps in local build flow

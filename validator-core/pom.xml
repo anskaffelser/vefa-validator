@@ -63,7 +63,7 @@
 
         <!-- VEFA Validator -->
         <dependency>
-            <groupId>no.dfo.anskaffelser.vefa</groupId>
+            <groupId>no.difi.vefa</groupId>
             <artifactId>validator-api</artifactId>
         </dependency>
 
