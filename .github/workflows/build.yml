@@ -35,9 +35,21 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          server-id: github
+          # Defaults to GITHUB_ACTOR (the user who triggered the workflow)
+          server-username: GITHUB_ACTOR
+          # Defaults to GITHUB_TOKEN
+          server-password: PACKAGES_TOKEN
 
       - name: Build with Maven
         run: mvn -B --no-transfer-progress package
+
+      - name: Publish to GitHub Packages
+        if: ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
