@@ -42,11 +42,12 @@ jobs:
           server-password: GITHUB_TOKEN
 
       - name: Build with Maven
-        run: mvn -B --no-transfer-progress package
+        if: ${{ !(( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))) }}
+        run: mvn -B --no-transfer-progress verify
 
       - name: Publish to GitHub Packages
         if: ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-        run: mvn --batch-mode deploy
+        run: mvn --no-transfer-progress deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
