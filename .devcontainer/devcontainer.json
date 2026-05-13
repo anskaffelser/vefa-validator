@@ -28,7 +28,7 @@
     ],
 
     // Verify toolchain after container is created.
-    "postCreateCommand": "java -version && mvn -version"
+    //"postCreateCommand": "java -version && mvn -version"
 
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
