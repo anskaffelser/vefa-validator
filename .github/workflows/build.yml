@@ -49,7 +49,6 @@ jobs:
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
