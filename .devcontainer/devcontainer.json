@@ -3,8 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
-            "INSTALL_MAVEN": "true",
-            "MAVEN_VERSION": "3.9.15",
+            "INSTALL_MAVEN": "false",
             "INSTALL_GRADLE": "false",
             "INSTALL_NODE": "false",
             "NODE_VERSION": "lts/*"
