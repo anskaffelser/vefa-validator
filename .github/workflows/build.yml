@@ -39,7 +39,7 @@ jobs:
           # Defaults to GITHUB_ACTOR (the user who triggered the workflow)
           server-username: GITHUB_ACTOR
           # Defaults to GITHUB_TOKEN
-          server-password: GITHUB_TOKEN
+          server-password: PACKAGES_TOKEN
 
       - name: Build with Maven
         if: ${{ !(( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))) }}
@@ -47,9 +47,10 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-        run: mvn --no-transfer-progress deploy
+        run: mvn -B --no-transfer-progress deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
