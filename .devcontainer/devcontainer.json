@@ -25,7 +25,7 @@
     // Add the IDs of extensions you want installed when the container is created.
     "extensions": [
         "vscjava.vscode-java-pack"
-    ],
+    ]
 
     // Verify toolchain after container is created.
     //"postCreateCommand": "java -version && mvn -version"
