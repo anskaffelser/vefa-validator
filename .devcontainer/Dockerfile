@@ -2,8 +2,8 @@
 FROM mcr.microsoft.com/devcontainers/java:1-21-bookworm
 
 # [Option] Install Maven
-ARG INSTALL_MAVEN="true"
-ARG MAVEN_VERSION="3.9.15"
+ARG INSTALL_MAVEN="false"
+ARG MAVEN_VERSION=""
 # [Option] Install Gradle
 ARG INSTALL_GRADLE="false"
 ARG GRADLE_VERSION=""
