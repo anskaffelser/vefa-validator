@@ -1,38 +1,39 @@
 {
-	"name": "Java 8",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"INSTALL_MAVEN": "true",
-			"INSTALL_GRADLE": "false",
-			"INSTALL_NODE": "false",
-			"NODE_VERSION": "lts/*"
-		}
-	},
+    "name": "Java 21",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "INSTALL_MAVEN": "true",
+            "INSTALL_GRADLE": "false",
+            "INSTALL_NODE": "false",
+            "NODE_VERSION": "lts/*"
+        }
+    },
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"java.home": "/docker-java-home",
-		"java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
-		"java.configuration.runtimes": [{
-			"default": true,
-			"name": "JavaSE-1.8",
-			"path": "/usr/local/sdkman/candidates/java/current"
-		}]
-	},
-	
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"vscjava.vscode-java-pack"
-	]
+    // Set *default* container specific settings.json values on container create.
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "java.home": "/docker-java-home",
+        "java.import.gradle.java.home": "/usr/lib/jvm/msopenjdk-current",
+        "java.configuration.runtimes": [{
+            "default": true,
+            "name": "JavaSE-21",
+            "path": "/usr/lib/jvm/msopenjdk-current"
+        }]
+    },
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        "vscjava.vscode-java-pack"
+    ]
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "java -version",
+    // Verify toolchain after container is created.
+    //"postCreateCommand": "java -version && mvn -version"
 
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+
+
+    // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+    // "remoteUser": "vscode"
 }

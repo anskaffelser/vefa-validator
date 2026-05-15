@@ -1,6 +1,5 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.145.1/containers/java-8/.devcontainer/base.Dockerfile
-
-FROM mcr.microsoft.com/vscode/devcontainers/java:0-8
+# See image contents: https://github.com/devcontainers/images/tree/main/src/java
+FROM mcr.microsoft.com/devcontainers/java:1-21-bookworm
 
 # [Option] Install Maven
 ARG INSTALL_MAVEN="false"
