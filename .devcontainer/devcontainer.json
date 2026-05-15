@@ -14,11 +14,11 @@
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
         "java.home": "/docker-java-home",
-        "java.import.gradle.java.home": "/user/lib/jvm/msopenjdk-current",
+        "java.import.gradle.java.home": "/usr/lib/jvm/msopenjdk-current",
         "java.configuration.runtimes": [{
             "default": true,
             "name": "JavaSE-21",
-            "path": "/user/lib/jvm/msopenjdk-current"
+            "path": "/usr/lib/jvm/msopenjdk-current"
         }]
     },
 
