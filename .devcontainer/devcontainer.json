@@ -13,12 +13,12 @@
     // Set *default* container specific settings.json values on container create.
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
-        "java.home": "/usr/local/sdkman/candidates/java/current",
-        "java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
+        "java.home": "/docker-java-home",
+        "java.import.gradle.java.home": "/user/lib/jvm/msopenjdk-current",
         "java.configuration.runtimes": [{
             "default": true,
             "name": "JavaSE-21",
-            "path": "/usr/local/sdkman/candidates/java/current"
+            "path": "/user/lib/jvm/msopenjdk-current"
         }]
     },
 
