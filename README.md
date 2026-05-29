@@ -1,12 +1,12 @@
-[![Maven Central](https://img.shields.io/maven-central/v/no.difi.vefa/validator-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22no.difi.vefa%22%20AND%20validator)
-[![Docker](https://img.shields.io/docker/pulls/difi/vefa-validator.svg)](https://hub.docker.com/r/difi/vefa-validator/)
+[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-2.4.2-blue)](https://github.com/orgs/anskaffelser/packages)
+[![Docker](https://img.shields.io/badge/ghcr.io-anskaffelser%2Fvalidator-blue)](https://ghcr.io/anskaffelser/validator)
 
 
 # VEFA Validator 2.x
 
-This repository contains the code of the validation library for Java of which may be used to validate document related to eProcurement. The library is intended to be included in your software where you need support for document validation, it is not prossible to perform validation by simply compiling the project.
+This repository contains the code of the validation library for Java which may be used to validate documents related to eProcurement. The library is intended to be included in your software where you need support for document validation – it is not possible to perform validation by simply compiling the project.
 
-This library does not contain validation rules for any of the eProcurement documents supported. If you have issues related to specific types of documents, please make sure to create whose issues in the respective repository, e.g. [ehf-postaward-g3](https://github.com/anskaffelser/ehf-postaward-g3) for Post-Award documents or [eforms-sdk-nor](https://github.com/anskaffelser/eforms-sdk-nor) for eForms.
+This library does not contain validation rules for any of the eProcurement documents supported. If you have issues related to specific types of documents, please make sure to create those issues in the respective repository, e.g. [ehf-postaward-g3](https://github.com/anskaffelser/ehf-postaward-g3) for Post-Award documents or [eforms-sdk-nor](https://github.com/anskaffelser/eforms-sdk-nor) for eForms.
 
 
 ## Features
@@ -21,17 +21,46 @@ This library does not contain validation rules for any of the eProcurement docum
 
 ## Getting started
 
-Include dependency in your pom.xml:
+Artifacts are published to [GitHub Packages](https://github.com/orgs/anskaffelser/packages). You need a GitHub account and a personal access token with `read:packages` scope.
+
+### 1. Add credentials
+
+Add this to `~/.m2/settings.xml`:
 
 ```xml
+<settings>
+  <servers>
+    <server>
+      <id>anskaffelser</id>
+      <username>YOUR_GITHUB_USERNAME</username>
+      <password>YOUR_GITHUB_TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+Create a token at [github.com/settings/tokens](https://github.com/settings/tokens) with scope `read:packages`.
+
+### 2. Add repository and dependency
+
+In your `pom.xml`:
+
+```xml
+<repositories>
+  <repository>
+    <id>anskaffelser</id>
+    <url>https://maven.pkg.github.com/anskaffelser/maven</url>
+  </repository>
+</repositories>
+
 <dependency>
   <groupId>no.difi.vefa</groupId>
   <artifactId>validator-core</artifactId>
-  <version>2.1.0</version>
+  <version>2.4.2</version>
 </dependency>
 ```
 
-Start validating business documents:
+### 3. Start validating
 
 ```java
 // Create a new validator using validation artifacts from DFØ.
@@ -44,17 +73,4 @@ Validation validation = validator.validate(Paths.get("/path/to/document.xml"));
 System.out.println(validation.getReport().getFlag());
 ```
 
-The validator is expensive to create, one instance should be enough.
-
-
-### New repositories
-
-Repositories referenced in the code was moved as of September 1st 2020. To switch to the new repository, adding source in the ValidatorBuilder is required. Example of how it may look like:
-
-```java
-Validator validator = ValidatorBuilder.newValidator()
-    .setSource(RepositorySource.of("https://anskaffelser.dev/repo/validator/current/"))
-    .build();
-```
-
-More information on the change and link to the new test repository may be found in the [announcment of the new repositories](https://anskaffelser.dev/service/announcement/2020-08-31-changed-urls-for-validator/).
+Create the validator once and reuse it – it is expensive to initialize.
