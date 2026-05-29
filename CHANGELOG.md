@@ -10,8 +10,6 @@
 ## 2.4.1
 
 * Publish Maven artifacts to GitHub Packages on release (`mvn deploy` added to CI).
-* Updated CI workflow to use `actions/setup-java@v4`, `actions/checkout@v4`.
-* Migrated Docker image registry from Docker Hub to GitHub Container Registry (GHCR).
 
 ## 2.4.0
 
