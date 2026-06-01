@@ -2,6 +2,15 @@
 
 ## Next release
 
+## 2.4.2
+
+* Fixed outdated default repository URL in `validator-tester` CLI (`vefa.difi.no` → `anskaffelser.dev/repo/validator/current/`). Fixes [#78](https://github.com/anskaffelser/vefa-validator/issues/78).
+* Updated README with GitHub Packages setup instructions for Maven consumers.
+
+## 2.4.1
+
+* Publish Maven artifacts to GitHub Packages on release (`mvn deploy` added to CI).
+
 ## 2.4.0
 
 * Upgraded Java compile and runtime target from 8 to 21 (LTS).
