@@ -21,7 +21,7 @@ This library does not contain validation rules for any of the eProcurement docum
 
 ## Getting started
 
-Artifacts are published to [GitHub Packages](https://github.com/orgs/anskaffelser/packages). You need a GitHub account and a personal access token with `read:packages` scope.
+Artifacts are published to GitHub Packages at `https://maven.pkg.github.com/anskaffelser/maven`. To download them with Maven, authenticate using your GitHub username and a token with `read:packages` scope.
 
 ### 1. Add credentials
 
