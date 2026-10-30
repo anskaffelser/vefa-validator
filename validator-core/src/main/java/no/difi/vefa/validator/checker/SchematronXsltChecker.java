@@ -16,8 +16,8 @@ import no.difi.vefa.validator.util.SaxonErrorListener;
 import no.difi.vefa.validator.util.SaxonMessageListener;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

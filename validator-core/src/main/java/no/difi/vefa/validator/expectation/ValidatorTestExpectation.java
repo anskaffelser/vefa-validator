@@ -6,8 +6,8 @@ import no.difi.xsd.vefa.validator._1.AssertElementType;
 import no.difi.xsd.vefa.validator._1.AssertType;
 import no.difi.xsd.vefa.validator._1.Test;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 
