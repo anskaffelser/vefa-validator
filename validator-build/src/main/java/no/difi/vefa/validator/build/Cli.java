@@ -13,7 +13,7 @@ import no.difi.vefa.validator.build.task.TestTask;
 import no.difi.vefa.validator.module.SaxonModule;
 import org.apache.commons.cli.*;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 
 @Slf4j
