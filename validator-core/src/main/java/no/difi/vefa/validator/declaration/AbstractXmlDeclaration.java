@@ -4,12 +4,13 @@ import no.difi.vefa.validator.api.Declaration;
 import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.XmlExpectation;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.util.SecureXml;
 
 import javax.xml.stream.XMLInputFactory;
 
 abstract class AbstractXmlDeclaration implements Declaration {
 
-    protected static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newFactory();
+    protected static final XMLInputFactory XML_INPUT_FACTORY = SecureXml.inputFactory();
 
     @Override
     public Expectation expectations(byte[] content) throws ValidatorException {

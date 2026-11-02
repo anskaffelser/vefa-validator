@@ -12,7 +12,6 @@ import no.difi.xsd.vefa.validator._1.TestSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -45,7 +44,7 @@ public class ValidatorTestSetDeclaration extends SimpleXmlDeclaration implements
 
         public TestSetIterator(InputStream inputStream) throws ValidatorException {
             try {
-                testSet = JAXB_CONTEXT.createUnmarshaller().unmarshal(new StreamSource(inputStream), TestSet.class).getValue();
+                testSet = JAXBHelper.unmarshal(JAXB_CONTEXT, inputStream, TestSet.class);
             } catch (JAXBException e) {
                 throw new ValidatorException(e.getMessage(), e);
             }

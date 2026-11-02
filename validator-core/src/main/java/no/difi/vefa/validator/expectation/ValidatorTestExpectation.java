@@ -8,7 +8,6 @@ import no.difi.xsd.vefa.validator._1.Test;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 
 @Slf4j
@@ -18,8 +17,7 @@ public class ValidatorTestExpectation extends AbstractExpectation {
 
     public ValidatorTestExpectation(byte[] bytes) {
         try {
-            Test test = jaxbContext.createUnmarshaller().unmarshal(
-                    new StreamSource(new ByteArrayInputStream(bytes)), Test.class).getValue();
+            Test test = JAXBHelper.unmarshal(jaxbContext, new ByteArrayInputStream(bytes), Test.class);
             AssertType assertType = test.getAssert();
 
             if (assertType != null) {

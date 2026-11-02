@@ -7,6 +7,7 @@ import no.difi.vefa.validator.api.Expectation;
 import no.difi.vefa.validator.expectation.ValidatorTestExpectation;
 import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
+import no.difi.vefa.validator.util.SecureXml;
 import no.difi.vefa.validator.util.StreamUtils;
 import no.difi.xsd.vefa.validator._1.Test;
 import org.w3c.dom.Node;
@@ -18,11 +19,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,9 +35,17 @@ import java.util.List;
 @Type("xml.test")
 public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements DeclarationWithConverter {
 
-    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
-
     private static final JAXBContext JAXB_CONTEXT = JAXBHelper.context(Test.class);
+
+    private static final TransformerFactory TRANSFORMER_FACTORY;
+
+    static {
+        try {
+            TRANSFORMER_FACTORY = SecureXml.transformerFactory();
+        } catch (TransformerConfigurationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     public ValidatorTestDeclaration() {
         super("http://difi.no/xsd/vefa/validator/1.0", "test");
@@ -82,6 +91,6 @@ public class ValidatorTestDeclaration extends SimpleXmlDeclaration implements De
     }
 
     private Test convertInputStream(InputStream inputStream) throws JAXBException {
-        return JAXB_CONTEXT.createUnmarshaller().unmarshal(new StreamSource(inputStream), Test.class).getValue();
+        return JAXBHelper.unmarshal(JAXB_CONTEXT, inputStream, Test.class);
     }
 }

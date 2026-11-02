@@ -17,7 +17,6 @@ import no.difi.vefa.validator.util.SaxonMessageListener;
 import no.difi.xsd.vefa.validator._1.SectionType;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -65,9 +64,8 @@ public class SchematronXsltChecker implements Checker {
 
             long tsEnd = System.currentTimeMillis();
 
-            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-            SectionType sectionType = unmarshaller.unmarshal(new StreamSource(
-                    new ByteArrayInputStream(baos.toByteArray())), SectionType.class).getValue();
+            SectionType sectionType = JAXBHelper.unmarshal(
+                    JAXB_CONTEXT, new ByteArrayInputStream(baos.toByteArray()), SectionType.class);
 
             section.setTitle(sectionType.getTitle());
             section.add(sectionType.getAssertion());

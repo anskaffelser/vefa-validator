@@ -3,24 +3,25 @@ package no.difi.vefa.validator.checker;
 import no.difi.vefa.validator.api.Checker;
 import no.difi.vefa.validator.api.Document;
 import no.difi.vefa.validator.api.Section;
+import no.difi.vefa.validator.util.SecureXml;
 import no.difi.xsd.vefa.validator._1.AssertionType;
 import no.difi.xsd.vefa.validator._1.FlagType;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 import java.io.IOException;
 
 public class XsdChecker implements Checker {
 
-    private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
+    private static final XMLInputFactory XML_INPUT_FACTORY = SecureXml.inputFactory();
 
     private final Schema schema;
 
@@ -32,12 +33,12 @@ public class XsdChecker implements Checker {
     public void check(Document document, Section section) {
         section.setTitle("XSD validation");
 
-        Source xmlFile = new StreamSource(document.getInputStream());
-
         long tsStart = System.currentTimeMillis();
         try {
             Validator validator = schema.newValidator();
-            validator.validate(xmlFile);
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            validator.validate(SecureXml.source(document.getInputStream()));
         } catch (SAXParseException e) {
             String humanMessage = e.getMessage();
             if (humanMessage.startsWith("cvc-complex-type.2.4.")) {
@@ -77,7 +78,7 @@ public class XsdChecker implements Checker {
                     "Line %s, column %s.", e.getLineNumber(), e.getColumnNumber()));
             assertionType.setFlag(FlagType.FATAL);
             section.add(assertionType);
-        } catch (SAXException | IOException e) {
+        } catch (SAXException | IOException | ParserConfigurationException e) {
             section.add("XSD", e.getMessage(), FlagType.FATAL);
         }
 
