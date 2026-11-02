@@ -4,10 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 
-import javax.xml.bind.Unmarshaller;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -19,10 +20,12 @@ class RepositorySourceInstance extends AbstractSourceInstance {
 
         try {
             for (URI rootUri : rootUris) {
-                Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
                 URI artifactsUri = rootUri.resolve("artifacts.xml");
                 log.info(String.format("Fetching %s", artifactsUri));
-                Artifacts artifactsType = (Artifacts) unmarshaller.unmarshal(artifactsUri.toURL());
+                Artifacts artifactsType;
+                try (InputStream inputStream = artifactsUri.toURL().openStream()) {
+                    artifactsType = JAXBHelper.unmarshal(JAXB_CONTEXT, inputStream, Artifacts.class);
+                }
 
                 for (ArtifactType artifact : artifactsType.getArtifact()) {
                     URI artifactUri = rootUri.resolve(artifact.getFilename());

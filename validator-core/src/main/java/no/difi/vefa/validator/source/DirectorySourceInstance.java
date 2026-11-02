@@ -4,11 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.AsicReader;
 import no.difi.vefa.validator.api.Properties;
 import no.difi.vefa.validator.lang.ValidatorException;
+import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.ArtifactType;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -35,17 +34,13 @@ class DirectorySourceInstance extends AbstractSourceInstance {
 
                 // Directories containing artifacts.xml results in lower memory footprint.
                 if (Files.exists(directory.resolve("artifacts.xml"))) {
-                    // Create unmarshaller (XML => Java)
-                    Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-
                     // Read artifacts.xml
                     Path artifactsPath = directory.resolve("artifacts.xml");
                     log.info("Loading {}", artifactsPath);
                     Artifacts artifactsType;
 
                     try (InputStream inputStream = Files.newInputStream(artifactsPath)) {
-                        artifactsType = unmarshaller
-                                .unmarshal(new StreamSource(inputStream), Artifacts.class).getValue();
+                        artifactsType = JAXBHelper.unmarshal(JAXB_CONTEXT, inputStream, Artifacts.class);
                     }
 
                     // Loop through artifacts.

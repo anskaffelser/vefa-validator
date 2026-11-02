@@ -17,7 +17,6 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,8 +43,6 @@ public class BuildTask {
 
         Configurations configurations = build.getConfigurations();
 
-        Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-
         for (Path sourcePath : build.getSourcePath()) {
 
             File workFolder = sourcePath.toFile();
@@ -54,8 +51,9 @@ public class BuildTask {
 
             // Find configurations
             for (File file : FileUtils.listFiles(workFolder, new NameFileFilter(build.getSetting("config")), TrueFileFilter.INSTANCE)) {
-                try {
-                    BuildConfigurations config = (BuildConfigurations) unmarshaller.unmarshal(new FileInputStream(file));
+                try (var inputStream = new FileInputStream(file)) {
+                    BuildConfigurations config = JAXBHelper.unmarshal(
+                            JAXB_CONTEXT, inputStream, BuildConfigurations.class);
 
                     File configFolder = new File(file.getParent());
 

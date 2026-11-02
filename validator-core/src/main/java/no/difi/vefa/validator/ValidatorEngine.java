@@ -11,8 +11,6 @@ import no.difi.xsd.vefa.validator._1.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,9 +96,8 @@ class ValidatorEngine implements Closeable {
      */
     private void loadConfigurations(String configurationSource, InputStream inputStream) throws ValidatorException {
         try {
-            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
             loadConfigurations(configurationSource,
-                    unmarshaller.unmarshal(new StreamSource(inputStream), Configurations.class).getValue());
+                    JAXBHelper.unmarshal(JAXB_CONTEXT, inputStream, Configurations.class));
         } catch (JAXBException e) {
             throw new ValidatorException("Unable to read configurations.", e);
         }

@@ -1,6 +1,14 @@
 # Changelog
 
-## Next release
+## 2.4.2.2
+
+* Hardened XML/XSLT parsing to block external resource access.
+* Added regression tests for XML entities, DTDs, XInclude and XSLT resource access.
+* Added Guice dependency to `validator-build`.
+
+## 2.4.2.1
+
+* Updated dependencies, including Saxon, and GitHub Actions.
 
 ## 2.4.2
 
