@@ -8,7 +8,7 @@ import no.difi.xsd.vefa.validator._1.Artifacts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
