@@ -4,7 +4,7 @@ import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.StreamUtils;
 import no.difi.vefa.validator.util.XmlUtils;
 
-import javax.xml.bind.ValidationException;
+import jakarta.xml.bind.ValidationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;

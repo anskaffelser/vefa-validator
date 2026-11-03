@@ -11,7 +11,7 @@ import no.difi.vefa.validator.util.ArtifactHolderImpl;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.Artifacts;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;

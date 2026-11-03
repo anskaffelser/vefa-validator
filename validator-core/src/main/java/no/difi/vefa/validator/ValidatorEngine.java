@@ -9,8 +9,8 @@ import no.difi.vefa.validator.lang.ValidatorException;
 import no.difi.vefa.validator.util.JAXBHelper;
 import no.difi.xsd.vefa.validator._1.*;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
